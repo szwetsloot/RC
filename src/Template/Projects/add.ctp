@@ -18,6 +18,8 @@
       echo $this->Form->control('name');
       echo $this->Form->control('price');
       echo $this->Form->control('version');
+      echo $this->Form->control('controller');
+      echo $this->Form->control('action');
   ?>
   <?= $this->Form->button(__('Add')) ?>
 </fieldset>
