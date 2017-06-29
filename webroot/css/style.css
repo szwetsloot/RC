@@ -1,0 +1,214 @@
+body {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	top: 0px;
+	font-family: arial;
+}
+
+#header {
+	position: fixed;
+	margin: 0px;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 72px;
+	padding-left: 20px;
+	background: -webkit-linear-gradient(#4978A8, #243954);
+	box-shadow: -10px 10px 40px black;
+	z-index: 3;
+}
+
+#header h2 {
+	color: white;
+	font-size: 30px;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+#links {
+	position: fixed;
+	top: 72px;
+	left: 0px;
+	width: 120px;
+	height: calc(100% - 72px);
+	background: -webkit-linear-gradient(left, #23252B, #303741, #23252B);
+	text-align: center;
+	padding-top: 30px;
+}
+
+#links ul {
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+	color: #EBEBEB;
+}
+
+#links ul li {
+	padding-bottom: 20px;
+}
+#links a {
+	color: white;
+	text-decoration: none;
+}
+
+#content {
+	position: absolute;
+	top: 72px;
+	left: 120px; 
+	width: calc(100% - 120px);
+	height: calc(100% - 72px);
+	background-color: #EBEBEB;
+}
+
+#login {
+	position: absolute;
+	border: 1px solid white;
+	border-radius: 20px;
+	width: 360px;
+	height: 216px;
+	top: 50%;
+	left: 50%;
+	margin-top: -180px; margin-left: -210px;
+	background-color: #C4CFDB;
+	overflow: hidden;
+	z-index: 6;
+}
+
+#login #login-form {
+	padding: 15px 32px;
+}
+#login-form input {
+	margin: 4px 10px;
+	padding: 4px 12px;
+	border-radius: 8px;
+}
+
+#login-form input {	
+	width: 80%;
+}
+
+
+
+#login-header{
+	background: -webkit-linear-gradient(#86A3C1, #748498);
+	border-radius: 20px 20px 0px 0px;
+	padding: 12px 0px 0px 20px;
+	height: 28px;
+	vertical-align: center;
+	color: white;
+	font-size: 18px;
+}
+
+.box-item {
+	position: relative;
+	left: 20px;
+	top: 30px;
+	max-width: calc(100% - 88px);
+	margin-bottom: 20px;
+	border: 1px solid gray;
+	border-radius: 20px;s
+	min-height: 80px;
+	padding: 8px 24px;
+	background-color: #F6F6F6;
+}
+
+.box-item .header{
+	position: relative;
+	top: 6px;
+	font-weight: bold;
+}
+
+.related {
+	position: relative;
+	border-top: 2px solid darkgray;
+	margin-top: 32px;
+	padding-top: 0px;
+}
+
+
+/* Tables */
+.box-item > table,
+.related > table {
+	border-collapse: collapse;
+	width: 100%;
+	border-spacing: 0px;
+	border: 1px outset lightgray;
+}
+.box-item > table th,
+.related > table th,
+.box-item > table td,
+.related > table td {
+	padding: 0px;
+}
+.box-item > table tr th,
+.related > table tr th {
+	background: -webkit-linear-gradient(#F6F6F6, #EBEBEB);
+	color: #606060;
+	text-align: center;
+	padding: 20px 0px 8px 24px;
+}
+.box-item > table tr td,
+.related > table tr td {
+	padding: 4px 12px;
+}
+.box-item > table tr:nth-child(even),
+.related > table tr:nth-child(even) {
+	background-color: #EBEBEB;
+}
+a {
+	color: #2f25da;
+	text-decoration: none;
+}
+
+/* Attributes */
+
+.right {
+	float: right;
+}
+.box {
+	min-width: 120px;
+	min-height: 20px;
+	border: 2px outset #777777;
+	border-radius: 20px;
+	padding: 8px 20px;
+	margin: 20px;
+}
+.text-center {
+	text-align: center;
+}
+.full-width {
+	width: 100%;
+}
+
+
+/* FORM */
+fieldset div.input {
+	padding: 12px 0px;
+	margin: 12px 0px;
+}
+fieldset div.input label {
+	float: left;
+	left: 2%;
+	width: 18%;
+	margin-top: 2px;
+}
+fieldset div.input input,
+fieldset div.input select {
+	float: left;
+	right: 2%;
+	width: 90%;
+	padding: 4px 12px;
+	border: 2px #BBBBBB inset;
+	border-radius: 6px;
+}
+fieldset button[type=submit] {
+	float: left;
+	margin-top: 8px;
+	padding: 4px 12px;
+	min-width: 120px;
+	border-radius: 12px;
+	
+}

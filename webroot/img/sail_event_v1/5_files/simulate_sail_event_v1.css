@@ -1,0 +1,50 @@
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	background-color: #06002b;
+	overflow: hidden;
+}
+
+#bouy-container,
+#background-image {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+#background-image {
+	background-image: url(../img/sail_event_v1/sea_texture.png);
+	background-size: cover;
+	opacity: 0.4;
+}
+
+#compass {
+	position: absolute;
+	right: 3%;
+	width: 12%;
+	background-image: url(../img/sail_event_v1/compass.png);
+	background-size: cover;
+}
+
+#wind-arrow {
+	position: absolute;
+	left: 3%;
+	width: 12%;
+	background-image: url(../img/sail_event_v1/wind_arrow.png);
+	background-size: cover;
+	
+	-ms-transform: rotate(40deg); /* IE 9 */
+	-webkit-transform: rotate(40deg); /* Chrome, Safari, Opera */
+	transform: rotate(40deg);
+}
+
+.bouy {
+	position: absolute;
+	width: 3%;
+	border-radius: 50%;
+	background-color: yellow;
+	background-image: url(../img/sail_event_v1/bouy.png);
+	background-size: cover;
+}

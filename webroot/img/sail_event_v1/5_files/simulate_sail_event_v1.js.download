@@ -1,0 +1,196 @@
+var utm = "+proj=utm +zone=31";
+var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+
+var bouys = [
+	{
+		'number': 0,
+		'lat':    52.112861,
+		'lng':		4.256690,
+		'north':	0,
+		'east':		0
+	},
+	{
+		'number': 1,
+		'lat':    52.113038,
+		'lng':		4.267921,
+		'north':	0,
+		'east':		0
+	},
+	{
+		'number': 2,
+		'lat':    52.115838,
+		'lng':		4.264109,
+		'north':	0,
+		'east':		0
+	},
+	{
+		'number': 3,
+		'lat':    52.115838,
+		'lng':		4.272109,
+		'north':	0,
+		'east':		0
+	}
+];
+
+var screenUTMRange = {
+	'centerEast' : 1E9,
+	'rangeEast' : 	 0,
+	'centerNorth': 1E9,
+	'rangeNorth':    0,
+	'rotation':   	 0,
+	'bouy1':				 0,
+	'bouy2':				 0
+};
+
+var windDirection = 40;
+
+
+
+$(function() {
+	// Initialize the page
+	resizeObjects();					// Resize the bouys to the correct size
+	
+	// Convert the bouy's location to UTM
+	for (var i = 0; i < bouys.length; i++)
+		convertToUTM(bouys[i]);
+		
+	// Calculate the longest distance between two bouys to determine the horizontal location
+	calculateLongestDistanceBouys();
+	
+	
+	// Calculate the range of the screen based on the positions of the bouys
+	calculateScreenRange();
+	
+	
+	
+	
+	// Move the bouys to their correct location
+	moveBouys();
+	console.log(bouys);
+});
+
+function resizeObjects() {
+	// Resize the bouy's
+	var w = $('html').width();
+	$('.bouy').css('width',  (w * 0.02)+'px');
+	$('.bouy').css('height', (w * 0.02)+'px');
+	
+	// Resize the compass
+	$('#compass').css('width',  (w * 0.09)+'px');
+	$('#compass').css('height', (w * 0.09)+'px');
+	$('#compass').css('right',  (w * 0.02)+'px');
+	$('#compass').css('top',    (w * 0.02)+'px');
+	
+	// Resize the wind arrow
+	$('#wind-arrow').css('width',  (w * 0.08)+'px');
+	$('#wind-arrow').css('height', (w * 0.08)+'px');
+	$('#wind-arrow').css('left',   (w * 0.03)+'px');
+	$('#wind-arrow').css('top',    (w * 0.03)+'px');
+}
+
+// This function will calculate the longest distance between two bouys.
+// This distance will be used as the horizontal line on the screen
+function calculateLongestDistanceBouys() {
+	var i,j;
+	dist = 0;
+	bouy1 = 0;
+	bouy2 = 0;
+	for (i = 0; i < bouys.length; i++) {
+		for (j = 0; j < bouys.length; j++) {
+			if (i == j) continue; // Don't compare the same bouys because the distance = 0
+			dist_c = Math.sqrt(
+				Math.pow(bouys[i].north - bouys[j].north, 2) + 
+				Math.pow(bouys[i].east - bouys[j].east, 2)
+			);
+			if (dist_c > dist) { // This distance is the longest
+				dist = dist_c;
+				bouy1 = i;
+				bouy2 = j;
+				console.log("Dist = "+dist);
+			}
+		}
+	}
+	
+	// Swap the bouys so that the lowest horizontal position is on the lowest bouy
+	if (bouys[bouy1].east < bouys[bouy2].east) {
+		var tmp = bouy1;
+		bouy1 = bouy2;
+		bouy2 = tmp;
+	}
+	console.log("1 = "+bouy1+" & 2 = "+bouy2);
+	
+	// Calculate the Angle that we need to rotate so that these two horizontal
+	screenUTMRange.rotation = Math.atan2(bouys[bouy1].north - bouys[bouy2].north, bouys[bouy1].east - bouys[bouy2].east);
+	screenUTMRange.bouy1 = bouy1;
+	screenUTMRange.bouy2 = bouy2;
+	console.log("Rotation = "+screenUTMRange.rotation);
+	screenUTMRange.rotation = 0;
+}
+
+// This function will calculate the min and max x and y of the screen
+function calculateScreenRange() {
+	var i;
+	
+	// Calculate the center of the screen
+	screenEast  = 0;
+	screenNorth = 0;
+	for (i = 0; i < bouys.length; i++) {
+		screenEast += bouys[i].east;
+		screenNorth += bouys[i].north;
+	}
+	screenEast  /= bouys.length;
+	screenNorth /= bouys.length;
+	
+	// Rotate all bouys around this position
+	var rot = screenUTMRange.rotation; // This variable is just for shorter notation
+	horMax = 0;
+	verMax = 0;
+	for (i = 0; i < bouys.length; i++) {
+		bouyEast  = (bouys[i].east - screenEast) * Math.cos(rot) - (bouys[i].north - screenNorth) * Math.sin(rot);
+		bouyNorth = (bouys[i].east - screenEast) * Math.sin(rot) + (bouys[i].north - screenNorth) * Math.cos(rot);
+		if (Math.abs(bouyEast)  > horMax) horMax = Math.abs(bouyEast);
+		if (Math.abs(bouyNorth) > verMax) verMax = Math.abs(bouyNorth);
+	}
+	
+	var factor = 1.4;
+	screenUTMRange.centerEast  = screenEast;
+	screenUTMRange.centerNorth = screenNorth;
+	screenUTMRange.rangeEast   = horMax * factor;
+	screenUTMRange.rangeNorth  = verMax * factor;
+	console.log(screenUTMRange);
+}
+
+function moveBouys() {
+	// Get the screen size in pixel
+	var screenWidth  = $('html').width();
+	var screenHeight = $('html').height();
+	
+	// Calculate the coordinates for each bouy
+	for (var i = 0; i < bouys.length; i++) {
+		var element = $('.bouy#bouy-'+i);
+		rot         = screenUTMRange.rotation;
+		cEast       = screenUTMRange.centerEast;
+		cNorth      = screenUTMRange.centerNorth;
+		rEast       = screenUTMRange.rangeEast;
+		rNorth      = screenUTMRange.rangeNorth;
+		east        = (bouys[i].east - cEast) * Math.cos(rot) - (bouys[i].north - cNorth) * Math.sin(rot);
+		north       = (bouys[i].east - cEast) * Math.sin(rot) + (bouys[i].north - cNorth) * Math.cos(rot);
+		
+		console.log("Bouy");
+		console.log(north+' - '+east);
+		
+		var left    = (east  / rEast / 2 + 1/2) * screenWidth;
+		var top     = (north / rNorth / 2 + 1/2) * screenHeight;
+		
+		element.css('left', left+'px');
+		element.css('top', top+'px');
+		
+		console.log('Bouy '+i+' = ('+top+', '+left+')');
+		
+	}
+}
+
+/* prototype function to convert lat-lng to utm */
+function convertToUTM(obj) {
+	[obj.north, obj.east] = proj4(wgs84, utm, [obj.lat, obj.lng]);
+}
