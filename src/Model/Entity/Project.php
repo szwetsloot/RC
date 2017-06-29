@@ -11,6 +11,8 @@ use Cake\ORM\Entity;
  * @property string $name
  * @property float $price
  * @property int $version
+ * @property string $controller
+ * @property string $action
  * @property \Cake\I18n\FrozenTime $created_on
  *
  * @property \App\Model\Entity\Component[] $components

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2017-06-29 09:26:02
+Date: 2017-06-29 09:39:41
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -108,7 +108,8 @@ CREATE TABLE `projects` (
   `name` varchar(255) DEFAULT NULL,
   `price` decimal(10,2) DEFAULT NULL,
   `version` int(255) DEFAULT NULL,
-  `function` varchar(255) DEFAULT NULL,
+  `controller` varchar(255) DEFAULT NULL,
+  `action` varchar(255) DEFAULT NULL,
   `created_on` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
@@ -116,11 +117,11 @@ CREATE TABLE `projects` (
 -- ----------------------------
 -- Records of projects
 -- ----------------------------
-INSERT INTO `projects` VALUES ('1', '0', 'Row 1', null, '1', null, '2017-06-22 11:28:08');
-INSERT INTO `projects` VALUES ('2', '0', 'Row 4', null, '1', null, '2017-06-22 11:28:16');
-INSERT INTO `projects` VALUES ('3', '0', 'RTS (Regatta tracking system)', null, '1', null, '2017-06-22 11:28:41');
-INSERT INTO `projects` VALUES ('4', '3', 'Sailling', null, '1', null, '2017-06-22 11:40:37');
-INSERT INTO `projects` VALUES ('5', '4', 'Simulation', null, '1', 'simulate_sail_event_v1', '2017-06-22 11:40:49');
+INSERT INTO `projects` VALUES ('1', '0', 'Row 1', null, '1', null, null, '2017-06-22 11:28:08');
+INSERT INTO `projects` VALUES ('2', '0', 'Row 4', null, '1', null, null, '2017-06-22 11:28:16');
+INSERT INTO `projects` VALUES ('3', '0', 'RTS (Regatta tracking system)', null, '1', null, null, '2017-06-22 11:28:41');
+INSERT INTO `projects` VALUES ('4', '3', 'Sailling', null, '1', null, null, '2017-06-22 11:40:37');
+INSERT INTO `projects` VALUES ('5', '4', 'Simulation', null, '1', 'simulations', 'simulate_sail_event_v1', '2017-06-22 11:40:49');
 
 -- ----------------------------
 -- Table structure for projects_components
@@ -143,14 +144,15 @@ CREATE TABLE `projects_components` (
 -- ----------------------------
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES ('0', 'Sybren', '$2y$10$VyRLw2RIrT4Cl7LsHlM9Re9tJCvLjq4.hUugwZMhHkXSCNZ3RhSze');
+INSERT INTO `users` VALUES ('1', 'Sybren', '$2y$10$VyRLw2RIrT4Cl7LsHlM9Re9tJCvLjq4.hUugwZMhHkXSCNZ3RhSze');
+INSERT INTO `users` VALUES ('2', 'Bram', null);

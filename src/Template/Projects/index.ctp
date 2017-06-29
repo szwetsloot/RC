@@ -31,9 +31,13 @@
     <tr>
       <td>
       	<?= (
-      		empty($child->function)?
+      		(empty($child->conrtollers) && empty($child->action))?
       		$this->Html->link($child->name, ['action' => 'index', $child->id]):
-      		$this->Html->link($child->name, ['action' => $child->function, $child->id])
+      		$this->Html->link($child->name, [
+      			'controller' => $child->controller,
+      			'action' => $child->action,
+      			$child->id
+      		])
 				)?>
       </td>
       <td><?= $this->Number->format($child->price) ?></td>

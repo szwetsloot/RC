@@ -365,7 +365,7 @@ class ProjectsController extends AppController{
 	*/
 	public function delete($id = null){
 		$this->request->allowMethod(['post', 'delete']);
-		$project = $this->Projects->get($id);
+		$project = $this->Projects->tget($id);
 		if($this->Projects->delete($project)){
 			$this->Flash->success(__('The project has been deleted.'));
 		} else{
@@ -373,11 +373,6 @@ class ProjectsController extends AppController{
 		}
 
 		return $this->redirect(['action' => 'index']);
-	}
-  
-	public function simulateSailEventV1($id){
-		$this->viewBuilder()->setLayout('ajax');
-		
 	}
   
   

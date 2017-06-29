@@ -72,6 +72,12 @@ class ProjectsTable extends Table
             ->allowEmpty('version');
 
         $validator
+            ->allowEmpty('controller');
+
+        $validator
+            ->allowEmpty('action');
+
+        $validator
             ->dateTime('created_on')
             ->allowEmpty('created_on');
 

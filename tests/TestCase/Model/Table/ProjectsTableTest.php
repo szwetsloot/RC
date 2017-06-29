@@ -26,7 +26,6 @@ class ProjectsTableTest extends TestCase
     public $fixtures = [
         'app.projects',
         'app.components',
-        'app.attributes',
         'app.projects_components'
     ];
 

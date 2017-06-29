@@ -22,6 +22,8 @@ class ProjectsFixture extends TestFixture
         'name' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'price' => ['type' => 'decimal', 'length' => 10, 'precision' => 2, 'unsigned' => false, 'null' => true, 'default' => null, 'comment' => ''],
         'version' => ['type' => 'integer', 'length' => 255, 'unsigned' => false, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'controller' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'action' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'created_on' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
@@ -45,7 +47,9 @@ class ProjectsFixture extends TestFixture
             'name' => 'Lorem ipsum dolor sit amet',
             'price' => 1.5,
             'version' => 1,
-            'created_on' => '2017-06-22 11:34:39'
+            'controller' => 'Lorem ipsum dolor sit amet',
+            'action' => 'Lorem ipsum dolor sit amet',
+            'created_on' => '2017-06-29 07:37:38'
         ],
     ];
 }
