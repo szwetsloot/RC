@@ -11,6 +11,11 @@
  * 
  */
 
+
+// Reference the global variables
+var bouys;
+var crews;
+
 var utm = "+proj=utm +zone=31";
 var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 var refresh_time = 6000;
@@ -32,9 +37,6 @@ var screenUTMRange = {
     'bouy2': 0
 };
 
-
-//converts meters to pixels and moves the object
-//in de dummy worden alleen pixel gebruikt
 $(function () {
 
     // Draw the elements
@@ -42,10 +44,6 @@ $(function () {
     drawWaves();
     createBoats();
     setArrows();
-
-    // Convert the bouy's location to UTM
-    for (var i = 0; i < bouys.length; i++)
-        convertToUTM(bouys[i]);
 
     // Calculate the longest distance between two bouys to determine the horizontal location
     calculateLongestDistanceBouys();
@@ -66,9 +64,9 @@ function getDataBoats(reeks) {
 
     // loop through all the boats
     $.each(boats, function (i) {
-        
+
         var speed = 1 + Math.random() * 0.5;
-        var d  = new Date();
+        var d = new Date();
         var direction = Math.floor(d.getMilliseconds / 100) % 360;
 
         var boat = boats[i];
@@ -120,14 +118,12 @@ function calculateLongestDistanceBouys() {
     dist = 0;
     bouy1 = 0;
     bouy2 = 0;
+    console.log(bouys);
     for (i = 0; i < bouys.length; i++) {
         for (j = 0; j < bouys.length; j++) {
             if (i == j)
                 continue; // Don't compare the same bouys because the distance = 0
-            dist_c = Math.sqrt(
-                    Math.pow(bouys[i].north - bouys[j].north, 2) +
-                    Math.pow(bouys[i].east - bouys[j].east, 2)
-                    );
+            dist_c = norm2Dist(bouys[i], bouys[j]);
             if (dist_c > dist) { // This distance is the longest
                 dist = dist_c;
                 bouy1 = i;
@@ -142,9 +138,14 @@ function calculateLongestDistanceBouys() {
         bouy1 = bouy2;
         bouy2 = tmp;
     }
+    
+    console.log(bouy1);
+    console.log(bouy2);
+    console.log(dist);
 
     // Calculate the Angle that we need to rotate so that these two horizontal
-    screenUTMRange.rotation = -Math.atan2(bouys[bouy1].north - bouys[bouy2].north, bouys[bouy1].east - bouys[bouy2].east);
+    screenUTMRange.rotation = -Math.atan2(bouys[bouy1].north - bouys[bouy2].north, bouys[bouy1].east - bouys[bouy2].east)    
+    console.log(screenUTMRange.rotation);
     // Correct 180 degrees if necessary
     if (screenUTMRange.rotation < -Math.PI / 2)
         screenUTMRange.rotation += Math.PI;
@@ -152,14 +153,12 @@ function calculateLongestDistanceBouys() {
         screenUTMRange.rotation -= Math.PI;
     screenUTMRange.bouy1 = bouy1;
     screenUTMRange.bouy2 = bouy2;
-    ;
 }
-
 
 //This function will calculate the min and max x and y of the screen
 function calculateScreenRange() {
     var i;
-
+        
     // Calculate the boundary and center of the screen
     screenEastMax = 0;
     screenEastMin = Infinity;
@@ -191,7 +190,7 @@ function calculateScreenRange() {
             verMax = Math.abs(bouyNorth);
     }
 
-    var factor = 1.5;
+    var factor = 1.8;
     screenUTMRange.centerEast = screenEast;
     screenUTMRange.centerNorth = screenNorth;
 
@@ -206,7 +205,6 @@ function calculateScreenRange() {
         screenUTMRange.rangeEast = Math.max(horMax, verMax / screenFactor) * factor;
         screenUTMRange.rangeNorth = Math.max(horMax, verMax / screenFactor) * screenFactor * factor;
     }
-
 
     // Recalculate the screen center between the furthest horizontal bouys
     var screenHorMin = Infinity;
@@ -230,13 +228,16 @@ function moveBouys() {
     // Calculate the coordinates for each bouy
     for (var i = 0; i < bouys.length; i++) {
         var element = $('#bouy-' + i);
+        // Rotate the location
         rot = screenUTMRange.rotation;
         cEast = screenUTMRange.centerEast;
         cNorth = screenUTMRange.centerNorth;
         rEast = screenUTMRange.rangeEast;
         rNorth = screenUTMRange.rangeNorth;
-        east = (bouys[i].east - cEast) * Math.cos(rot) - (bouys[i].north - cNorth) * Math.sin(rot);
-        north = (bouys[i].east - cEast) * Math.sin(rot) + (bouys[i].north - cNorth) * Math.cos(rot);
+        var east, north;
+        [east, north] = rotatePoint(rot, bouys[i].east, bouys[i].north, cEast, cNorth);
+        east -= cEast;
+        north -= cNorth;
 
         var left = (east / rEast / 2 + 1 / 2) * screenWidth + element.width() / 2;
         var top = (north / rNorth / 2 + 1 / 2) * screenHeight + element.height() / 2;
@@ -334,15 +335,15 @@ function createBoats() {
         var boat = boats[i  ] = new Boat();
 
         var boatElement = $('.boat#boat-' + crew.id);
-        
+
         var x = boatElement.position();
 
         boat.top = x.top;
         boat.left = x.left;
-        boat.element = '#boat-' + i;
+        boat.element = '#boat-' + crews[i].id;
         boat.id = crew.id;
         boat.num = i;
-                boat.updatePosition(i + 1)
+        boat.updatePosition(i + 1)
         boat.setTeam(i);
 
         // create for each boat a canvas to draw the trail
@@ -360,7 +361,7 @@ function createCanvas(i) {
     //canvas
     var $canvas = document.querySelector('#canvas-' + crews[i].id);
     ctx = $canvas.getContext('2d');
-    
+
     // set height and with of the canvas to cover the whole screen
     $('#canvas-' + crews[i].id).attr('width', $('html').width());
     $('#canvas-' + crews[i].id).attr('height', $('html').height());
@@ -500,4 +501,22 @@ function rotateAthletes() {
 
     setTimeout('rotateAthletes()', 3000);
 
+}
+
+
+// This function calculates the distance between two objects
+function norm2Dist(obj, obj2) {
+    return Math.sqrt(
+            Math.pow(obj.east - obj2.east, 2) +
+            Math.pow(obj.north - obj2.north, 2)
+            );
+}
+
+// This function will rotate a point around another point
+function rotatePoint(rotation, start_east, start_north, center_east = 0, center_north = 0) {
+    var ceast = Math.cos(rotation) * (start_east - center_east) -
+            Math.sin(rotation) * (start_north - center_north) + center_east;
+    var cnorth = Math.sin(rotation) * (start_east - center_east) + 
+            Math.cos(rotation) * (start_north - center_north) + center_north;
+    return [ceast, cnorth];
 }

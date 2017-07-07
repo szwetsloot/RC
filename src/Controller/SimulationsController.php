@@ -62,6 +62,12 @@ class SimulationsController extends AppController {
                 ->where(['type' => 'Bouy'])
                 ->all()
                 ->toArray();
+        foreach ($bouys as &$bouy) {
+            $this->GPoint->setLongLat($bouy['longitude'], $bouy['latitude']);
+            $this->GPoint->convertLLtoTM(0);
+            $bouy['north'] = $this->GPoint->N();
+            $bouy['east']  = $this->GPoint->E();
+        }
         
         $this->set(compact('crews', 'bouys'));
     }
