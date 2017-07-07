@@ -71,4 +71,14 @@ class SimulationsController extends AppController {
         
         $this->set(compact('crews', 'bouys'));
     }
+    
+    public function tmp() {
+        $this->getWindGuruData();
+    }
+    
+    private function getWindGuruData() {
+        $url = "https://www.windguru.cz/572";
+        $dom = new DOMDocument('1.0');
+        @$dom->loadHTMLFile($url);
+    }
 }
