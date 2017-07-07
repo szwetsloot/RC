@@ -69,8 +69,10 @@ class SimulationsController extends AppController {
             $bouy['east'] = $this->GPoint->E();
         }
 
-        [$wind, $wave] = $this->getWindWaveData();
-
+        $data = $this->getWindWaveData();
+        $wind = $data[0];
+        $wave = $data[1];
+        
         $this->set(
                 compact(
                         'crews',
