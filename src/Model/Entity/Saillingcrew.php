@@ -11,6 +11,9 @@ use Cake\ORM\Entity;
  * @property string $shortname
  * @property int $club
  * @property string $description
+ * @property int $tracker_id
+ *
+ * @property \App\Model\Entity\Saillingathlete[] $sailling_athletes
  */
 class Saillingcrew extends Entity
 {

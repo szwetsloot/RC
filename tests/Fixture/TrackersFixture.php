@@ -30,7 +30,6 @@ class TrackersFixture extends TestFixture
         'type' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'utm_north' => ['type' => 'float', 'length' => null, 'precision' => null, 'unsigned' => false, 'null' => true, 'default' => null, 'comment' => ''],
         'utm_east' => ['type' => 'float', 'length' => null, 'precision' => null, 'unsigned' => false, 'null' => true, 'default' => null, 'comment' => ''],
-        'ip' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -50,8 +49,8 @@ class TrackersFixture extends TestFixture
         [
             'id' => 1,
             'crew_id' => 1,
-            'last_message' => '2017-07-07 07:54:36',
-            'created' => '2017-07-07 07:54:36',
+            'last_message' => '2017-07-07 08:44:47',
+            'created' => '2017-07-07 08:44:47',
             'latitude' => 1,
             'longitude' => 1,
             'heading' => 1,
@@ -60,8 +59,7 @@ class TrackersFixture extends TestFixture
             'velocity' => 1,
             'type' => 'Lorem ipsum dolor sit amet',
             'utm_north' => 1,
-            'utm_east' => 1,
-            'ip' => 'Lorem ipsum dolor sit amet'
+            'utm_east' => 1
         ],
     ];
 }
