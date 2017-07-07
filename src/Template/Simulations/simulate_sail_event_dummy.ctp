@@ -19,6 +19,7 @@
 <?= $this->Html->script('node_modules/proj4/dist/proj4') ?>
 
 <?= $this->Html->script('simulate_sail_event_dummy') ?>
+<?= $this->Html->script('simulate_sail_event_boat') ?>
 
 <div id='background-image'></div>
 <div id='height-line-container'></div>

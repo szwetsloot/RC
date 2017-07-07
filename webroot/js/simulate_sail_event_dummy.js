@@ -334,7 +334,7 @@ function createBoats() {
         var boat = boats[i  ] = new Boat();
 
         var boatElement = $('.boat#boat-' + crew.id);
-
+        
         var x = boatElement.position();
 
         boat.top = x.top;
@@ -360,10 +360,10 @@ function createCanvas(i) {
     //canvas
     var $canvas = document.querySelector('#canvas-' + crews[i].id);
     ctx = $canvas.getContext('2d');
-
+    
     // set height and with of the canvas to cover the whole screen
-    $('#canvas-' + i).attr('width', $('html').width());
-    $('#canvas-' + i).attr('height', $('html').height());
+    $('#canvas-' + crews[i].id).attr('width', $('html').width());
+    $('#canvas-' + crews[i].id).attr('height', $('html').height());
 
     ctx.lineWidth = 1;
     ctx.strokeStyle = 'white';
