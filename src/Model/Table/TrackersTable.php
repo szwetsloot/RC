@@ -10,6 +10,8 @@ use Cake\Validation\Validator;
  * Trackers Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Crews
+ * @property \Cake\ORM\Association\HasMany $Crews
+ * @property \Cake\ORM\Association\HasMany $Saillingcrews
  *
  * @method \App\Model\Entity\Tracker get($primaryKey, $options = [])
  * @method \App\Model\Entity\Tracker newEntity($data = null, array $options = [])
@@ -42,6 +44,12 @@ class TrackersTable extends Table
 
         $this->belongsTo('Crews', [
             'foreignKey' => 'crew_id'
+        ]);
+        $this->hasMany('Crews', [
+            'foreignKey' => 'tracker_id'
+        ]);
+        $this->hasMany('Saillingcrews', [
+            'foreignKey' => 'tracker_id'
         ]);
     }
 
@@ -95,9 +103,6 @@ class TrackersTable extends Table
         $validator
             ->numeric('utm_east')
             ->allowEmpty('utm_east');
-
-        $validator
-            ->allowEmpty('ip');
 
         return $validator;
     }

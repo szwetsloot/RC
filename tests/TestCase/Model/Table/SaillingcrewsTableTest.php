@@ -24,7 +24,9 @@ class SaillingcrewsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.saillingcrews'
+        'app.saillingcrews',
+        'app.sailling_athletes',
+        'app.sailling_crews'
     ];
 
     /**
