@@ -38,7 +38,9 @@ var screenUTMRange = {
 };
 
 $(function () {
-
+	console.log('-------');
+	console.log(crews);
+	
     // Draw the elements
     drawHeightLines();
     drawWaves();
@@ -64,15 +66,16 @@ function getDataBoats(reeks) {
 
     // loop through all the boats
     $.each(boats, function (i) {
-
-        var speed = 1 + Math.random() * 0.5;
+   
+        var speed =  4 + ( Math.random() * 2 );
         var d = new Date();
-        var direction = Math.floor(d.getMilliseconds / 100) % 360;
-
+        var direction = d.getSeconds() * 6;
+        
         var boat = boats[i];
 
         // show speed and direction in the boat label
         boat.updateData(speed, direction);
+        boat.calcDistanceBouy();
 
         var target = calculateVector(boat, boat.speed, boat.direction);
         boat.moveBoat(target.top, target.left, boat.direction)
@@ -139,13 +142,13 @@ function calculateLongestDistanceBouys() {
         bouy2 = tmp;
     }
     
-    console.log(bouy1);
-    console.log(bouy2);
-    console.log(dist);
+    //console.log(bouy1);
+    //console.log(bouy2);
+    //console.log(dist);
 
     // Calculate the Angle that we need to rotate so that these two horizontal
     screenUTMRange.rotation = -Math.atan2(bouys[bouy1].north - bouys[bouy2].north, bouys[bouy1].east - bouys[bouy2].east)    
-    console.log(screenUTMRange.rotation);
+   // console.log(screenUTMRange.rotation);
     // Correct 180 degrees if necessary
     if (screenUTMRange.rotation < -Math.PI / 2)
         screenUTMRange.rotation += Math.PI;
@@ -221,31 +224,18 @@ function calculateScreenRange() {
 
 //This function will move the bouys to their correct location
 function moveBouys() {
-    // Get the screen size in pixel
-    var screenWidth = $('html').width();
-    var screenHeight = $('html').height();
 
     // Calculate the coordinates for each bouy
     for (var i = 0; i < bouys.length; i++) {
         var element = $('#bouy-' + i);
-        // Rotate the location
-        rot = screenUTMRange.rotation;
-        cEast = screenUTMRange.centerEast;
-        cNorth = screenUTMRange.centerNorth;
-        rEast = screenUTMRange.rangeEast;
-        rNorth = screenUTMRange.rangeNorth;
-        var east, north;
-        [east, north] = rotatePoint(rot, bouys[i].east, bouys[i].north, cEast, cNorth);
-        east -= cEast;
-        north -= cNorth;
-
-        var left = (east / rEast / 2 + 1 / 2) * screenWidth + element.width() / 2;
-        var top = (north / rNorth / 2 + 1 / 2) * screenHeight + element.height() / 2;
-
-        element.css('left', left + 'px');
-        element.css('top', top + 'px');
+        
+        var target = convertToPixels(element, bouys[i].east, bouys[i].north);
+        
+        element.css('left', target.left + 'px');
+        element.css('top', target.top + 'px');
     }
 }
+
 
 
 function drawWaves() {
@@ -286,7 +276,7 @@ function drawHeightLines() {
     var offXc = -offY * Math.sin(dir_c);
 
     while (z < steps) {
-        element = $('<div/>').addClass('height-line');
+        var element = $('<div/>').addClass('height-line');
         element.css('top', (y + (z * offYc)) + 'px');
         element.css('left', (x + (z * offXc)) + 'px');
         element.css('-ms-transform', 'rotate(' + direction + 'deg)')
@@ -295,7 +285,7 @@ function drawHeightLines() {
         $('#height-line-container').append(element);
 
         if (z > 0) {
-            element = $('<div/>').addClass('height-line');
+            var element = $('<div/>').addClass('height-line');
             element.css('top', (y - (z * offYc)) + 'px');
             element.css('left', (x - (z * offXc)) + 'px');
             element.css('-ms-transform', 'rotate(' + direction + 'deg)')
@@ -385,6 +375,30 @@ function toRadians(angle) {
 
 function toDegrees(angle) {
     return angle * (180 / Math.PI);
+}
+
+function convertToPixels(obj, obj_east,obj_north){
+    // Get the screen size in pixel
+    var screenWidth = $('html').width();
+    var screenHeight = $('html').height();
+    
+	 rot = screenUTMRange.rotation;
+     cEast = screenUTMRange.centerEast;
+     cNorth = screenUTMRange.centerNorth;
+     rEast = screenUTMRange.rangeEast;
+     rNorth = screenUTMRange.rangeNorth;
+     var east, north;
+     
+     // Rotate the location
+     [east, north] = rotatePoint(rot, obj_east, obj_north, cEast, cNorth);
+     east -= cEast;
+     north -= cNorth;
+     var target = {};
+     
+     target.left = (east / rEast / 2 + 1 / 2) * screenWidth + obj.width() / 2;
+     target.top = (north / rNorth / 2 + 1 / 2) * screenHeight + obj.height() / 2;
+
+     return target;
 }
 
 function calcTrail(x_target, y_target, boat) {

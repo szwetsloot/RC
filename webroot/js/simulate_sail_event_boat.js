@@ -62,3 +62,39 @@ Boat.prototype = {
         this.left = target_x;
     }
 };
+
+//calc distance between boat and next bouy
+Boat.prototype.calcDistanceBouy = function(step = 0){
+	// laat de functie
+	var steps = 12;
+	var d_t = refresh_time / 12;
+	var self = this
+	
+	var bouy_id = 0;
+	var boat_id = this.id;
+	
+	// select next bouy
+	var $bouy = $('#bouy-1');
+	var target_bouy = convertToPixels($bouy, bouys[bouy_id].east, bouys[bouy_id].north)
+	
+	var bouy_x = target_bouy.left;
+	var bouy_y = target_bouy.top;
+	
+	var $boat = $(this.element);
+	var boat_pos = convertToPixels($boat, crews[boat_id - 1].tracker['east'], crews[boat_id - 1].tracker['north'])
+	
+	var boat_x = boat_pos.top;
+	var boat_y = boat_pos.left;
+	
+	var d_x = Math.abs( boat_x - bouy_x );
+	var d_y = Math.abs( boat_y - bouy_y );
+
+	// pythagoras a2 +b2 = c2 
+	this.distance_bouy = Math.round( Math.sqrt( ( Math.pow(d_x, 2)  +  Math.pow(d_y, 2) ) ) );
+	
+	
+	$boat.find('.name').text(this.distance_bouy+'m');
+	
+	if( step < steps )
+		setTimeout(function(){ self.calcDistanceBouy( step+1 ); },d_t)
+}
