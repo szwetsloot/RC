@@ -177,6 +177,9 @@ li{
 
 #bouy-container{
 	z-index: 3;
+	position: fixed;
+	top: 0;
+	left: 0;	
 }
 
 #boat-container{
@@ -298,6 +301,7 @@ li{
 .boat-stats .name{
 	line-height: 24px;
 	padding: 0 15px 0 5px;
+	font-size: 12px;
 }
 
 .position{
@@ -351,6 +355,7 @@ li{
 .bouy:hover .tooltip {
     visibility: visible;
     display: block;
+    font-family: 'bebas_neue_book';
 }
 
 .tooltirep {

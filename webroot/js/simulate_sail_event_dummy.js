@@ -158,8 +158,10 @@ Boat.prototype = {
 			
 			var src = $boat_flag.attr('src')+teams[i].img;
 			$boat_flag.attr('src',src);
-		},
-		'moveBoat': function(target_y, target_x, direction) { 
+		}
+};
+
+Boat.prototype.moveBoat = function(target_y, target_x, direction) { 
 			if( run != 1) return false; // check of de animatie moet lopen 
 						
 			var $boat = $(this.element);
@@ -187,8 +189,38 @@ Boat.prototype = {
 			this.top = target_y;
 			this.left = target_x;
 		}
-	};	
+	
 
+// calc distance between boat and next bouy
+Boat.prototype.calcDistanceBouy = function(step = 0){
+	// laat de functie
+	var steps = 12;
+	var d_t = refresh_time / 12;
+	var self = this;
+	
+	// select next bouy
+	var $bouy = $('#bouy-1');
+	var bouy_pos = $bouy.position();
+	var bouy_x = bouy_pos.top;
+	var bouy_y = bouy_pos.left;
+	
+	var $boat = $(this.element);
+	var boat_pos = $boat.position();
+	var boat_x = boat_pos.top;
+	var boat_y = boat_pos.left;
+	
+	var d_x = Math.abs( boat_x - bouy_x );
+	var d_y = Math.abs( boat_y - bouy_y );
+
+	// pythagoras a2 +b2 = c2 
+	this.distance_bouy = Math.round( Math.sqrt( ( Math.pow(d_x, 2)  +  Math.pow(d_y, 2) ) ) );
+	
+	
+	$boat.find('.name').text(this.distance_bouy+'px');
+	
+	if( step < steps )
+		setTimeout(function(){ self.calcDistanceBouy( step+1 ); },d_t)
+}
 
 //converts meters to pixels and moves the object
 //in de dummy worden alleen pixel gebruikt
@@ -237,6 +269,7 @@ function getDataBoats(reeks){
 		
 		// show speed and direction in the boat label
 		boat.updateData(speed, direction);
+		boat.calcDistanceBouy();
 		
 		var target = calculateVector(boat, boat.speed, boat.direction );
 		boat.moveBoat(target.top, target.left, boat.direction)
@@ -271,9 +304,6 @@ function calculateVector(boat_obj, speed, direction){
 
 	return target;
 }
-
-
-
 
 /* DRAW ELEMENTS */
 //This function will calculate the longest distance between two bouys.
@@ -394,6 +424,7 @@ function moveBouys() {
 				
 		element.css('left', left+'px');
 		element.css('top', top+'px');
+		element.find('.tooltip').html('lat: '+bouys[i].lat+'<br>lng: '+bouys[i].lng);
 	}
 }
 
@@ -567,7 +598,7 @@ function calcTrail(x_target,y_target,boat){
 }
 
 function drawTrail(waypoints, t,boat){
-	
+		
 	if(waypoints.length === 0) return false;
 	
 	var x = waypoints[0].x;

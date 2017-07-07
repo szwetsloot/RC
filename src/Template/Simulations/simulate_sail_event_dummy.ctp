@@ -39,21 +39,21 @@
 <div id='bouy-container'>
 	<div class="bouy" id='bouy-0'>
 		1
-		<div class="tooltip animated fadeInUp">lat: '+bouys[i].lat+'<br>lng: '+bouys[i].lng+'</div>
+		<div class="tooltip animated fadeInUp"></div>
 	</div>
 	<div class="bouy" id='bouy-1'>
 		2A
-		<div class="tooltip animated fadeInUp">lat: '+bouys[i].lat+'<br>lng: '+bouys[i].lng+'</div>
+		<div class="tooltip animated fadeInUp"></div>
 	</div>
 	<div class="bouy" id='bouy-2'>
 		2B
-		<div class="tooltip animated fadeInUp">lat: '+bouys[i].lat+'<br>lng: '+bouys[i].lng+'</div>
+		<div class="tooltip animated fadeInUp"></div>
 	</div>
 	<div class="bouy blue-bouy" id='bouy-3'>
-		<div class="tooltip animated fadeInUp">lat: '+bouys[i].lat+'<br>lng: '+bouys[i].lng+'</div>
+		<div class="tooltip animated fadeInUp"></div>
 	</div>
 	<div class="bouy blue-bouy" id='bouy-4'>
-		<div class="tooltip animated fadeInUp">lat: '+bouys[i].lat+'<br>lng: '+bouys[i].lng+'</div>
+		<div class="tooltip animated fadeInUp"></div>
 	</div>
 </div>
 
