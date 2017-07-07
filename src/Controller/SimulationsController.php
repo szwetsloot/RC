@@ -54,9 +54,9 @@ class SimulationsController extends AppController {
             $this->GPoint->setLongLat($crew->tracker['longitude'], $crew->tracker['latitude']);
             $this->GPoint->convertLLtoTM(0);
             $crew->tracker->north = $this->GPoint->N();
-            $crew->tracker->east  = $this->GPoint->E();
+            $crew->tracker->east = $this->GPoint->E();
         }
-        
+
         // Get the bouys
         $bouys = $this->Trackers->find()
                 ->where(['type' => 'Bouy'])
@@ -66,19 +66,42 @@ class SimulationsController extends AppController {
             $this->GPoint->setLongLat($bouy['longitude'], $bouy['latitude']);
             $this->GPoint->convertLLtoTM(0);
             $bouy['north'] = $this->GPoint->N();
-            $bouy['east']  = $this->GPoint->E();
+            $bouy['east'] = $this->GPoint->E();
         }
-        
-        $this->set(compact('crews', 'bouys'));
+
+        [$wind, $wave] = $this->getWindWaveData();
+
+        $this->set(
+                compact(
+                        'crews',
+                        'bouys',
+                        'wind',
+                        'wave'
+                )
+        );
     }
-    
-    public function tmp() {
-        $this->getWindGuruData();
+
+    private function getWindWaveData() {
+        // Get the wave direction from Rijkswaterstaat
+        $url = "https://waterinfo.rws.nl/api/details/chart?expertParameter=Gemiddelde___20golfrichting___20in___20het___20spectrale___20domein___20Oppervlaktewater___20golffrequentie___20tussen___2030___20en___20500___20mHz___20in___20graad&values=-48,0&locationCode=2183";
+        $options = array(
+            "ssl" => array(
+                "verify_peer" => false,
+                "verify_peer_name" => false,
+            )
+        );
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        $data = json_decode($result);
+        $waveDirection = $data->series[0]->data[0]->value;
+
+        $url = "https://waterinfo.rws.nl/api/details/chart?expertParameter=Windrichting___20Lucht___20t.o.v.___20ware___20Noorden___20in___20graad&values=-48,0&locationCode=4529";
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        $data = json_decode($result);
+        $windDirection = $data->series[0]->data[0]->value;
+
+        return [$waveDirection, $windDirection];
     }
-    
-    private function getWindGuruData() {
-        $url = "https://www.windguru.cz/572";
-        $dom = new DOMDocument('1.0');
-        @$dom->loadHTMLFile($url);
-    }
+
 }
