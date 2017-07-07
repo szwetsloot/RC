@@ -8,7 +8,8 @@
 
 <script type='text/javascript'>
     // Initialize the crews
-    var crews = <?= json_encode($crews) ?>;    
+    var crews = <?= json_encode($crews) ?>;
+    var bouys = <?= json_encode($bouys) ?>;
 </script>
 
 <?= $this->Html->css('animate') ?>

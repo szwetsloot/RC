@@ -32,97 +32,6 @@ var screenUTMRange = {
     'bouy2': 0
 };
 
-var dummyData = [
-    {
-        'number': 0,
-        'direction': 145,
-        'speed': 6.3
-    }, {
-        'number': 1,
-        'direction': 235,
-        'speed': 6.4
-    }, {
-        'number': 0,
-        'direction': 145,
-        'speed': 6.3
-    }, {
-        'number': 1,
-        'direction': 235,
-        'speed': 6.5
-    }, {
-        'number': 0,
-        'direction': 145,
-        'speed': 6.9
-    }, {
-        'number': 1,
-        'direction': 90,
-        'speed': 6.3
-    }, {
-        'number': 0,
-        'direction': 0,
-        'speed': 6.6
-    }, {
-        'number': 1,
-        'direction': 0,
-        'speed': 6.3
-    }, {
-        'number': 0,
-        'direction': 0,
-        'speed': 6.8
-    }, {
-        'number': 1,
-        'direction': 0,
-        'speed': 6.7
-    }, {
-        'number': 1,
-        'direction': 270,
-        'speed': 6.2
-    }
-];
-
-var bouys = [
-    {
-        'number': 0,
-        'lat': 52.112861,
-        'lng': 4.256690,
-        'north': 0,
-        'east': 0
-    },
-    {
-        'number': 1,
-        'lat': 52.110038,
-        'lng': 4.264921,
-        'north': 0,
-        'east': 0
-    },
-    {
-        'number': 2,
-        'lat': 52.117838,
-        'lng': 4.264921,
-        'north': 0,
-        'east': 0
-    },
-    {
-        'number': 3,
-        'lat': 52.112861,
-        'lng': 4.272109,
-        'north': 0,
-        'east': 0
-    }
-];
-
-var teams = [
-    {
-        'name': 'Haarlemsche Jachtclub',
-        'img': '1.Haarlem.png',
-    }, {
-        'name': 'WV Neptunus',
-        'img': '17.DenBosch.png',
-    }, {
-        'name': 'Zeilteam Westeinder',
-        'img': '18.Westeinder.png',
-    }
-];
 
 // the boat object 
 function Boat() {
@@ -154,10 +63,8 @@ Boat.prototype = {
         var $boat = $(this.element);
         var $boat_name = $boat.find('.name');
         var $boat_flag = $boat.find('.team-flag img');
-        console.log(crews[i]);
         $boat_name.text(crews[i].shortname);
-
-        var src = $boat_flag.attr('src') + teams[i].img;
+        var src = $boat_flag.attr('src') + crews[i].flag_image;
         $boat_flag.attr('src', src);
     },
     'moveBoat': function (target_y, target_x, direction) {
@@ -225,15 +132,10 @@ function getDataBoats(reeks) {
 
     // loop through all the boats
     $.each(boats, function (i) {
-
-        var rand_i = Math.floor((Math.random() * dummyData.length) + 1);
-
-        //var data_obj = dummyData[reeks];
-        var data_obj = dummyData[rand_i - 1 ];
-
-        // get measured speed and direction
-        var speed = data_obj.speed;
-        var direction = data_obj.direction;
+        
+        var speed = 1 + Math.random() * 0.5;
+        var d  = new Date();
+        var direction = Math.floor(d.getMilliseconds / 100) % 360;
 
         var boat = boats[i];
 
@@ -244,12 +146,6 @@ function getDataBoats(reeks) {
         boat.moveBoat(target.top, target.left, boat.direction)
 
     });
-
-    // repeat function after 2 sec
-    var reeks = reeks + 1;
-    if (reeks === (dummyData.length)) {
-        reeks = 0
-    }
     ;
 
     // retrieve new data after a few second

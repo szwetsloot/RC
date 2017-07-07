@@ -20,6 +20,7 @@ class SimulationsController extends AppController {
         // load required models
         $this->loadModel('SaillingCrews');
         $this->loadModel('SaillingAthletes');
+        $this->loadModel('Trackers');
 
         // Set the default layout
         $this->viewBuilder()->setLayout('ajax');
@@ -39,13 +40,29 @@ class SimulationsController extends AppController {
                 ->contain(['Trackers'])
                 ->all()
                 ->toArray();
-        
+
         // Filter the crews to the ones we'll be working with
         $eventCrews = [1, 2, 3];
         $crews = array_filter($crews, function($e) use ($eventCrews) {
             return in_array($e->id, $eventCrews);
         });
-        $this->set(compact('crews'));   
-    }
 
+        // Conver the wgs84 to utm
+        $this->GPoint = $this->loadComponent('GPoint');
+        foreach ($crews as &$crew) {
+            //die($this->print_rr($crew->tracker));
+            $this->GPoint->setLongLat($crew->tracker['longitude'], $crew->tracker['latitude']);
+            $this->GPoint->convertLLtoTM(0);
+            $crew->tracker->north = $this->GPoint->N();
+            $crew->tracker->east  = $this->GPoint->E();
+        }
+        
+        // Get the bouys
+        $bouys = $this->Trackers->find()
+                ->where(['type' => 'Bouy'])
+                ->all()
+                ->toArray();
+        
+        $this->set(compact('crews', 'bouys'));
+    }
 }
