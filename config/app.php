@@ -1,4 +1,16 @@
 <?php
+
+$whitelist = array(
+    '127.0.0.1',
+    '::1'
+);
+
+/*die(print_r($_SERVER));
+exit;*/
+if (!isset($_SERVER['REMOTE_ADDR'])) $localhost = true;
+else $localhost = in_array($_SERVER['REMOTE_ADDR'], $whitelist);
+
+
 return [
     /**
      * Debug Level:
@@ -229,9 +241,9 @@ return [
              * the following line and set the port accordingly
              */
             //'port' => 'non_standard_port_number',
-            'username' => 'root',
-            'password' => '',
-            'database' => 'rowcoaching',
+            'username' => $localhost?'root':'rowcoa2q_wp203',
+            'password' => $localhost?'':'5)5P]7GnS3',
+            'database' => $localhost?'rowcoaching':'rowcoa2q_wp203',
             'encoding' => 'utf8',
             'timezone' => 'UTC',
             'flags' => [],
@@ -344,3 +356,4 @@ return [
         'defaults' => 'php',
     ],
 ];
+

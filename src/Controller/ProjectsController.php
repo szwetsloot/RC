@@ -247,9 +247,9 @@ class ProjectsController extends AppController{
 				$res = $this->Components->get($res->component_id);
 				$res->_joinData = $this->ProjectsComponents->newEntity();
 				$res->_joinData->required = $component->required;
+				//die($this->print_rr($res));
 				if(!$this->Projects->Components->link($project, [$res])){
 					die($this->print_rr($res));
-					
 				}
 			}
 		}

@@ -34,8 +34,8 @@ class ProjectsComponentsTable extends Table
         parent::initialize($config);
 
         $this->setTable('projects_components');
-        $this->setDisplayField(' id');
-        $this->setPrimaryKey(' id');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Projects', [
             'foreignKey' => 'project_id'
