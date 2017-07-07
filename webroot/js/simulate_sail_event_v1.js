@@ -191,6 +191,7 @@ function calculateScreenRange() {
 		screenUTMRange.rangeNorth  = Math.max(horMax, verMax / screenFactor) * screenFactor * factor;
 	}
 	
+	
 	// Recalculate the screen center between the furthest horizontal bouys
 	var screenHorMin = Infinity;
 	var screenHorMax = -Infinity;

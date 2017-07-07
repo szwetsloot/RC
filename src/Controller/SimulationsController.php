@@ -16,5 +16,13 @@ class SimulationsController extends AppController {
 		$this->viewBuilder()->setLayout('ajax');
 		
 	}
+	
+	public function simulateSailEventBram($id)	{
+		$this->viewBuilder()->setLayout('ajax');	
+	}
+	
+	public function simulateSailEventDummy($id){
+		$this->viewBuilder()->setLayout('ajax');	
+	}
     
 }

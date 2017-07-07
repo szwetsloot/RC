@@ -1,0 +1,688 @@
+/*
+ * 
+ * colors
+ * blue ( dark )	#005b7f;
+ * blue ( medium )	#086183;
+ * blue ( light )	#1b7ebc;
+ *
+ *
+ *
+ * z-index
+ * height-line-container			1
+ * bouy-container					2
+ * boat-container					3
+ * dashboard						5
+ * boat info						6
+ *
+ */
+ 
+@font-face {
+    font-family: 'bebas_neue';
+    src: url('../font/bebasneue.eot');
+    src: url('../font/bebasneue.eot?#iefix') format('embedded-opentype'),
+         url('../font/bebasneue.woff2') format('woff2'),
+         url('../font/bebasneue.woff') format('woff'),
+         url('../font/bebasneue.ttf') format('truetype'),
+         url('../font/bebasneue.svg#bebas_neueregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'bebas_neue_book';
+    src: url('../font/bebasneue_book.eot');
+    src: url('../font/bebasneue_book.eot?#iefix') format('embedded-opentype'),
+         url('../font/bebasneue_book.woff2') format('woff2'),
+         url('../font/bebasneue_book.woff') format('woff'),
+         url('../font/bebasneue_book.ttf') format('truetype'),
+         url('../font/bebasneue_book.svg#bebas_neueregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+ 
+*{
+	font-family: 'bebas_neue';
+	letter-spacing: 2px;
+	color: #272727;
+	padding: 0; 
+	margin: 0;
+} 
+
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	background-color: #06002b;
+	overflow: hidden;
+} 
+
+canvas{
+	position: fixed;
+	left: 0;
+	top: 0;	
+}
+
+li{
+	list-style: none;
+}
+ 
+/* general elements */
+.info-bar{
+	overflow: hidden;
+	border-radius: 5px 0 0 5px;
+	overflow: hidden;
+}
+
+.info-bar span{	
+	display: inline-block;
+	padding: 5px 20px;	
+}
+
+.info-bar .label{
+	background: #005b7f;
+	color: #fff;
+	position: relative;
+	z-index: 2;
+}
+
+.info-bar .label:after{
+	content: '';
+	position: absolute;
+	right: -10px;
+	top: -10px;
+	background: #005b7f;
+	width: 40px;
+	height: 130%;
+	z-index: -1;
+	transform: rotate(15deg);
+}
+
+.info-bar .counter{
+	text-align: right;
+	padding-left: 40px;
+	background: #fff;	
+	z-index: -1;
+}
+
+/* Simulator */
+#bouy-container,
+#height-line-container,
+#boat-container,
+#background-image {
+	width: 100%;
+	height: 100%;
+}
+
+#waves-container{
+	width: 200vw;
+	height: 200vh;
+	top: -50vh;
+	left: -50vw;
+	position: fixed;
+}
+
+.wave{
+	position: relative;
+	display:inline-block;
+	height: 100%;
+	width: 5%;	
+	opacity:0.6;
+	background-image: url(../img/sail_event_v2/wave.png);
+	background-size: 100% 100%;	
+	
+	-webkit-animation-name: move-waves;
+ 	-webkit-animation-duration: 12s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes move-waves {
+   from {
+     transform: translateX(0%);
+   }
+   to { 
+     transform: translateX(200%);
+   }
+}
+
+#height-line-container{
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+}
+
+.height-line {
+	position: absolute;
+	width: 400%;
+	margin-left: -200%;
+	height: 1px; 
+	background-color: #fff;
+	opacity: 0.25;
+}
+
+/* tijdelijke laag om parcour weer te laten zien */
+#wedstrijdbaan{
+	display: none;
+	position: fixed;
+	background-image: url(../img/sail_event_v2/parcour.png);
+	background-size:contain;
+	height: 226px;
+	width: 800px;
+	top: calc( 50% - 113px );
+	left: calc( 50% - 400px );
+}
+
+#bouy-container{
+	z-index: 3;
+}
+
+#boat-container{
+	z-index: 2;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+}
+/*
+#bouy-0{
+	left:45%;
+	top:20%;
+}
+
+#bouy-1{
+	left:80%;
+	top:50%;
+}
+
+#bouy-2{
+	left:55%;
+	top:80%;
+}
+
+#bouy-3{
+	left:20%;
+	top:60%;
+}
+*/
+
+
+.bouy{
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background-color: #ffc600;
+	color: #75652e;
+    font-size: 13px;
+    text-align: center;
+    line-height: 19px;
+    text-indent: 2px;
+
+	-webkit-box-shadow: inset 5px -5px 10px 0px rgba(0,0,0,0.4);
+	-moz-box-shadow: inset 5px -5px 10px 0px rgba(0,0,0,0.2);
+	box-shadow: inset 5px -5px 5px 0px rgba(0,0,0,0.4);
+}
+
+.blue-bouy{
+	width: 15px;
+	height: 15px;
+	background: #94bced;
+} 
+
+#dummy-boat{
+	display: none;
+}
+
+.boat{
+	display: block;
+	position: relative;
+}
+
+#boat-0{
+	left: 80%;
+	top: 45%;	
+}
+
+#boat-1{
+	left: 60%;
+	top: 25%;	
+}
+
+#boat-2{
+	left: 25%;
+	top: 50%;	
+}
+
+.boat-icon {
+	width: 50px;
+	height: 18px;
+	background-image: url(../img/sail_event_v1/boat.png);
+	background-size: contain;
+	margin-top: -9px;
+	margin-left: -25px;
+	
+}
+
+/* labeltje van de bewegende bootjes */
+.boat-stats{
+	position: absolute;
+	display:inline-block;
+	top: -50px;
+	margin-top: -12.5px;
+	margin-left: -35px;		
+	background: #fff;
+	border-radius: 15px 0 0 15px;
+	padding: 2px 3px;
+	white-space: nowrap;
+	transform: translateX( calc( -100% + 30px ) );
+}
+
+.boat-stats:after{
+	content: '';
+	position: absolute;
+	background: #fff;
+	height: 50px;
+	width: 1px;
+	right: 0;
+	top: 0;
+}
+
+.boat-stats div{
+	float: left;
+}
+
+.boat-stats .name{
+	line-height: 24px;
+	padding: 0 15px 0 5px;
+}
+
+.position{
+	border-radius: 50%;
+	background-color: #1b7ebc;
+	color: #fff;
+	text-align: center;
+	padding: 6px;
+	margin-top: 1px;
+	line-height: 10px;
+	height: 10px;
+	width: 10px;
+	text-indent: 1;
+}
+
+.team-flag img{
+	height: 24px;
+	width: auto;
+	margin:0 8px;
+}
+
+.boat-stats .extra{
+	position: absolute;
+	top: 28px;
+	left: 50px;
+	font-size: 14px;
+	line-height: 21px;
+	overflow: hidden;
+	padding-right: 20px;
+}
+
+.boat-stats .extra p {
+	background-color: #005b7f;	
+	padding: 3px 5px 2px 10px;
+	color: #fff;
+}
+
+.boat-stats .extra:after{
+	content: '';
+	position: absolute;
+	right: 10px;
+	top: -10px;
+	background: #005b7f;
+	width: 40px;
+	height: 130%;
+	z-index: -1;
+	transform: rotate(25deg);	
+}
+
+/* TOOLTIP */
+.bouy:hover .tooltip {
+    visibility: visible;
+    display: block;
+}
+
+.tooltirep {
+    position: relative;
+    display: inline-block;
+}
+
+
+.tooltip{
+    visibility: hidden;
+    display:none;
+    white-space: nowrap;
+    background-color: #222;
+    color: #fff;
+    text-align: left;
+    border-radius: 2px;
+    padding: 3px 8px;
+    position: absolute;
+    font-weight: bold;
+    font-size: 12px;
+    z-index: 1; /* buttons zijn 100 */
+    top: -8px;
+    left: 35px;
+    opacity:0.9;
+    
+    -moz-animation-duration: 0.1s;
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -6px;
+    border-style: solid;
+    border-top: solid 5px transparent;
+    border-right: solid 6px #222;
+    border-bottom: solid 5px transparent;
+    border-left: solid 5px transparent;
+}
+
+#background-image {
+	background-image: url(../img/sail_event_v2/water.jpg);
+	background-size: cover;
+	opacity: 1;
+}
+
+/* Dashboard */
+#dashboard{
+	top: 0; 
+	left: 0;
+	right: 0; 
+	bottom: 0;
+	z-index: 5;
+}
+
+
+.otis-logo{
+	position: fixed;
+	left: 30px;
+	bottom: 30px;
+	width: 120px;
+	height: auto;
+	opacity: 0.8;
+}
+
+#arrow-container {
+	position: fixed;
+	right: 30px;
+	top: 90px;
+	width: 85px;
+}
+
+.arrow{
+	color: #fff;
+	padding: 25px;
+	font-size: 14px;
+	text-indent: 1;
+	margin-bottom: 20px;
+}
+
+.arrow img{
+	position: absolute;
+	height: auto;
+	width: 55px;
+	margin: -20px 0 0 -32px;
+}
+
+.arrow-text{
+	position: absolute;
+	font-size: 10px;
+	text-align: center;
+	margin-left: -30px;
+	margin-top: 20px;
+	width: 60px;
+	color: #fff;
+}
+
+#bouy-info{
+	z-index: 6;
+	position: fixed;
+	top: 30px;
+	left: 30px;
+	width: 300px;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+#bouy-info .info-bar{
+	margin-bottom: 2px;
+}
+
+#bouy-info ul li{
+	box-sizing: border-box;
+	display:inline-block;
+	width: 100%;
+	top: -50px;
+	background: #fff;
+	border-radius: 15px 0 0 15px;
+	padding: 2px 3px;
+	white-space: nowrap;
+	margin: 2px 0;
+	line-height: 24px;
+	padding: 2px 15px 2px 3px;
+}
+
+#bouy-info ul li:nth-child(1){animation-delay: 1.2s;}
+#bouy-info ul li:nth-child(2){animation-delay: 1.4s;}
+#bouy-info ul li:nth-child(3){animation-delay: 1.6s;}
+#bouy-info ul li:nth-child(4){animation-delay: 1.8s;}
+#bouy-info ul li:nth-child(5){animation-delay: 2s;}
+#bouy-info ul li:nth-child(6){animation-delay: 2.2s;}
+
+#bouy-info ul li div{
+	float: left;
+}
+
+#bouy-info ul li .name{
+	font-size: 14px;
+}
+
+#bouy-info ul li .counter{
+	float: right;
+	font-size: 12px;
+	color: #1b7ebc;
+}
+
+/* grote balk onderaan het scherm */
+#boat-info{
+	z-index: 6;
+	position: fixed;
+	bottom: 60px;
+	left: calc( 50% - 500px );
+	width: 1000px;
+	height: 75px;
+	background-color: #fff;
+	
+	-webkit-box-shadow: inset 0px -67px 40px -23px rgba(0,0,0,0.27);
+	-moz-box-shadow: inset 0px -67px 40px -23px rgba(0,0,0,0.27);
+	box-shadow: inset 0px -67px 40px -23px rgba(0,0,0,0.27);
+}
+
+#boat-info .boat-data{
+	width: 33%;
+	float: left;
+	padding: 10px 20px;
+}
+
+#boat-info .boat-data .position{
+	float :left;
+	margin-right: 10px;
+	margin-bottom: 40px;
+	margin-top: 5px;
+	transform: scale(1.5);
+}
+
+#boat-info .boat-data h4{
+	font-weight: 100;
+	display: inline-block;
+	margin-right: 20px;
+	margin-left: 10px;
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+
+#boat-info .boat-data h6{
+	font-weight: 200;
+	font-family: 'bebas_neue_book';
+	font-size: 12px;
+	display: inline-block;
+	margin-right: 20px;
+}
+
+
+#boat-info .team-members{
+	width: 33%;
+	float: right;
+	text-align: right;
+	padding-top: 20px;
+}
+
+#boat-info .team-members li{
+	display: none;
+	right: 0;
+	padding-right: 125px;
+	position: absolute;
+}
+
+#boat-info .team-members h4{
+	font-size: 14px;
+    font-weight: 100;	
+}
+
+#boat-info .team-members h5{
+	font-size: 12px;
+	font-weight: 200;
+	font-family: 'bebas_neue_book';
+}
+
+#boat-info .profile-pic{
+	position: absolute;
+	border-radius: 50%;
+	height: 110px;
+	right: 0;
+	width: 110px;
+	overflow: hidden;
+	top: -50px;
+	z-index: 7;
+}
+
+#boat-info .profile-pic.straight{
+	border-radius: 0;
+}
+
+#boat-info .profile-pic img{
+	height: 100%;
+	width: auto;
+}
+
+#boat-info .team-data-container{
+	position: absolute;
+	top: 0;
+	margin: -5px;
+	height: 75px;
+	width: calc( 100% + 10px );
+	border-bottom: 10px solid #086183;
+	overflow: hidden;
+	z-index: 6;
+}
+
+#boat-info .team-data{
+	position: relative;
+	background: #086183;
+	width: 26%;
+	height: 82px;
+	padding: 10px 30px;
+	margin: 0 auto;
+	color: #fff;
+}
+
+#boat-info .team-data:before{
+	content: '';
+	position: absolute;
+	left: -12px;
+	top: -18px;
+	background: #086183;
+	width: 40px;
+	height: 130%;
+	z-index: -1;
+	transform: rotate(15deg);
+}
+
+#boat-info .team-data:after{
+	content: '';
+	position: absolute;
+	right: -12px;
+	top: -18px;
+	background: #086183;
+	width: 40px;
+	height: 130%;
+	z-index: -1;
+	transform: rotate(-15deg);
+}
+
+.team-data .medal{
+	position: relative;
+	float: left;
+	height: 25px;
+	width: 18px;
+	margin-top: 2px;
+	margin-right: 10px;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+#boat-info .team-data h2{
+	font-size: 16px;
+	font-weight: 100;
+	color: #fff;
+	margin-top: 6px;
+	margin-bottom: 3px;
+}
+
+#boat-info .team-data h3{
+	font-size: 11px;
+	font-weight: 100;
+	color: #fff;
+}
+
+.medal-1{
+	background-image: url(../img/sail_event_v2/medals-01.png)
+}
+
+#boat-info .team-data img{
+	position: absolute;
+	top: 10px;
+	height: 60px;
+	right: 5px;
+}
+
+#bouy-counter{
+	position: fixed;
+	bottom: 190px;
+	background: #fff;
+	border-radius: 5px 0 0 5px;
+	overflow: hidden;	
+	left: calc( 50% + 300px );
+}
+
+#race-time{
+	position: fixed;
+	top: 30px;
+	right: 30px;
+}
+
