@@ -339,7 +339,7 @@ function createBoats() {
 
         boat.top = x.top;
         boat.left = x.left;
-        boat.element = '#boat-' + i;
+        boat.element = '#boat-' + crew.id;
         boat.id = crew.id;
         boat.num = i;
                 boat.updatePosition(i + 1)
