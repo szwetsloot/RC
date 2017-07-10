@@ -23,7 +23,6 @@ var utm = "+proj=utm +zone=31";
 var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 var refresh_time = 6000;
 
-var windDirection = 0;
 var boats = [];
 var run = 1; // global variable for running the animation 1 = run & 0 = stop
 var end_animation = 2; // stop the animation after 2 minutes
@@ -245,7 +244,6 @@ function drawWaves() {
 
     for (i = 0; i < 20; i++) {
         var wave = document.createElement('div');
-
         $(wave).addClass('wave')
                 .appendTo($waves_container);
     }
@@ -256,7 +254,7 @@ function drawHeightLines() {
     // Clear the container
     $('#height-line-container').empty();
 
-    var direction = -90 + (windDirection + screenUTMRange.rotation * 180 / Math.PI);
+    var direction = (wind_direction + screenUTMRange.rotation * 180 / Math.PI);
     var screenWidth = $('html').width();
     var screenHeight = $('html').height();
 
@@ -306,15 +304,16 @@ function setArrows() {
     $north.css('-ms-transform', 'rotate(' + north_direction + 'deg)');
     $north.css('-webkit-transform', 'rotate(' + north_direction + 'deg)');
     $north.css('transform', 'rotate(' + north_direction + 'deg)');
+    
 
-    $wind.css('-ms-transform', 'rotate(' + wind_direction + 'deg)');
-    $wind.css('-webkit-transform', 'rotate(' + wind_direction + 'deg)');
-    $wind.css('transform', 'rotate(' + wind_direction + 'deg)');
+    $wind.css('-ms-transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
+    $wind.css('-webkit-transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
+    $wind.css('transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
 
-
-    $waves.css('-ms-transform', 'rotate(' + wave_direction + 'deg)');
-    $waves.css('-webkit-transform', 'rotate(' + wave_direction + 'deg)');
-    $waves.css('transform', 'rotate(' + wave_direction + 'deg)');
+    console.log("Wave = "+wave_direction);
+    $waves.css('-ms-transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
+    $waves.css('-webkit-transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
+    $waves.css('transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
 }
 
 function createBoats() {
