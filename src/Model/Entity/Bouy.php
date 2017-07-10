@@ -4,27 +4,16 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Tracker Entity
+ * Bouy Entity
  *
  * @property int $id
- * @property int $crew_id
- * @property \Cake\I18n\FrozenTime $last_message
- * @property \Cake\I18n\FrozenTime $created
- * @property float $latitude
- * @property float $longitude
- * @property float $heading
- * @property float $roll_angle
- * @property float $pitch_angle
- * @property float $velocity
- * @property string $object
- * @property float $utm_north
- * @property float $utm_east
+ * @property int $tracker_id
  * @property int $type
+ * @property int $combination
  *
- * @property \App\Model\Entity\Crew[] $crews
- * @property \App\Model\Entity\Saillingcrew[] $saillingcrews
+ * @property \App\Model\Entity\Tracker $tracker
  */
-class Tracker extends Entity
+class Bouy extends Entity
 {
 
     /**

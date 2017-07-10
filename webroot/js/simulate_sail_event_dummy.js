@@ -1,18 +1,31 @@
+/*
+ * Author B. Bronswijk
+ * 
+ * lat = north
+ * lng = east
+ * 
+ * 
+ * lat -> north ( UTM ) -> left (px)
+ * 
+ * degrees = Math.atan2(x,y) * ( 180/Math.PI)
+ * 
+ */
+
+
 // Reference the global variables
 var bouys;
 var crews;
+var wind_direction;
+var wave_direction;
 
 var utm = "+proj=utm +zone=31";
 var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 var refresh_time = 6000;
 
 var windDirection = 0;
-var north_direction = 200;
-var wind_direction = 280;
 var boats = [];
 var run = 1; // global variable for running the animation 1 = run & 0 = stop
 var end_animation = 2; // stop the animation after 2 minutes
-var simulation = 1;
 
 var screenUTMRange = {
     'centerEast': 1E9,
@@ -25,14 +38,8 @@ var screenUTMRange = {
 };
 
 $(function () {
-	console.log('-------');
-	console.log(crews);
-	
-    // Draw the elements
-    drawHeightLines();
-    drawWaves();
-    createBoats();
-    setArrows();
+    console.log('-------');
+    console.log(crews);
 
     // Calculate the longest distance between two bouys to determine the horizontal location
     calculateLongestDistanceBouys();
@@ -41,10 +48,16 @@ $(function () {
     // Move the bouys to their correct location
     moveBouys();
 
+    // Draw the elements
+    drawHeightLines();
+    drawWaves();
+    createBoats();
+    setArrows();
 
     // run animation
     getDataBoats(0); // start met item 0 van de datareek
-    Dashboard.showCrewInfo(1)
+    
+    bouyStatus(1, 1);
 });
 
 
@@ -53,26 +66,26 @@ function getDataBoats(reeks) {
 
     // loop through all the boats
     $.each(boats, function (i) {
-   
-        var speed =  4 + ( Math.random() * 2 );
+
+        var speed = 4 + (Math.random() * 2);
         var d = new Date();
         var direction = d.getSeconds() * 6;
-        
+
         var boat = boats[i];
 
         // show speed and direction in the boat label
         boat.updateData(speed, direction);
-        boat.calcDistanceBouy(0);
+        boat.calcDistanceBouy();
 
         var target = calculateVector(boat, boat.speed, boat.direction);
-        boat.moveBoat(target.top, target.left, boat.direction)
+        boat.moveBoat(target.top, target.left, boat.direction);
 
     });
     ;
 
     // retrieve new data after a few second
     setTimeout(function () {
-        getDataBoats(reeks)
+        getDataBoats(reeks);
     }, refresh_time);
 }
 
@@ -111,7 +124,7 @@ function calculateLongestDistanceBouys() {
     console.log(bouys);
     for (i = 0; i < bouys.length; i++) {
         for (j = 0; j < bouys.length; j++) {
-            if (i == j)
+            if (i === j)
                 continue; // Don't compare the same bouys because the distance = 0
             dist_c = norm2Dist(bouys[i], bouys[j]);
             if (dist_c > dist) { // This distance is the longest
@@ -128,14 +141,14 @@ function calculateLongestDistanceBouys() {
         bouy1 = bouy2;
         bouy2 = tmp;
     }
-    
+
     //console.log(bouy1);
     //console.log(bouy2);
     //console.log(dist);
 
     // Calculate the Angle that we need to rotate so that these two horizontal
-    screenUTMRange.rotation = -Math.atan2(bouys[bouy1].north - bouys[bouy2].north, bouys[bouy1].east - bouys[bouy2].east)    
-   // console.log(screenUTMRange.rotation);
+    screenUTMRange.rotation = -Math.atan2(bouys[bouy1].north - bouys[bouy2].north, bouys[bouy1].east - bouys[bouy2].east)
+    // console.log(screenUTMRange.rotation);
     // Correct 180 degrees if necessary
     if (screenUTMRange.rotation < -Math.PI / 2)
         screenUTMRange.rotation += Math.PI;
@@ -148,7 +161,7 @@ function calculateLongestDistanceBouys() {
 //This function will calculate the min and max x and y of the screen
 function calculateScreenRange() {
     var i;
-        
+
     // Calculate the boundary and center of the screen
     screenEastMax = 0;
     screenEastMin = Infinity;
@@ -215,16 +228,11 @@ function moveBouys() {
     // Calculate the coordinates for each bouy
     for (var i = 0; i < bouys.length; i++) {
         var element = $('#bouy-' + i);
-        
+
         var target = convertToPixels(element, bouys[i].east, bouys[i].north);
-        
+
         element.css('left', target.left + 'px');
         element.css('top', target.top + 'px');
-        
-        var east = Math.round( bouys[i].east );
-        var north = Math.round( bouys[i].north );
-        
-        element.find('.tooltip').html('east: '+east+'m<br>north:'+north+'m')
     }
 }
 
@@ -233,9 +241,6 @@ function moveBouys() {
 function drawWaves() {
     $waves_container = $('#waves-container');
     $waves_container.empty();
-
-    var container_width = $waves_container.width();
-    var steps = 20;
 
     for (i = 0; i < 20; i++) {
         var wave = document.createElement('div');
@@ -271,18 +276,18 @@ function drawHeightLines() {
         var element = $('<div/>').addClass('height-line');
         element.css('top', (y + (z * offYc)) + 'px');
         element.css('left', (x + (z * offXc)) + 'px');
-        element.css('-ms-transform', 'rotate(' + direction + 'deg)')
-        element.css('-webkit-transform', 'rotate(' + direction + 'deg)')
-        element.css('transform', 'rotate(' + direction + 'deg)')
+        element.css('-ms-transform', 'rotate(' + direction + 'deg)');
+        element.css('-webkit-transform', 'rotate(' + direction + 'deg)');
+        element.css('transform', 'rotate(' + direction + 'deg)');
         $('#height-line-container').append(element);
 
         if (z > 0) {
             var element = $('<div/>').addClass('height-line');
             element.css('top', (y - (z * offYc)) + 'px');
             element.css('left', (x - (z * offXc)) + 'px');
-            element.css('-ms-transform', 'rotate(' + direction + 'deg)')
-            element.css('-webkit-transform', 'rotate(' + direction + 'deg)')
-            element.css('transform', 'rotate(' + direction + 'deg)')
+            element.css('-ms-transform', 'rotate(' + direction + 'deg)');
+            element.css('-webkit-transform', 'rotate(' + direction + 'deg)');
+            element.css('transform', 'rotate(' + direction + 'deg)');
             $('#height-line-container').append(element);
         }
 
@@ -295,8 +300,8 @@ function setArrows() {
     var $north = $('#north-arrow img');
     var $wind = $('#wind-arrow img');
     var $waves = $('#waves-container');
-    var wave_direction = wind_direction + 90;
 
+    north_direction = screenUTMRange.rotation * 180 / Math.PI;
     $north.css('-ms-transform', 'rotate(' + north_direction + 'deg)');
     $north.css('-webkit-transform', 'rotate(' + north_direction + 'deg)');
     $north.css('transform', 'rotate(' + north_direction + 'deg)');
@@ -314,7 +319,7 @@ function setArrows() {
 function createBoats() {
     for (i = 0; i < crews.length; i++) {
         var crew = crews[i];
-        var boat = boats[i] = new Boat();
+        var boat = boats[i  ] = new Boat();
 
         var boatElement = $('.boat#boat-' + crew.id);
 
@@ -325,11 +330,11 @@ function createBoats() {
         boat.element = '#boat-' + crews[i].id;
         boat.id = crew.id;
         boat.num = i;
-        boat.updatePosition(i + 1)
+        boat.updatePosition(i + 1);
         boat.setTeam(i);
 
         // create for each boat a canvas to draw the trail
-        createCanvas(i)
+        createCanvas(i);
     }
 
 }
@@ -369,28 +374,28 @@ function toDegrees(angle) {
     return angle * (180 / Math.PI);
 }
 
-function convertToPixels(obj, obj_east,obj_north){
+function convertToPixels(obj, obj_east, obj_north) {
     // Get the screen size in pixel
     var screenWidth = $('html').width();
     var screenHeight = $('html').height();
-    
-	 rot = screenUTMRange.rotation;
-     cEast = screenUTMRange.centerEast;
-     cNorth = screenUTMRange.centerNorth;
-     rEast = screenUTMRange.rangeEast;
-     rNorth = screenUTMRange.rangeNorth;
-     var east, north;
-     
-     // Rotate the location
-     [east, north] = rotatePoint(rot, obj_east, obj_north, cEast, cNorth);
-     east -= cEast;
-     north -= cNorth;
-     var target = {};
-     
-     target.left = (east / rEast / 2 + 1 / 2) * screenWidth + obj.width() / 2;
-     target.top = (north / rNorth / 2 + 1 / 2) * screenHeight + obj.height() / 2;
 
-     return target;
+    rot = screenUTMRange.rotation;
+    cEast = screenUTMRange.centerEast;
+    cNorth = screenUTMRange.centerNorth;
+    rEast = screenUTMRange.rangeEast;
+    rNorth = screenUTMRange.rangeNorth;
+    var east, north;
+
+    // Rotate the location
+    [east, north] = rotatePoint(rot, obj_east, obj_north, cEast, cNorth);
+    east -= cEast;
+    north -= cNorth;
+    var target = {};
+
+    target.left = (east / rEast / 2 + 1 / 2) * screenWidth + obj.width() / 2;
+    target.top = (north / rNorth / 2 + 1 / 2) * screenHeight + obj.height() / 2;
+
+    return target;
 }
 
 function calcTrail(x_target, y_target, boat) {
@@ -417,7 +422,7 @@ function calcTrail(x_target, y_target, boat) {
         });
     }
 
-    drawTrail(waypoints, d_t, boat)
+    drawTrail(waypoints, d_t, boat);
 
 }
 
@@ -438,7 +443,7 @@ function drawTrail(waypoints, t, boat) {
     waypoints.shift();  // remove first item of array
 
     setTimeout(function () {
-        drawTrail(waypoints, t, boat)
+        drawTrail(waypoints, t, boat);
     }, t);
 }
 
@@ -446,6 +451,106 @@ function drawTrail(waypoints, t, boat) {
 function convertSpeedtoKN(speed) {
     knots = speed * 1.94389;
     return knots;
+}
+
+// initialize your variables outside the function 
+var count = 0;
+var clearTime;
+var seconds = 0, minutes = 0, hours = 0;
+var clearState;
+var secs, mins, gethours;
+
+function startWatch() {
+
+    if (minutes > end_animation)
+        run = 0;
+
+    //check if seconds is equal to 60 and add a +1 to minutes, and set seconds to 0 	
+    if (seconds === 60) {
+        seconds = 0;
+        minutes += 1;
+    }
+    // you use the javascript tenary operator to format how the minutes should look and add
+    // 0 to minutes if less than 10 
+    mins = (minutes < 10) ? ('0' + minutes + ':') : (minutes + ':');
+
+    // check if minutes is equal to 60 and add  a +1 to hours set minutes to 0 
+    if (minutes === 60) {
+        minutes = 0;
+        hours = hours + 1;
+    }
+
+    /* you use the javascript tenary operator to format how the hours should look and add 0 to hours if less than 10 */
+    gethours = (hours < 10) ? ('0' + hours + ':') : (hours + ':');
+    //secs = ( seconds < 10 ) ? ( '0' + seconds ) : ( seconds ); 
+    secs = seconds;
+
+    // display the stopwatch 
+    var x = $('#race-time .counter').text(gethours + mins + secs);
+    $('#bouy-counter .counter').text('+' + mins + secs);
+
+    // call the seconds counter after displaying the stop watch and increment seconds by +1 to keep it counting
+    seconds++;
+
+    // call the setTimeout( ) to keep the stop watch alive! 
+    clearTime = setTimeout("startWatch()", 1000);
+}
+
+startWatch();
+
+
+var athlete = 0;
+
+rotateAthletes();
+
+function rotateAthletes() {
+    $athletes_list = $('#boat-info .team-members ul li');
+
+    $athletes_list.eq(athlete).show().delay(2800).fadeOut();
+
+    athlete = (athlete < ($athletes_list.length - 1)) ? athlete += 1 : 0;
+
+    setTimeout('rotateAthletes()', 3000);
+}
+
+// This function will calculate the status of a boat near a bouy
+// This is used to determine when the boat has rounded the bouy.
+function bouyStatus(boat_id, bouy_id) {
+    // Variables
+    var boat = boats[boat_id];
+    var bouy = bouys[bouy_id];
+    
+    console.log(boat);
+    
+    console.log(norm2Dist(boat, bouy));
+
+    // First check if the distance to the bouy is less than 50m
+    if (norm2Dist(boat, bouy) > 50)
+        return 0;
+    
+    console.log(bouy);
+
+    // Calculate the the angle between this bouy and the two others
+    if (bouy.type == 1) { // Start bouy
+        // This bouy consist of either 2 bouys or a bouy and a ship.
+        // TODO
+    }
+    if (bouy.type == 2) { // Normal bouy
+        // Calculate the angle with the preivous bouy and the next bouy.
+        prevBouy = bouys[bouy_id - 1];
+        nextBouy = bouys[bouy_id + 1];
+        prevAngle = getAngle(bouy, prevBouy);
+        nextAngle = getAngle(bouy, nextBouy);
+        bissect = (prevAngle + nextAngle) / 2;
+        console.log("prev = "+prevAngle);
+        console.log("next = "+nextAngle);
+        console.log("Biss = "+bissect);
+        
+    }
+    if (bouy.type == 3) { // Finish bouy
+        // This bouy consist of either 2 bouys or a bouy and a ship.
+        // TODO
+    }
 }
 
 // This function calculates the distance between two objects
@@ -456,11 +561,19 @@ function norm2Dist(obj, obj2) {
             );
 }
 
+// This function will calculate the angle between two objects
+function getAngle(obj, obj2) {
+    return Math.atan2(
+            obj.north - obj2.north,
+            obj.east - obj2.east
+            );
+}
+
 // This function will rotate a point around another point
 function rotatePoint(rotation, start_east, start_north, center_east = 0, center_north = 0) {
     var ceast = Math.cos(rotation) * (start_east - center_east) -
             Math.sin(rotation) * (start_north - center_north) + center_east;
-    var cnorth = Math.sin(rotation) * (start_east - center_east) + 
+    var cnorth = Math.sin(rotation) * (start_east - center_east) +
             Math.cos(rotation) * (start_north - center_north) + center_north;
     return [ceast, cnorth];
 }

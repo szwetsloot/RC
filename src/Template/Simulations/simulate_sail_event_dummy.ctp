@@ -10,6 +10,8 @@
     // Initialize the crews
     var crews = <?= json_encode($crews) ?>;
     var bouys = <?= json_encode($bouys) ?>;
+    var wave_direction = <?= $wave ?>;
+    var wind_direction = <?= $wind ?>;
 </script>
 
 <?= $this->Html->css('animate') ?>
