@@ -17,6 +17,7 @@ var bouys;
 var crews;
 var wind_direction;
 var wave_direction;
+var north_direction;
 var listenerUrl;
 
 var simulation = 1; // TODO - Set this to 0 when done buildings
@@ -491,11 +492,11 @@ function startWatch() {
         seconds = 0;
         minutes += 1;
     }
-// you use the javascript tenary operator to format how the minutes should look and add
-// 0 to minutes if less than 10 
+    // you use the javascript tenary operator to format how the minutes should look and add
+    // 0 to minutes if less than 10 
     mins = (minutes < 10) ? ('0' + minutes + ':') : (minutes + ':');
 
-// check if minutes is equal to 60 and add  a +1 to hours set minutes to 0 
+    // check if minutes is equal to 60 and add  a +1 to hours set minutes to 0 
     if (minutes === 60) {
         minutes = 0;
         hours = hours + 1;
@@ -503,17 +504,17 @@ function startWatch() {
 
     /* you use the javascript tenary operator to format how the hours should look and add 0 to hours if less than 10 */
     gethours = (hours < 10) ? ('0' + hours + ':') : (hours + ':');
-//secs = ( seconds < 10 ) ? ( '0' + seconds ) : ( seconds ); 
+    //secs = ( seconds < 10 ) ? ( '0' + seconds ) : ( seconds ); 
     secs = seconds;
 
-// display the stopwatch 
+    // display the stopwatch 
     var x = $('#race-time .counter').text(gethours + mins + secs);
     $('#bouy-counter .counter').text('+' + mins + secs);
 
-// call the seconds counter after displaying the stop watch and increment seconds by +1 to keep it counting
+    // call the seconds counter after displaying the stop watch and increment seconds by +1 to keep it counting
     seconds++;
 
-// call the setTimeout( ) to keep the stop watch alive! 
+    // call the setTimeout( ) to keep the stop watch alive! 
     clearTime = setTimeout("startWatch()", 1000);
 }
 

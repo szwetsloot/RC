@@ -30,7 +30,7 @@ Boat.prototype = {
         this.north = north;
         this.east = east;
         this.speed = speed;
-        this.direction = direction;
+        this.direction = Math.round( direction );
         var knots = Math.round(convertSpeedtoKN(speed) * 10) / 10;
         $(this.element).find('.extra p').html(knots + 'kN  ' + this.direction + '&deg;');
     },
