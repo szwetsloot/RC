@@ -1,7 +1,10 @@
+var boatinfoTimeout;
+
 
 $(function () { 
 	
 	$('.boat-icon').on('click', function(){
+		clearTimeout(boatinfoTimeout);
 		var boat_id = $(this).parent().attr('id').replace('boat-','');
 		Dashboard.showCrewInfo(boat_id);
 	});
@@ -33,14 +36,22 @@ Dashboard.showCrewInfo = function(crew_id){
 	var $boat_location = $panel.find('#boat-location');
 	var $boat_target = $panel.find('#boat-target-bouy');
 	
+	var $club_info = $panel.find('.team-data');
+	var $club_name = $club_info.find('.club-name');
+	var $club_flag = $club_info.find('img');
+	
 	// update information
 	$speed.text('Snelheid: '+ boat_speed +'Kn');
 	$boat_roll.html(tracker.roll_angle+'&deg;');
 	$boat_location.text( Math.round(tracker.east)+'m, '+Math.round(tracker.north)+'m' );
 	$boat_target.text( 'Volgende boei '+boat.distance_bouy+'m' );
 	
+	$club_name.text(crew.name);
+	$club_flag.attr('src',window.location.origin+'/otis/RC/img/sail_event_v2/teams/'+crew.flag_image)
+	
+	
 	// repeat function every 500 ms
-	setTimeout(function(){ Dashboard.showCrewInfo(crew_id); },500);
+	boatinfoTimeout = setTimeout(function(){ Dashboard.showCrewInfo(crew_id); },500);
 }
 
 // Het panel met een lijst met doorkomsttijden van een boei
