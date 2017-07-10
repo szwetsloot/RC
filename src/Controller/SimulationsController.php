@@ -158,7 +158,7 @@ class SimulationsController extends AppController {
             $crew->tracker->east  += cos($crew->tracker->heading / 180 * pi()) * $crew->tracker->velocity;
             
             $crew->tracker->velocity = 5 + rand(0, 4) ;
-            $crew->tracker->heading += 360 / 30 + rand(-1,1);
+            $crew->tracker->heading += 360 / 10 + rand(-1,1);
             $crew->tracker->heading %= 360;
             
             // Save the new data

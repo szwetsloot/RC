@@ -17,7 +17,7 @@ var bouys;
 var crews;
 var wind_direction;
 var wave_direction;
-var north_direction;
+var north_direction = 0;
 var listenerUrl;
 
 var simulation = 1; // TODO - Set this to 0 when done buildings
@@ -44,6 +44,7 @@ $(function () {
     console.log('-------');
     console.log(crews);
 
+    createBouys();
     // Calculate the longest distance between two bouys to determine the horizontal location
     calculateLongestDistanceBouys();
     // Calculate the range of the screen based on the positions of the bouys
@@ -61,8 +62,16 @@ $(function () {
     listen();
 
     // Test function
-    bouyStatus(1, 1);
+    setTimeout(function() {
+        bouyStatus(1, 1);
+    }, 2000);
 });
+
+function createBouys() {
+    for (var i = 0; i < bouys.length; i++) {
+        
+    }
+}
 
 //calculate new position
 function calculateVector(boat_obj, speed, direction) {
@@ -92,7 +101,6 @@ function calculateLongestDistanceBouys() {
     dist = 0;
     bouy1 = 0;
     bouy2 = 0;
-    console.log(bouys);
     for (i = 0; i < bouys.length; i++) {
         for (j = 0; j < bouys.length; j++) {
             if (i === j)
@@ -118,7 +126,7 @@ function calculateLongestDistanceBouys() {
     //console.log(dist);
 
     // Calculate the Angle that we need to rotate so that these two horizontal
-    screenUTMRange.rotation = -Math.atan2(bouys[bouy1].north - bouys[bouy2].north, bouys[bouy1].east - bouys[bouy2].east)
+    screenUTMRange.rotation = -Math.atan2(bouys[bouy1].north - bouys[bouy2].north, bouys[bouy1].east - bouys[bouy2].east);
     // console.log(screenUTMRange.rotation);
     // Correct 180 degrees if necessary
     if (screenUTMRange.rotation < -Math.PI / 2)
@@ -527,15 +535,9 @@ function bouyStatus(boat_id, bouy_id) {
     var boat = boats[boat_id];
     var bouy = bouys[bouy_id];
 
-    console.log(boat);
-
-    console.log(norm2Dist(boat, bouy));
-
     // First check if the distance to the bouy is less than 50m
     if (norm2Dist(boat, bouy) > 50)
         return 0;
-
-    console.log(bouy);
 
     // Calculate the the angle between this bouy and the two others
     if (bouy.type == 1) { // Start bouy
@@ -544,15 +546,19 @@ function bouyStatus(boat_id, bouy_id) {
     }
     if (bouy.type == 2) { // Normal bouy
         // Calculate the angle with the preivous bouy and the next bouy.
-        prevBouy = bouys[bouy_id - 1];
-        nextBouy = bouys[bouy_id + 1];
-        prevAngle = getAngle(bouy, prevBouy);
-        nextAngle = getAngle(bouy, nextBouy);
-        bissect = (prevAngle + nextAngle) / 2;
-        console.log("prev = " + prevAngle);
-        console.log("next = " + nextAngle);
-        console.log("Biss = " + bissect);
-
+        var prevBouy = bouys[bouy_id - 1];
+        var nextBouy = bouys[bouy_id + 1];
+        var prevAngle = getAngle(bouy, prevBouy) * 180 / Math.PI;
+        var nextAngle = getAngle(bouy, nextBouy) * 180 / Math.PI;
+        var bissect = (prevAngle + nextAngle) / 2;
+        
+        // Get the angle between the boat and the bouy
+        var cAngle = getAngle(bouy, boat) - bissect;
+        while (Math.abs(cAngle) > 180) cAngle -= Math.sign(cAngle) * 360;
+        if (cAngle > 0 && cAngle <= 90) return 1;
+        if (cAngle < 0 && cAngle >= -90) return 2;
+        if (cAngle > 90 && cAngle <= 180) return 3;
+        if (cAngle < -90 && cAngle >= -180) return 4;
     }
     if (bouy.type == 3) { // Finish bouy
         // This bouy consist of either 2 bouys or a bouy and a ship.

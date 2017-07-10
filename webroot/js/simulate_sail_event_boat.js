@@ -79,39 +79,41 @@ Boat.prototype = {
     'moveBoat': function () {
         var boat = JSON.parse(JSON.stringify(this)); // Cache the object
         var ref = this;
-        if (run != 1)
-            return false; // check of de animatie moet lopen 
-
-        var $boat = ref.element;
+        var $boat = this.element;
         var $boat_icon = $boat.find('.boat-icon');
-        var direction = ref.drawn.direction;
+        var direction = this.drawn.direction;
         direction += north_direction;
-
-        $boat_icon.animate({
-            textIndent: direction
+        var dur = this.lastDraw + 100 - millis();
+        this.lastDraw += 100;
+        var startRotation = getRotationDegrees($boat_icon);
+        $boat.animate({
+            left: ref.drawn.left,
+            top: ref.drawn.top
         }, {
-            step: function (now, fx) {
-                $(this).css('-webkit-transform', 'rotate(' + now + 'deg)');
-            },
-            duration: 0,
-            complete: function () {
-                var lastDraw = ref.lastDraw;
-                ref.lastDraw = millis();
-                $boat.animate(
-                        {
-                            'left': ref.drawn.left + 'px',
-                            'top': ref.drawn.top + 'px'
-                        },
-                        {
-                            duration: lastDraw + 100 - millis(),
-                            easing: 'linear',
-                            complete: function () {
-                                console.log("Complete");
-                                ref.moveBoat();
-                            },
-                        });
-            }
-        }, 'linear');
+            done: function () {
+                ref.moveBoat();
+            },  
+            easing: 'linear'
+        });
+        $boat_icon.animate(
+                {
+                    deg: direction - startRotation,
+                },
+                {
+                    'easing': 'linear',
+                    duration: dur,
+                    step: function (now) {
+                        var tmp = startRotation + now;
+                        tmp += 360;
+                        tmp %= 360;
+                        //console.log(tmp);
+                        $(this).css('-ms-transform', 'rotate(' + tmp + 'deg)');
+                        $(this).css('-webkit-transform', 'rotate(' + tmp + 'deg)');
+                        $(this).css('transform', 'rotate(' + tmp + 'deg)');
+                    }
+                }
+        );
+
         //calcTrail(target_x, target_y, boat.num); // draw the trail of the boat
 
         // in de functie calcTrail wordt de huidge positie gebruikt
@@ -153,4 +155,21 @@ Boat.prototype.calcDistanceBouy = function (step = 0) {
         setTimeout(function () {
             self.calcDistanceBouy(step + 1);
         }, d_t);
+}
+
+function getRotationDegrees(obj) {
+    var matrix = obj.css("-webkit-transform") ||
+            obj.css("-moz-transform") ||
+            obj.css("-ms-transform") ||
+            obj.css("-o-transform") ||
+            obj.css("transform");
+    if (matrix !== 'none') {
+        var values = matrix.split('(')[1].split(')')[0].split(',');
+        var a = values[0];
+        var b = values[1];
+        var angle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
+    } else {
+        var angle = 0;
+    }
+    return (angle < 0) ? angle + 360 : angle;
 }
