@@ -174,7 +174,7 @@
                 <h2 class="club-name">R.R. & Z.V. Maas en roer</h2>
                 <div class="medal medal-1"></div>
                 <h3 style="text-decoration: underline;">Ranking competitie</h3>
-                <h3>Positie 1, 18 punten</h3>
+                <h3 class="competition">Positie 1, 18 punten</h3>
 			<?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?>
             </div>
         </div>

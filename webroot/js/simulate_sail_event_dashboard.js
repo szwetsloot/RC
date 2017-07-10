@@ -1,10 +1,16 @@
-var boatinfoTimeout;
+var browser_location = $(location).attr('href').replace('simulations/simulate-sail-event-dummy/7','');
+var image_base_url = browser_location+'/img/sail_event_v2/teams/';
+	
+$(function () { 		
 
-
-$(function () { 
+	Dashboard.rotateAthletes();
+	
+	//Stopwatch.start();
 	
 	$('.boat-icon').on('click', function(){
-		clearTimeout(boatinfoTimeout);
+		clearTimeout(Dashboard.boatinfoTimeout);
+
+		Dashboard.showBouyInfo();
 		var boat_id = $(this).parent().attr('id').replace('boat-','');
 		Dashboard.showCrewInfo(boat_id);
 	});
@@ -15,6 +21,8 @@ $(function () {
 var Dashboard = {
 	crew : null,
 	crewmembers : [],
+	athlete : 0,
+	boatinfoTimeout: null,
 }
 
 // Het horizontale panel op de onderrand van het scherm
@@ -26,7 +34,6 @@ Dashboard.showCrewInfo = function(crew_id){
 	var tracker = crew.tracker;
 	var boat = boats[crew_id - 1];
 	var boat_speed = Math.round(convertSpeedtoKN(boat.speed) * 10) / 10;
-	//console.log(tracker);
 	
 	// define dom elements
 	var $panel = $('#boat-info');
@@ -39,83 +46,135 @@ Dashboard.showCrewInfo = function(crew_id){
 	var $club_info = $panel.find('.team-data');
 	var $club_name = $club_info.find('.club-name');
 	var $club_flag = $club_info.find('img');
+	var $club_competition = $club_info.find('.competition');
+	
+	if( tracker.roll_angle == 0 )
+		tracker.roll_angle = 0;
 	
 	// update information
 	$speed.text('Snelheid: '+ boat_speed +'Kn');
-	$boat_roll.html(tracker.roll_angle+'&deg;');
+	$boat_roll.html('helling: '+tracker.roll_angle+'&deg;');
 	$boat_location.text( Math.round(tracker.east)+'m, '+Math.round(tracker.north)+'m' );
 	$boat_target.text( 'Volgende boei '+boat.distance_bouy+'m' );
+	$club_competition.text('positie:'+crew.ranking+', '+crew.points+' punten') // werkt plas als dit in de db staat
 	
 	$club_name.text(crew.name);
-	$club_flag.attr('src',window.location.origin+'/otis/RC/img/sail_event_v2/teams/'+crew.flag_image)
-	
+	$club_flag.attr('src', image_base_url+crew.flag_image)
 	
 	// repeat function every 500 ms
-	boatinfoTimeout = setTimeout(function(){ Dashboard.showCrewInfo(crew_id); },500);
+	this.boatinfoTimeout = setTimeout(function(){ Dashboard.showCrewInfo(crew_id); },500);
 }
+
+
 
 // Het panel met een lijst met doorkomsttijden van een boei
 Dashboard.showBouyInfo = function(){
 	
+	// define dom elements
+	var $panel = $('#bouy-info');
+	var $list = $panel.find('ul');
+	
+	$list.empty();
+			
+	// simulate popups
+	setTimeout(function(){
+		Dashboard.addBoatToBouy(0,1);	
+		}, 1000);
+	
+	setTimeout(function(){
+		Dashboard.addBoatToBouy(1,2);	
+		}, 4000);
+	
+	setTimeout(function(){
+		Dashboard.addBoatToBouy(2,3);	
+		}, 6000);
+	
+	
 }
 
-// Athlete slider
-var athlete = 0;
 
-rotateAthletes()
+Dashboard.addBoatToBouy = function(boat_id, position){
+	
+	var crew = crews[boat_id];	
+	
+	console.log('boat_id'+boat_id);
+	var flag_image = image_base_url + crew.flag_image;
+	
+	var li = '<li class="animated fadeInLeft">';		
+	li += '<div class="position">'+position+'</div>';
+	li += '<div class="team-flag"><img src="'+ flag_image + '" /> </div>';
+	li += '<div class="name">'+crew.name+'</div>';
+	li += '<div class="counter">'+ Stopwatch.time +'</div>';		
+	li += '</li>';
+	
 
-function rotateAthletes() {
-    $athletes_list = $('#boat-info .team-members ul li');
-    
-    $athletes_list.eq(athlete).show().delay(2800).fadeOut();
-
-    athlete = (athlete < ($athletes_list.length - 1)) ? athlete += 1 : 0;
-
-    setTimeout('rotateAthletes()', 3000);
-
+	$('#bouy-info ul').append(li);
 }
 
-//initialize your variables outside the function 
-var count = 0;
-var clearTime;
-var seconds = 0, minutes = 0, hours = 0;
-var clearState;
-var secs, mins, gethours;
 
-function startWatch() {
 
-    if (minutes > end_animation)
-        run = 0;
+
+
+// functie die de profiel foto's van de athletes laat in en uit faden
+Dashboard.rotateAthletes = function() {
+    $athletes_list = $('#boat-info .team-members ul li');    
+    $athletes_list.eq(this.athlete).show().delay(2800).fadeOut();
+    this.athlete = (this.athlete < ($athletes_list.length - 1)) ? this.athlete += 1 : 0;
+    setTimeout('Dashboard.rotateAthletes()', 3000);
+}
+
+// Stopwatch
+function Stopwatch(obj){
+		this.count = 0;
+		this.clearTime = null;
+		this.clearState = null;
+		this.seconds = 0;
+		this.minutes = 0;
+		this.hours = 0;
+		this.secs = null;
+		this.mins = null; 
+		this.gethours = null;
+		this.time = null;
+}
+
+
+Stopwatch.prototype.start = function(){
+	// stop het bewegen van de bootjes na een tijd gedefineerd by end animation
+    if (this.minutes > end_animation) run = 0;
 
     //check if seconds is equal to 60 and add a +1 to minutes, and set seconds to 0 	
-    if (seconds === 60) {
-        seconds = 0;
-        minutes += 1;
+    if (this.seconds === 60) {
+    	this.seconds = 0;
+    	this.minutes += 1;
     }
     // you use the javascript tenary operator to format how the minutes should look and add
     // 0 to minutes if less than 10 
-    mins = (minutes < 10) ? ('0' + minutes + ':') : (minutes + ':');
+    this.mins = (this.minutes < 10) ? ('0' + this.minutes + ':') : (this.minutes + ':');
 
     // check if minutes is equal to 60 and add  a +1 to hours set minutes to 0 
-    if (minutes === 60) {
-        minutes = 0;
-        hours = hours + 1;
+    if (this.minutes === 60) {
+    	this.minutes = 0;
+    	this.hours = this.hours + 1;
     }
 
     /* you use the javascript tenary operator to format how the hours should look and add 0 to hours if less than 10 */
-    gethours = (hours < 10) ? ('0' + hours + ':') : (hours + ':');
+    this.gethours = (this.hours < 10) ? ('0' + this.hours + ':') : (this.hours + ':');
     //secs = ( seconds < 10 ) ? ( '0' + seconds ) : ( seconds ); 
-    secs = seconds;
+    this.secs = this.seconds;
 
+    this.time = this.mins + this.secs;
+    
     // display the stopwatch 
-    var x = $('#race-time .counter').text(gethours + mins + secs);
-    $('#bouy-counter .counter').text('+' + mins + secs);
-
+    $('#race-time .counter').text(this.time);
+    $('#bouy-counter .counter').text('+' + this.mins + this.secs);
+        
     // call the seconds counter after displaying the stop watch and increment seconds by +1 to keep it counting
-    seconds++;
+    this.seconds++;
 
     // call the setTimeout( ) to keep the stop watch alive! 
-    clearTime = setTimeout("startWatch()", 1000);
+    this.clearTime = setTimeout("Stopwatch.start()", 1000);
 }
 
-startWatch();
+Stopwatch.prototype.stop = function(){
+	clearTimeout(this.clearTime);
+}
