@@ -2,8 +2,8 @@
 $(function () { 
 	
 	$('.boat-icon').on('click', function(){
-		var boat_id = $('this').parent().attr('id').replace('','');
-		alert(boat_id);
+		var boat_id = $(this).parent().attr('id').replace('boat-','');
+		Dashboard.showCrewInfo(boat_id);
 	});
 	
 	
@@ -18,11 +18,12 @@ var Dashboard = {
 Dashboard.showCrewInfo = function(crew_id){
 	// select team
 	// TODO crew id moet worden opgezocht in de array
-	var crew = crews[crew_id];
+	
+	var crew = crews[crew_id - 1];
 	var tracker = crew.tracker;
-	var boat = boats[crew_id];
+	var boat = boats[crew_id - 1];
 	var boat_speed = Math.round(convertSpeedtoKN(boat.speed) * 10) / 10;
-	console.log(tracker);
+	//console.log(tracker);
 	
 	// define dom elements
 	var $panel = $('#boat-info');
@@ -54,7 +55,7 @@ rotateAthletes()
 
 function rotateAthletes() {
     $athletes_list = $('#boat-info .team-members ul li');
-
+    
     $athletes_list.eq(athlete).show().delay(2800).fadeOut();
 
     athlete = (athlete < ($athletes_list.length - 1)) ? athlete += 1 : 0;
