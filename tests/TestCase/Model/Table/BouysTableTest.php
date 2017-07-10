@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\TrackersTable;
+use App\Model\Table\BouysTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\TrackersTable Test Case
+ * App\Model\Table\BouysTable Test Case
  */
-class TrackersTableTest extends TestCase
+class BouysTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\TrackersTable
+     * @var \App\Model\Table\BouysTable
      */
-    public $Trackers;
+    public $Bouys;
 
     /**
      * Fixtures
@@ -24,6 +24,7 @@ class TrackersTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'app.bouys',
         'app.trackers',
         'app.crews',
         'app.clubs',
@@ -41,8 +42,8 @@ class TrackersTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Trackers') ? [] : ['className' => 'App\Model\Table\TrackersTable'];
-        $this->Trackers = TableRegistry::get('Trackers', $config);
+        $config = TableRegistry::exists('Bouys') ? [] : ['className' => 'App\Model\Table\BouysTable'];
+        $this->Bouys = TableRegistry::get('Bouys', $config);
     }
 
     /**
@@ -52,7 +53,7 @@ class TrackersTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->Trackers);
+        unset($this->Bouys);
 
         parent::tearDown();
     }

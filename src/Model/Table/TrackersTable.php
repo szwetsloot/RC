@@ -10,6 +10,7 @@ use Cake\Validation\Validator;
  * Trackers Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Crews
+ * @property \Cake\ORM\Association\HasMany $Bouys
  * @property \Cake\ORM\Association\HasMany $Crews
  * @property \Cake\ORM\Association\HasMany $Saillingcrews
  *
@@ -44,6 +45,9 @@ class TrackersTable extends Table
 
         $this->belongsTo('Crews', [
             'foreignKey' => 'crew_id'
+        ]);
+        $this->hasMany('Bouys', [
+            'foreignKey' => 'tracker_id'
         ]);
         $this->hasMany('Crews', [
             'foreignKey' => 'tracker_id'
@@ -94,7 +98,7 @@ class TrackersTable extends Table
             ->allowEmpty('velocity');
 
         $validator
-            ->allowEmpty('type');
+            ->allowEmpty('object');
 
         $validator
             ->numeric('utm_north')
@@ -103,6 +107,10 @@ class TrackersTable extends Table
         $validator
             ->numeric('utm_east')
             ->allowEmpty('utm_east');
+
+        $validator
+            ->integer('type')
+            ->allowEmpty('type');
 
         return $validator;
     }

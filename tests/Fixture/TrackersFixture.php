@@ -27,9 +27,10 @@ class TrackersFixture extends TestFixture
         'roll_angle' => ['type' => 'float', 'length' => null, 'precision' => null, 'unsigned' => false, 'null' => true, 'default' => null, 'comment' => ''],
         'pitch_angle' => ['type' => 'float', 'length' => null, 'precision' => null, 'unsigned' => false, 'null' => true, 'default' => null, 'comment' => ''],
         'velocity' => ['type' => 'float', 'length' => null, 'precision' => null, 'unsigned' => false, 'null' => true, 'default' => null, 'comment' => ''],
-        'type' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'object' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'collate' => 'latin1_swedish_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'utm_north' => ['type' => 'float', 'length' => null, 'precision' => null, 'unsigned' => false, 'null' => true, 'default' => null, 'comment' => ''],
         'utm_east' => ['type' => 'float', 'length' => null, 'precision' => null, 'unsigned' => false, 'null' => true, 'default' => null, 'comment' => ''],
+        'type' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -49,17 +50,18 @@ class TrackersFixture extends TestFixture
         [
             'id' => 1,
             'crew_id' => 1,
-            'last_message' => '2017-07-07 08:44:47',
-            'created' => '2017-07-07 08:44:47',
+            'last_message' => '2017-07-07 15:02:21',
+            'created' => '2017-07-07 15:02:21',
             'latitude' => 1,
             'longitude' => 1,
             'heading' => 1,
             'roll_angle' => 1,
             'pitch_angle' => 1,
             'velocity' => 1,
-            'type' => 'Lorem ipsum dolor sit amet',
+            'object' => 'Lorem ipsum dolor sit amet',
             'utm_north' => 1,
-            'utm_east' => 1
+            'utm_east' => 1,
+            'type' => 1
         ],
     ];
 }

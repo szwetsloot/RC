@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Event\Event;
 
+define("SIMULATION", 1);
+
 /**
  * Simulations Controller
  *
@@ -18,6 +20,7 @@ class SimulationsController extends AppController {
         parent::beforeFilter($event);
 
         // load required models
+        $this->loadModel('Bouys');
         $this->loadModel('SaillingCrews');
         $this->loadModel('SaillingAthletes');
         $this->loadModel('Trackers');
@@ -58,12 +61,12 @@ class SimulationsController extends AppController {
         }
 
         // Get the bouys
-        $bouys = $this->Trackers->find()
-                ->where(['type' => 'Bouy'])
+        $bouys = $this->Bouys->find()
+                ->contain(['trackers'])
                 ->all()
                 ->toArray();
         foreach ($bouys as &$bouy) {
-            $this->GPoint->setLongLat($bouy['longitude'], $bouy['latitude']);
+            $this->GPoint->setLongLat($bouy->Trackers['longitude'], $bouy->Trackers['latitude']);
             $this->GPoint->convertLLtoTM(0);
             $bouy['north'] = $this->GPoint->N();
             $bouy['east'] = $this->GPoint->E();
@@ -104,6 +107,19 @@ class SimulationsController extends AppController {
         $windDirection = $data->series[0]->data[0]->value;
 
         return [$waveDirection, $windDirection];
+    }
+    
+    
+    public function viewListener($type = 0, $unit = null) {
+        if (SIMULATION) {
+            $this->simulationListener($type, $unit);
+        } else {
+            // TODO - Here the data from the database should be loaded
+        }
+    }
+    
+    private function simulationListener($type, $unit) {
+        
     }
 
 }
