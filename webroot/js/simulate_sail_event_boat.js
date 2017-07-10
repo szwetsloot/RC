@@ -106,7 +106,7 @@ Boat.prototype = {
                             duration: lastDraw + 100 - millis(),
                             easing: 'linear',
                             complete: function () {
-                                console.log("Complete");
+                                //console.log("Complete");
                                 ref.moveBoat();
                             },
                         });

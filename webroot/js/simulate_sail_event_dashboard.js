@@ -5,7 +5,7 @@ $(function () {
 
 	Dashboard.rotateAthletes();
 	
-	Stopwatch.start();
+	//Stopwatch.start();
 	
 	$('.boat-icon').on('click', function(){
 		clearTimeout(Dashboard.boatinfoTimeout);
@@ -46,12 +46,17 @@ Dashboard.showCrewInfo = function(crew_id){
 	var $club_info = $panel.find('.team-data');
 	var $club_name = $club_info.find('.club-name');
 	var $club_flag = $club_info.find('img');
+	var $club_competition = $club_info.find('.competition');
+	
+	if( tracker.roll_angle == 0 )
+		tracker.roll_angle = 0;
 	
 	// update information
 	$speed.text('Snelheid: '+ boat_speed +'Kn');
-	//$boat_roll.html('helling: '+tracker.roll_angle+'&deg;');
+	$boat_roll.html('helling: '+tracker.roll_angle+'&deg;');
 	$boat_location.text( Math.round(tracker.east)+'m, '+Math.round(tracker.north)+'m' );
 	$boat_target.text( 'Volgende boei '+boat.distance_bouy+'m' );
+	$club_competition.text('positie:'+crew.ranking+', '+crew.points+' punten') // werkt plas als dit in de db staat
 	
 	$club_name.text(crew.name);
 	$club_flag.attr('src', image_base_url+crew.flag_image)
@@ -70,18 +75,29 @@ Dashboard.showBouyInfo = function(){
 	var $list = $panel.find('ul');
 	
 	$list.empty();
-		
-	$.each(boats, function(i){
-		
-		Dashboard.addBoatToBouy(i,i);		
 			
-	});
+	// simulate popups
+	setTimeout(function(){
+		Dashboard.addBoatToBouy(0,1);	
+		}, 1000);
+	
+	setTimeout(function(){
+		Dashboard.addBoatToBouy(1,2);	
+		}, 4000);
+	
+	setTimeout(function(){
+		Dashboard.addBoatToBouy(2,3);	
+		}, 6000);
+	
 	
 }
+
 
 Dashboard.addBoatToBouy = function(boat_id, position){
 	
 	var crew = crews[boat_id];	
+	
+	console.log('boat_id'+boat_id);
 	var flag_image = image_base_url + crew.flag_image;
 	
 	var li = '<li class="animated fadeInLeft">';		
@@ -108,21 +124,21 @@ Dashboard.rotateAthletes = function() {
 }
 
 // Stopwatch
-var Stopwatch = {
-		count : 0,
-		clearTime : null,
-		clearState : null,
-		seconds : 0,
-		minutes: 0,
-		hours : 0,
-		secs : null,
-		mins : null, 
-		gethours : null,
-		time : null,
+function Stopwatch(obj){
+		this.count = 0;
+		this.clearTime = null;
+		this.clearState = null;
+		this.seconds = 0;
+		this.minutes = 0;
+		this.hours = 0;
+		this.secs = null;
+		this.mins = null; 
+		this.gethours = null;
+		this.time = null;
 }
 
 
-Stopwatch.start = function(){
+Stopwatch.prototype.start = function(){
 	// stop het bewegen van de bootjes na een tijd gedefineerd by end animation
     if (this.minutes > end_animation) run = 0;
 
@@ -146,7 +162,7 @@ Stopwatch.start = function(){
     //secs = ( seconds < 10 ) ? ( '0' + seconds ) : ( seconds ); 
     this.secs = this.seconds;
 
-    this.time = this.gethours + this.mins + this.secs;
+    this.time = this.mins + this.secs;
     
     // display the stopwatch 
     $('#race-time .counter').text(this.time);
@@ -159,6 +175,6 @@ Stopwatch.start = function(){
     this.clearTime = setTimeout("Stopwatch.start()", 1000);
 }
 
-Stopwatch.stop = function(){
+Stopwatch.prototype.stop = function(){
 	clearTimeout(this.clearTime);
 }
