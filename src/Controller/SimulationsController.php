@@ -47,21 +47,17 @@ class SimulationsController extends AppController {
 // Filter the crews to the ones we'll be working with
         $eventCrews = [1, 2, 3];
         $crews = array_filter($crews, function($e) use ($eventCrews) {
-            return in_array($e->id, $eventCrews);
+            return in_array($e['id'], $eventCrews);
         });
 
 // Conver the wgs84 to utm
         $this->GPoint = $this->loadComponent('GPoint');
         foreach ($crews as &$crew) {
 //die($this->print_rr($crew->tracker));
-            $this->GPoint->setLongLat($crew->tracker['longitude'], $crew->tracker['latitude']);
+            $this->GPoint->setLongLat($crew['tracker']['longitude'], $crew['tracker']['latitude']);
             $this->GPoint->convertLLtoTM(0);
-            $crew->tracker->north = $this->GPoint->N();
-            $crew->tracker->east = $this->GPoint->E();
-            // If simulation is running, reset the position
-            if (SIMULATION) {
-                $this->Trackers->save($crew->tracker);
-            }
+            $crew['tracker']['north'] = $this->GPoint->N();
+            $crew['tracker']['east'] = $this->GPoint->E();
         }
 
 // Get the bouys
@@ -74,6 +70,15 @@ class SimulationsController extends AppController {
             $this->GPoint->convertLLtoTM(0);
             $bouy['north'] = $this->GPoint->N();
             $bouy['east'] = $this->GPoint->E();
+        }
+        
+        // If the simulatiion is running, reset the location of the boats to the locations of the bouys
+        if (SIMULATION) {
+            foreach ($crews as $i => &$crew) {
+                $crew['tracker']['north'] = $bouys[$i]['north'];
+                $crew['tracker']['east'] = $bouys[$i]['east'];
+                $this->Trackers->save($crew->tracker);
+            }
         }
 
         $data = $this->getWindWaveData();
@@ -152,8 +157,8 @@ class SimulationsController extends AppController {
             $crew->tracker->north += sin($crew->tracker->heading / 180 * pi()) * $crew->tracker->velocity;
             $crew->tracker->east  += cos($crew->tracker->heading / 180 * pi()) * $crew->tracker->velocity;
             
-            $crew->tracker->velocity = 3 + rand(0, 4);
-            $crew->tracker->heading += 360 / 8 + rand(-5,5);
+            $crew->tracker->velocity = 5 + rand(0, 4) ;
+            $crew->tracker->heading += 360 / 30 + rand(-1,1);
             $crew->tracker->heading %= 360;
             
             // Save the new data
