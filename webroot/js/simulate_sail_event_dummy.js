@@ -22,7 +22,6 @@ var utm = "+proj=utm +zone=31";
 var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 var refresh_time = 6000;
 
-var windDirection = 0;
 var boats = [];
 var run = 1; // global variable for running the animation 1 = run & 0 = stop
 var end_animation = 2; // stop the animation after 2 minutes
@@ -254,7 +253,7 @@ function drawHeightLines() {
     // Clear the container
     $('#height-line-container').empty();
 
-    var direction = -90 + (windDirection + screenUTMRange.rotation * 180 / Math.PI);
+    var direction = (wind_direction + screenUTMRange.rotation * 180 / Math.PI);
     var screenWidth = $('html').width();
     var screenHeight = $('html').height();
 
