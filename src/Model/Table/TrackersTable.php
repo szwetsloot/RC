@@ -98,19 +98,12 @@ class TrackersTable extends Table
             ->allowEmpty('velocity');
 
         $validator
-            ->allowEmpty('object');
+            ->numeric('north')
+            ->allowEmpty('north');
 
         $validator
-            ->numeric('utm_north')
-            ->allowEmpty('utm_north');
-
-        $validator
-            ->numeric('utm_east')
-            ->allowEmpty('utm_east');
-
-        $validator
-            ->integer('type')
-            ->allowEmpty('type');
+            ->numeric('east')
+            ->allowEmpty('east');
 
         return $validator;
     }

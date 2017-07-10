@@ -4,3 +4,4 @@ tmp/
 *.csprj
 /nbproject/private/
 logs/error.log
+*.orig

@@ -16,12 +16,11 @@ use Cake\ORM\Entity;
  * @property float $roll_angle
  * @property float $pitch_angle
  * @property float $velocity
- * @property string $object
- * @property float $utm_north
- * @property float $utm_east
- * @property int $type
+ * @property float $north
+ * @property float $east
  *
  * @property \App\Model\Entity\Crew[] $crews
+ * @property \App\Model\Entity\Bouy[] $bouys
  * @property \App\Model\Entity\Saillingcrew[] $saillingcrews
  */
 class Tracker extends Entity

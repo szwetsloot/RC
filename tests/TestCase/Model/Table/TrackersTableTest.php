@@ -30,6 +30,7 @@ class TrackersTableTest extends TestCase
         'app.events',
         'app.saillingathletes',
         'app.sailling_crews',
+        'app.bouys',
         'app.saillingcrews'
     ];
 

@@ -19,13 +19,13 @@ class SimulationsController extends AppController {
     public function beforeFilter(Event $event) {
         parent::beforeFilter($event);
 
-        // load required models
+// load required models
         $this->loadModel('Bouys');
         $this->loadModel('SaillingCrews');
         $this->loadModel('SaillingAthletes');
         $this->loadModel('Trackers');
 
-        // Set the default layout
+// Set the default layout
         $this->viewBuilder()->setLayout('ajax');
     }
 
@@ -38,29 +38,33 @@ class SimulationsController extends AppController {
     }
 
     public function simulateSailEventDummy() {
-        // Retrieve the crews from the database
+// Retrieve the crews from the database
         $crews = $this->SaillingCrews->find()
                 ->contain(['Trackers'])
                 ->all()
                 ->toArray();
 
-        // Filter the crews to the ones we'll be working with
+// Filter the crews to the ones we'll be working with
         $eventCrews = [1, 2, 3];
         $crews = array_filter($crews, function($e) use ($eventCrews) {
             return in_array($e->id, $eventCrews);
         });
 
-        // Conver the wgs84 to utm
+// Conver the wgs84 to utm
         $this->GPoint = $this->loadComponent('GPoint');
         foreach ($crews as &$crew) {
-            //die($this->print_rr($crew->tracker));
+//die($this->print_rr($crew->tracker));
             $this->GPoint->setLongLat($crew->tracker['longitude'], $crew->tracker['latitude']);
             $this->GPoint->convertLLtoTM(0);
             $crew->tracker->north = $this->GPoint->N();
             $crew->tracker->east = $this->GPoint->E();
+            // If simulation is running, reset the position
+            if (SIMULATION) {
+                $this->Trackers->save($crew->tracker);
+            }
         }
 
-        // Get the bouys
+// Get the bouys
         $bouys = $this->Bouys->find()
                 ->contain(['trackers'])
                 ->all()
@@ -75,19 +79,16 @@ class SimulationsController extends AppController {
         $data = $this->getWindWaveData();
         $wind = $data[0];
         $wave = $data[1];
-        
+
         $this->set(
                 compact(
-                        'crews',
-                        'bouys',
-                        'wind',
-                        'wave'
+                        'crews', 'bouys', 'wind', 'wave'
                 )
         );
     }
 
     private function getWindWaveData() {
-        // Get the wave direction from Rijkswaterstaat
+// Get the wave direction from Rijkswaterstaat
         $url = "https://waterinfo.rws.nl/api/details/chart?expertParameter=Gemiddelde___20golfrichting___20in___20het___20spectrale___20domein___20Oppervlaktewater___20golffrequentie___20tussen___2030___20en___20500___20mHz___20in___20graad&values=-48,0&locationCode=2183";
         $options = array(
             "ssl" => array(
@@ -108,18 +109,57 @@ class SimulationsController extends AppController {
 
         return [$waveDirection, $windDirection];
     }
-    
-    
-    public function viewListener($type = 0, $unit = null) {
+
+    public function sailEventListener($type = 0, $unit = null) {
         if (SIMULATION) {
-            $this->simulationListener($type, $unit);
+            die(json_encode($this->simulationListener($type, $unit)));
         } else {
-            // TODO - Here the data from the database should be loaded
+// TODO - Here the data from the database should be loaded
         }
     }
-    
+
     private function simulationListener($type, $unit) {
+
+        if ($type == 0) { // Get bouys
+            return $this->simulationListenerGetBouys($unit);
+        } elseif ($type == 1) { // Get boats
+            return $this->simulationListenerGetBoats($unit);
+        }
+    }
+
+    private function simulationListenerGetBouys($unit) {
+        return $unit;
+    }
+
+    private function simulationListenerGetBoats($unit) {
+        // Retrieve the crews from the database
+        $crews = $this->SaillingCrews->find()
+                ->contain(['Trackers'])
+                ->all()
+                ->toArray();
+
+        // Filter the crews to the ones we'll be working with
+        $eventCrews = [1, 2, 3];
+        $crews = array_filter($crews, function($e) use ($eventCrews) {
+            return in_array($e->id, $eventCrews);
+        });
         
+        // Conver the wgs84 to utm
+        $this->GPoint = $this->loadComponent('GPoint');
+        foreach ($crews as &$crew) {
+            
+            // Update the data (approximately a circle)
+            $crew->tracker->north += sin($crew->tracker->heading / 180 * pi()) * $crew->tracker->velocity;
+            $crew->tracker->east  += cos($crew->tracker->heading / 180 * pi()) * $crew->tracker->velocity;
+            
+            $crew->tracker->velocity = 3 + rand(0, 4);
+            $crew->tracker->heading += 360 / 8 + rand(-5,5);
+            $crew->tracker->heading %= 360;
+            
+            // Save the new data
+            $this->Trackers->save($crew->tracker);
+        }
+        return $crews;
     }
 
 }
