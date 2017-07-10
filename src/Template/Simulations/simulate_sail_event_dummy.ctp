@@ -10,7 +10,8 @@
     // Initialize the crews
     var crews = <?= json_encode($crews) ?>;
     var bouys = <?= json_encode($bouys) ?>;
-    var wave_direction = <?= $wave ?>;
+    var wave_direction = <?= $wave ?> + 180; // The +180 is to correct for the image
+    console.log("Wave = "+wave_direction);
     var wind_direction = <?= $wind ?>;
 </script>
 

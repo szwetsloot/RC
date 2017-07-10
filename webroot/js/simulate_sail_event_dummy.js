@@ -244,7 +244,6 @@ function drawWaves() {
 
     for (i = 0; i < 20; i++) {
         var wave = document.createElement('div');
-
         $(wave).addClass('wave')
                 .appendTo($waves_container);
     }
@@ -305,15 +304,16 @@ function setArrows() {
     $north.css('-ms-transform', 'rotate(' + north_direction + 'deg)');
     $north.css('-webkit-transform', 'rotate(' + north_direction + 'deg)');
     $north.css('transform', 'rotate(' + north_direction + 'deg)');
+    
 
-    $wind.css('-ms-transform', 'rotate(' + wind_direction + 'deg)');
-    $wind.css('-webkit-transform', 'rotate(' + wind_direction + 'deg)');
-    $wind.css('transform', 'rotate(' + wind_direction + 'deg)');
+    $wind.css('-ms-transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
+    $wind.css('-webkit-transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
+    $wind.css('transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
 
-
-    $waves.css('-ms-transform', 'rotate(' + wave_direction + 'deg)');
-    $waves.css('-webkit-transform', 'rotate(' + wave_direction + 'deg)');
-    $waves.css('transform', 'rotate(' + wave_direction + 'deg)');
+    console.log("Wave = "+wave_direction);
+    $waves.css('-ms-transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
+    $waves.css('-webkit-transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
+    $waves.css('transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
 }
 
 function createBoats() {
