@@ -96,7 +96,7 @@ Boat.prototype.calcDistanceBouy = function(step = 0){
 	this.distance_bouy = Math.round( Math.sqrt( ( Math.pow(d_x, 2)  +  Math.pow(d_y, 2) ) + distance ) );
 	//this.distance_bouy = norm2Dist(bouys[bouy_id], crews[boat_id - 1].tracker);
 	
-	$boat.find('.name').text(this.distance_bouy+'m');
+	//$boat.find('.name').text(this.distance_bouy+'m');
 	
 	if( step < steps )
 		setTimeout(function(){ self.calcDistanceBouy( step+1 ); },d_t)

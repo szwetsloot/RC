@@ -1,19 +1,42 @@
-function Dashboard(){
-	this.crew = null;
-	this.crewmembers = null;
+var Dashboard = {
+	crew : null,
+	crewmembers : [],
 }
 
-Dashboard.prototype.showCrewInfo = function(){
+// Het horizontale panel op de onderrand van het scherm
+Dashboard.showCrewInfo = function(crew_id){
 	// select team
-	// update dom
+	// TODO crew id moet worden opgezocht in de array
+	var crew = crews[crew_id];
+	var tracker = crew.tracker;
+	var boat = boats[crew_id];
+	var boat_speed = Math.round(convertSpeedtoKN(boat.speed) * 10) / 10;
+	console.log(tracker);
+	
+	// define dom elements
+	var $panel = $('#boat-info');
+	var $position = $panel.find('#boat-position');
+	var $speed = $panel.find('#boat-speed');
+	var $boat_roll = $panel.find('#boat-roll');
+	var $boat_location = $panel.find('#boat-location');
+	var $boat_target = $panel.find('#boat-target-bouy');
+	
+	// update information
+	$speed.text('Snelheid: '+ boat_speed +'Kn');
+	$boat_roll.html(tracker.roll_angle+'&deg;');
+	$boat_location.text( Math.round(tracker.east)+'m, '+Math.round(tracker.north)+'m' );
+	$boat_target.text( 'Volgende boei '+boat.distance_bouy+'m' );
+	
 	// repeat function every 500 ms
+	setTimeout(function(){ Dashboard.showCrewInfo(crew_id); },500)
 }
 
-Dashboard.prototype.showBouyInfo = function(){
+// Het panel met een lijst met doorkomsttijden van een boei
+Dashboard.showBouyInfo = function(){
 	
 }
 
-
+// Athlete slider
 var athlete = 0;
 
 rotateAthletes()

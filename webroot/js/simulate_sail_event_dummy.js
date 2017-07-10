@@ -44,7 +44,7 @@ $(function () {
 
     // run animation
     getDataBoats(0); // start met item 0 van de datareek
-
+    Dashboard.showCrewInfo(1)
 });
 
 
@@ -314,7 +314,7 @@ function setArrows() {
 function createBoats() {
     for (i = 0; i < crews.length; i++) {
         var crew = crews[i];
-        var boat = boats[i  ] = new Boat();
+        var boat = boats[i] = new Boat();
 
         var boatElement = $('.boat#boat-' + crew.id);
 
