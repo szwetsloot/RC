@@ -66,6 +66,17 @@ class SaillingcrewsTable extends Table
         $validator
             ->allowEmpty('description');
 
+        $validator
+            ->allowEmpty('flag_image');
+
+        $validator
+            ->integer('ranking')
+            ->allowEmpty('ranking');
+
+        $validator
+            ->integer('points')
+            ->allowEmpty('points');
+
         return $validator;
     }
 

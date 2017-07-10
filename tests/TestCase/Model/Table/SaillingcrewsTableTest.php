@@ -25,8 +25,13 @@ class SaillingcrewsTableTest extends TestCase
      */
     public $fixtures = [
         'app.saillingcrews',
-        'app.sailling_athletes',
-        'app.sailling_crews'
+        'app.trackers',
+        'app.crews',
+        'app.clubs',
+        'app.events',
+        'app.saillingathletes',
+        'app.sailling_crews',
+        'app.bouys'
     ];
 
     /**
@@ -69,6 +74,16 @@ class SaillingcrewsTableTest extends TestCase
      * @return void
      */
     public function testValidationDefault()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test buildRules method
+     *
+     * @return void
+     */
+    public function testBuildRules()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

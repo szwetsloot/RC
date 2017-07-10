@@ -12,8 +12,11 @@ use Cake\ORM\Entity;
  * @property int $club
  * @property string $description
  * @property int $tracker_id
+ * @property string $flag_image
+ * @property int $ranking
+ * @property int $points
  *
- * @property \App\Model\Entity\Saillingathlete[] $sailling_athletes
+ * @property \App\Model\Entity\Tracker $tracker
  */
 class Saillingcrew extends Entity
 {
