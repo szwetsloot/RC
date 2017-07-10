@@ -1,16 +1,32 @@
 var browser_location = $(location).attr('href').replace('simulations/simulate-sail-event-dummy/7','');
 var image_base_url = browser_location+'/img/sail_event_v2/teams/';
 	
+var bouy_stopwatch;
+var race_stopwatch;
+
+
 $(function () { 		
 
 	Dashboard.rotateAthletes();
 	
-	//Stopwatch.start();
+	race_stopwatch = new Stopwatch('#race-time');
 	
+	
+	// TODO replace with event trigger when boat rounds a bouy
 	$('.boat-icon').on('click', function(){
+		$('#bouy-counter').show();
+		
+		// stop ophalen van data van vorige boot
 		clearTimeout(Dashboard.boatinfoTimeout);
-
+		
+		// if object already exists reset old stopwatch 
+		if(bouy_stopwatch != null) bouy_stopwatch.stop(); 
+		
+		// start nieuwe counter
+		bouy_stopwatch = new Stopwatch('#bouy-counter');
+		
 		Dashboard.showBouyInfo();
+		
 		var boat_id = $(this).parent().attr('id').replace('boat-','');
 		Dashboard.showCrewInfo(boat_id);
 	});
@@ -97,17 +113,21 @@ Dashboard.addBoatToBouy = function(boat_id, position){
 	
 	var crew = crews[boat_id];	
 	
-	console.log('boat_id'+boat_id);
 	var flag_image = image_base_url + crew.flag_image;
+	
+	if(position == 1){
+		var counter = race_stopwatch.time;
+	} else{
+		var counter = '+'+bouy_stopwatch.time;
+	}
 	
 	var li = '<li class="animated fadeInLeft">';		
 	li += '<div class="position">'+position+'</div>';
 	li += '<div class="team-flag"><img src="'+ flag_image + '" /> </div>';
 	li += '<div class="name">'+crew.name+'</div>';
-	li += '<div class="counter">'+ Stopwatch.time +'</div>';		
-	li += '</li>';
+	li += '<div class="counter">'+ counter +'</div>';		
+	li += '</li>';	
 	
-
 	$('#bouy-info ul').append(li);
 }
 
@@ -125,6 +145,7 @@ Dashboard.rotateAthletes = function() {
 
 // Stopwatch
 function Stopwatch(obj){
+		this.obj = obj;
 		this.count = 0;
 		this.clearTime = null;
 		this.clearState = null;
@@ -135,7 +156,10 @@ function Stopwatch(obj){
 		this.mins = null; 
 		this.gethours = null;
 		this.time = null;
+		
+		this.start();
 }
+
 
 
 Stopwatch.prototype.start = function(){
@@ -165,14 +189,16 @@ Stopwatch.prototype.start = function(){
     this.time = this.mins + this.secs;
     
     // display the stopwatch 
-    $('#race-time .counter').text(this.time);
-    $('#bouy-counter .counter').text('+' + this.mins + this.secs);
+    $(this.obj).find('.counter').text(this.time);
+   // $('#bouy-counter .counter').text('+' + this.mins + this.secs);
         
     // call the seconds counter after displaying the stop watch and increment seconds by +1 to keep it counting
     this.seconds++;
 
+    var self = this;
+    
     // call the setTimeout( ) to keep the stop watch alive! 
-    this.clearTime = setTimeout("Stopwatch.start()", 1000);
+    this.clearTime = setTimeout(function(){self.start();}, 1000);
 }
 
 Stopwatch.prototype.stop = function(){

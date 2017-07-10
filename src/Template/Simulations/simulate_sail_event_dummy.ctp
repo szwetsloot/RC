@@ -96,24 +96,6 @@
                 <div class="name">KWV de Kaag</div>
                 <div class="counter">+13,5 S</div>
             </li>
-            <li class="animated fadeInLeft">
-                <div class="position">4</div>
-                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/2.DenHaag.png') ?></div>
-                <div class="name">WVDTP Groningen</div>
-                <div class="counter">+38,6</div>
-            </li>
-            <li class="animated fadeInLeft">
-                <div class="position">5</div>
-                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/6.Roermond.png') ?></div>
-                <div class="name">Zeilteam Westeinder</div>
-                <div class="counter">+47,3</div>
-            </li>
-            <li class="animated fadeInLeft">
-                <div class="position">6</div>
-                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/15.Braassem.png') ?></div>
-                <div class="name">WV Braassemermeer</div>
-                <div class="counter">80 m</div>
-            </li>
         </ul>
     </div>
     <div id="race-time" class="info-bar animated fadeInRight"><span class="label">Race tijd</span><span class="counter">00:00,0</span></div>
@@ -181,6 +163,6 @@
     </div>
 
 
-    <div id="bouy-counter" class="info-bar animated fadeInRight"><span class="label">Boei 1</span><span class="counter">+00,0</span></div>
+    <div id="bouy-counter" class="info-bar animated fadeInUp"><span class="label">Boei 1</span><span class="counter">+00,0</span></div>
 	<?= $this->Html->image('sail_event_v2/otis.png',['class' => 'otis-logo']) ?>
 </div>
