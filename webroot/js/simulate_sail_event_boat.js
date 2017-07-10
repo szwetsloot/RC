@@ -70,8 +70,11 @@ Boat.prototype.calcDistanceBouy = function(step = 0){
 	var d_t = refresh_time / 12;
 	var self = this
 	
+	// data komt één keer in de 6 seconden
+	// bereken zelf de tussen stappen
 	var bouy_id = 0;
 	var boat_id = this.id;
+	var distance = this.speed * d_t * step;
 	
 	// select next bouy
 	var $bouy = $('#bouy-1');
@@ -90,10 +93,10 @@ Boat.prototype.calcDistanceBouy = function(step = 0){
 	var d_y = Math.abs( boat_y - bouy_y );
 
 	// pythagoras a2 +b2 = c2 
-	this.distance_bouy = Math.round( Math.sqrt( ( Math.pow(d_x, 2)  +  Math.pow(d_y, 2) ) ) );
+	this.distance_bouy = Math.round( Math.sqrt( ( Math.pow(d_x, 2)  +  Math.pow(d_y, 2) ) + distance ) );
+	//this.distance_bouy = norm2Dist(bouys[bouy_id], crews[boat_id - 1].tracker);
 	
-	
-	$boat.find('.name').text(this.distance_bouy+'m');
+	//$boat.find('.name').text(this.distance_bouy+'m');
 	
 	if( step < steps )
 		setTimeout(function(){ self.calcDistanceBouy( step+1 ); },d_t)

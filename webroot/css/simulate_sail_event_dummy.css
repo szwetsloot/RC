@@ -375,12 +375,13 @@ li{
     padding: 3px 8px;
     position: absolute;
     font-weight: bold;
+    font-size: 10px;
+    font-family: 'bebas_neue_book';
     font-size: 12px;
     z-index: 1; /* buttons zijn 100 */
     top: -8px;
     left: 35px;
     opacity:0.9;
-    
     -moz-animation-duration: 0.1s;
 }
 

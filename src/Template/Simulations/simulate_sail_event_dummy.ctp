@@ -21,6 +21,7 @@
 <?= $this->Html->script('node_modules/proj4/dist/proj4') ?>
 
 <?= $this->Html->script('simulate_sail_event_dummy') ?>
+<?= $this->Html->script('simulate_sail_event_dashboard') ?>
 <?= $this->Html->script('simulate_sail_event_boat') ?>
 
 <div id='background-image'></div>
@@ -127,8 +128,8 @@
 
     <div id="boat-info" class="animated fadeInUp">
         <div class="boat-data">
-            <div class="position">1</div><h4>Snelheid: 6Kn</h4><h4>Helling: 26&deg;</h4><br>
-            <h6>52.112861, 4.25669</h6><h6>Volgende boei 60m</h6>
+            <div class="position">1</div><h4 id="boat-speed">Snelheid: 6Kn</h4><h4 id="boat-roll">Helling: 26&deg;</h4><br>
+            <h6 id="boat-location">52.112861, 4.25669</h6><h6 id="boat-target-bouy">Volgende boei 60m</h6>
             <span></span>
         </div>
         <div class="team-members">
@@ -165,7 +166,7 @@
         </div>
         <div class="team-data-container">
             <div class="team-data">
-                <h2>R.R. & Z.V. Maas en roer</h2>
+                <h2 class="club-name">R.R. & Z.V. Maas en roer</h2>
                 <div class="medal medal-1"></div>
                 <h3 style="text-decoration: underline;">Ranking competitie</h3>
                 <h3>Positie 1, 18 punten</h3>
