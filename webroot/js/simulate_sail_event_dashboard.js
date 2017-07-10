@@ -1,3 +1,14 @@
+
+$(function () { 
+	
+	$('.boat-icon').on('click', function(){
+		var boat_id = $('this').parent().attr('id').replace('','');
+		alert(boat_id);
+	});
+	
+	
+});
+
 var Dashboard = {
 	crew : null,
 	crewmembers : [],

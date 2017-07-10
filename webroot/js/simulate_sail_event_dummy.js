@@ -17,6 +17,7 @@ var bouys;
 var crews;
 var wind_direction;
 var wave_direction;
+var north_direction;
 
 var utm = "+proj=utm +zone=31";
 var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
@@ -69,7 +70,7 @@ function getDataBoats(reeks) {
 
         var speed = 4 + (Math.random() * 2);
         var d = new Date();
-        var direction = d.getSeconds() * 6;
+        var direction = d.getSeconds() * 6 + north_direction;
 
         var boat = boats[i];
 

@@ -10,6 +10,7 @@
  * z-index
  * height-line-container			1
  * bouy-container					2
+ * canvas							2
  * boat-container					3
  * dashboard						5
  * boat info						6
@@ -63,6 +64,7 @@ canvas{
 	position: fixed;
 	left: 0;
 	top: 0;	
+	z-index; 2;
 }
 
 li{
@@ -177,7 +179,6 @@ li{
 
 #bouy-container{
 	z-index: 3;
-	position: fixed;
 	top: 0;
 	left: 0;	
 }
@@ -243,6 +244,7 @@ li{
 .boat{
 	display: block;
 	position: relative;
+	z-index: 3;
 }
 
 #boat-1{
