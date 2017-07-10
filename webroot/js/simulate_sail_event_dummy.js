@@ -59,11 +59,6 @@ $(function () {
 
     // Start listenening
     listen();
-    
-    // Start moving the boats
-    for (var i = 0; i < boats.length; i++) {
-        boats[i].animate();
-    }
 
     // Test function
     bouyStatus(1, 1);
@@ -204,9 +199,7 @@ function moveBouys() {
     // Calculate the coordinates for each bouy
     for (var i = 0; i < bouys.length; i++) {
         var element = $('#bouy-' + i);
-
         var target = convertToPixels(element, bouys[i].east, bouys[i].north);
-
         element.css('left', target.left + 'px');
         element.css('top', target.top + 'px');
     }
@@ -295,16 +288,13 @@ function setArrows() {
 // This function continually gets data from the server
 var listenTimer; // This variable is used to make sure we don't listen too quick in simulations
 function listen() {
-    listenTimer = millis();
+    listenTimer = millis();    
     $.ajax({
         type: 'POST',
         url: listenerUrl + "/1/",
         success: function (data) {
             crews = $.parseJSON(data);
-
             // Update the crews with the new data
-            console.log(crews);
-            console.log(boats);
             var boat;
             for (var i = 0; i < crews.length; i++) {
                 var crew = crews[i];
@@ -315,18 +305,16 @@ function listen() {
                         break;
                     }
                 }
-                
                 // Set the variables
                 boat.updateData(
                         crew.tracker.north,
                         crew.tracker.east,
-                        crew.tracker.heading,
-                        crew.tracker.north
+                        crew.tracker.velocity,
+                        crew.tracker.heading
                         );
             }
         },
         complete: function (e, data) {
-            return false;
             if (millis() - listenTimer < 500 && simulation) {
                 // Slow down for the simulation data
                 setTimeout(listen, listenTimer + 500 - millis());
@@ -339,7 +327,7 @@ function listen() {
 ;
 
 function createBoats() {
-    for (i = 0; i < crews.length; i++) {
+    for (var i = 0; i < crews.length; i++) {
         var crew = crews[i];
         var boat = boats[i] = new Boat(millis());
 
@@ -349,11 +337,20 @@ function createBoats() {
 
         boat.top = x.top;
         boat.left = x.left;
-        boat.element = '#boat-' + crews[i].id;
+        boat.element = boatElement;
+        boat.boatIcon = boatElement.find('.boat-icon');
         boat.id = crew.id;
         boat.num = i;
+        boat.north = crew.tracker.north;
+        boat.east = crew.tracker.east;
+        boat.direction = crew.tracker.heading;
+        boat.speed = crew.tracker.velocity;
+        boat.drawn.north = boat.north;
+        boat.drawn.east = boat.east;
         boat.updatePosition(i + 1);
         boat.setTeam(i);
+        boat.animateMarker();
+        boat.moveBoat();
 
         // create for each boat a canvas to draw the trail
         createCanvas(i);
@@ -413,6 +410,9 @@ function convertToPixels(obj, obj_east, obj_north) {
     east -= cEast;
     north -= cNorth;
     var target = {};
+    
+    //console.log(cEast);
+    //console.log(obj_east);
 
     target.left = (east / rEast / 2 + 1 / 2) * screenWidth + obj.width() / 2;
     target.top = (north / rNorth / 2 + 1 / 2) * screenHeight + obj.height() / 2;
@@ -519,21 +519,6 @@ function startWatch() {
 }
 
 startWatch();
-
-
-var athlete = 0;
-
-rotateAthletes();
-
-function rotateAthletes() {
-    $athletes_list = $('#boat-info .team-members ul li');
-
-    $athletes_list.eq(athlete).show().delay(2800).fadeOut();
-
-    athlete = (athlete < ($athletes_list.length - 1)) ? athlete += 1 : 0;
-
-    setTimeout('rotateAthletes()', 3000);
-}
 
 // This function will calculate the status of a boat near a bouy
 // This is used to determine when the boat has rounded the bouy.
