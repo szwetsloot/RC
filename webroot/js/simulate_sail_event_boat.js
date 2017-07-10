@@ -15,7 +15,7 @@ Boat.prototype = {
         this.speed = speed;
         this.direction = direction;
         var knots = Math.round(convertSpeedtoKN(speed) * 10) / 10;
-        $(this.element).find('.extra p').html(knots + 'kN  ' + this.direction + '&deg;')
+        $(this.element).find('.extra p').html(knots + 'kN  ' + this.direction + '&deg;');
     },
     'updatePosition': function (position) {
         this.position = position;
@@ -37,20 +37,20 @@ Boat.prototype = {
             return false; // check of de animatie moet lopen 
 
         var $boat = $(this.element);
-        var $boat_icon = $boat.find('.boat-icon')
+        var $boat_icon = $boat.find('.boat-icon');
 
         $boat_icon.animate({
             textIndent: direction
         }, {
             step: function (now, fx) {
-                $(this).css('-webkit-transform', 'rotate(' + now + 'deg)')
+                $(this).css('-webkit-transform', 'rotate(' + now + 'deg)');
             },
             duration: 0,
             complete: function () {
                 $boat.animate({
                     'left': target_x + 'px',
                     'top': target_y + 'px'
-                }, refresh_time, 'linear') // stop verplaatsen 200 ms voor dat de boot weer draait naar een nieuwe direction
+                }, refresh_time, 'linear'); // stop verplaatsen 200 ms voor dat de boot weer draait naar een nieuwe direction
             }
         }, 'linear');
 
@@ -78,13 +78,13 @@ Boat.prototype.calcDistanceBouy = function(step = 0){
 	
 	// select next bouy
 	var $bouy = $('#bouy-1');
-	var target_bouy = convertToPixels($bouy, bouys[bouy_id].east, bouys[bouy_id].north)
+	var target_bouy = convertToPixels($bouy, bouys[bouy_id].east, bouys[bouy_id].north);
 	
 	var bouy_x = target_bouy.left;
 	var bouy_y = target_bouy.top;
 	
 	var $boat = $(this.element);
-	var boat_pos = convertToPixels($boat, crews[boat_id - 1].tracker['east'], crews[boat_id - 1].tracker['north'])
+	var boat_pos = convertToPixels($boat, crews[boat_id - 1].tracker['east'], crews[boat_id - 1].tracker['north']);
 	
 	var boat_x = boat_pos.top;
 	var boat_y = boat_pos.left;
@@ -99,5 +99,5 @@ Boat.prototype.calcDistanceBouy = function(step = 0){
 	//$boat.find('.name').text(this.distance_bouy+'m');
 	
 	if( step < steps )
-		setTimeout(function(){ self.calcDistanceBouy( step+1 ); },d_t)
+		setTimeout(function(){ self.calcDistanceBouy( step+1 ); },d_t);
 }

@@ -28,7 +28,7 @@ Dashboard.showCrewInfo = function(crew_id){
 	$boat_target.text( 'Volgende boei '+boat.distance_bouy+'m' );
 	
 	// repeat function every 500 ms
-	setTimeout(function(){ Dashboard.showCrewInfo(crew_id); },500)
+	setTimeout(function(){ Dashboard.showCrewInfo(crew_id); },500);
 }
 
 // Het panel met een lijst met doorkomsttijden van een boei
