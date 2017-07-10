@@ -17,6 +17,9 @@ var bouys;
 var crews;
 var wind_direction;
 var wave_direction;
+var listenerUrl;
+
+var simulation = 1; // TODO - Set this to 0 when done buildings
 
 var utm = "+proj=utm +zone=31";
 var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
@@ -53,41 +56,17 @@ $(function () {
     createBoats();
     setArrows();
 
-    // run animation
-    getDataBoats(0); // start met item 0 van de datareek
+    // Start listenening
+    listen();
     
+    // Start moving the boats
+    for (var i = 0; i < boats.length; i++) {
+        boats[i].animate();
+    }
+
+    // Test function
     bouyStatus(1, 1);
 });
-
-
-// get the data from the database or from the dummy object
-function getDataBoats(reeks) {
-
-    // loop through all the boats
-    $.each(boats, function (i) {
-
-        var speed = 4 + (Math.random() * 2);
-        var d = new Date();
-        var direction = d.getSeconds() * 6;
-
-        var boat = boats[i];
-
-        // show speed and direction in the boat label
-        boat.updateData(speed, direction);
-        boat.calcDistanceBouy();
-
-        var target = calculateVector(boat, boat.speed, boat.direction);
-        boat.moveBoat(target.top, target.left, boat.direction);
-
-    });
-    ;
-
-    // retrieve new data after a few second
-    setTimeout(function () {
-        getDataBoats(reeks);
-    }, refresh_time);
-}
-
 
 //calculate new position
 function calculateVector(boat_obj, speed, direction) {
@@ -108,9 +87,6 @@ function calculateVector(boat_obj, speed, direction) {
 
     return target;
 }
-
-
-
 
 /* DRAW ELEMENTS */
 //This function will calculate the longest distance between two bouys.
@@ -235,8 +211,7 @@ function moveBouys() {
     }
 }
 
-
-
+// This function draws the wavves
 function drawWaves() {
     $waves_container = $('#waves-container');
     $waves_container.empty();
@@ -293,6 +268,7 @@ function drawHeightLines() {
     }
 }
 
+// This function alligns all directions correctly.
 function setArrows() {
 
     var $north = $('#north-arrow img');
@@ -303,22 +279,68 @@ function setArrows() {
     $north.css('-ms-transform', 'rotate(' + north_direction + 'deg)');
     $north.css('-webkit-transform', 'rotate(' + north_direction + 'deg)');
     $north.css('transform', 'rotate(' + north_direction + 'deg)');
-    
+
 
     $wind.css('-ms-transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
     $wind.css('-webkit-transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
     $wind.css('transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
 
-    console.log("Wave = "+wave_direction);
+    console.log("Wave = " + wave_direction);
     $waves.css('-ms-transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
     $waves.css('-webkit-transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
     $waves.css('transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
 }
 
+// This function continually gets data from the server
+var listenTimer; // This variable is used to make sure we don't listen too quick in simulations
+function listen() {
+    listenTimer = millis();
+    $.ajax({
+        type: 'POST',
+        url: listenerUrl + "/1/",
+        success: function (data) {
+            crews = $.parseJSON(data);
+
+            // Update the crews with the new data
+            console.log(crews);
+            console.log(boats);
+            var boat;
+            for (var i = 0; i < crews.length; i++) {
+                var crew = crews[i];
+                // Find the boat we need
+                for (var j = 0; j < boats.length; j++) {
+                    if (boats[i].id == crew.id) { // Found it
+                        boat = boats[i];
+                        break;
+                    }
+                }
+                
+                // Set the variables
+                boat.updateData(
+                        crew.tracker.north,
+                        crew.tracker.east,
+                        crew.tracker.heading,
+                        crew.tracker.north
+                        );
+            }
+        },
+        complete: function (e, data) {
+            return false;
+            if (millis() - listenTimer < 500 && simulation) {
+                // Slow down for the simulation data
+                setTimeout(listen, listenTimer + 500 - millis());
+            } else {
+                listen();
+            }
+        }
+    });
+}
+;
+
 function createBoats() {
     for (i = 0; i < crews.length; i++) {
         var crew = crews[i];
-        var boat = boats[i  ] = new Boat();
+        var boat = boats[i] = new Boat(millis());
 
         var boatElement = $('.boat#boat-' + crew.id);
 
@@ -469,11 +491,11 @@ function startWatch() {
         seconds = 0;
         minutes += 1;
     }
-    // you use the javascript tenary operator to format how the minutes should look and add
-    // 0 to minutes if less than 10 
+// you use the javascript tenary operator to format how the minutes should look and add
+// 0 to minutes if less than 10 
     mins = (minutes < 10) ? ('0' + minutes + ':') : (minutes + ':');
 
-    // check if minutes is equal to 60 and add  a +1 to hours set minutes to 0 
+// check if minutes is equal to 60 and add  a +1 to hours set minutes to 0 
     if (minutes === 60) {
         minutes = 0;
         hours = hours + 1;
@@ -481,17 +503,17 @@ function startWatch() {
 
     /* you use the javascript tenary operator to format how the hours should look and add 0 to hours if less than 10 */
     gethours = (hours < 10) ? ('0' + hours + ':') : (hours + ':');
-    //secs = ( seconds < 10 ) ? ( '0' + seconds ) : ( seconds ); 
+//secs = ( seconds < 10 ) ? ( '0' + seconds ) : ( seconds ); 
     secs = seconds;
 
-    // display the stopwatch 
+// display the stopwatch 
     var x = $('#race-time .counter').text(gethours + mins + secs);
     $('#bouy-counter .counter').text('+' + mins + secs);
 
-    // call the seconds counter after displaying the stop watch and increment seconds by +1 to keep it counting
+// call the seconds counter after displaying the stop watch and increment seconds by +1 to keep it counting
     seconds++;
 
-    // call the setTimeout( ) to keep the stop watch alive! 
+// call the setTimeout( ) to keep the stop watch alive! 
     clearTime = setTimeout("startWatch()", 1000);
 }
 
@@ -518,15 +540,15 @@ function bouyStatus(boat_id, bouy_id) {
     // Variables
     var boat = boats[boat_id];
     var bouy = bouys[bouy_id];
-    
+
     console.log(boat);
-    
+
     console.log(norm2Dist(boat, bouy));
 
     // First check if the distance to the bouy is less than 50m
     if (norm2Dist(boat, bouy) > 50)
         return 0;
-    
+
     console.log(bouy);
 
     // Calculate the the angle between this bouy and the two others
@@ -541,10 +563,10 @@ function bouyStatus(boat_id, bouy_id) {
         prevAngle = getAngle(bouy, prevBouy);
         nextAngle = getAngle(bouy, nextBouy);
         bissect = (prevAngle + nextAngle) / 2;
-        console.log("prev = "+prevAngle);
-        console.log("next = "+nextAngle);
-        console.log("Biss = "+bissect);
-        
+        console.log("prev = " + prevAngle);
+        console.log("next = " + nextAngle);
+        console.log("Biss = " + bissect);
+
     }
     if (bouy.type == 3) { // Finish bouy
         // This bouy consist of either 2 bouys or a bouy and a ship.
@@ -575,4 +597,9 @@ function rotatePoint(rotation, start_east, start_north, center_east = 0, center_
     var cnorth = Math.sin(rotation) * (start_east - center_east) +
             Math.cos(rotation) * (start_north - center_north) + center_north;
     return [ceast, cnorth];
+}
+
+function millis() {
+    var d = new Date();
+    return d.getTime();
 }

@@ -10,9 +10,13 @@
     // Initialize the crews
     var crews = <?= json_encode($crews) ?>;
     var bouys = <?= json_encode($bouys) ?>;
+    
+    // Initialize the wind and wave direction
     var wave_direction = <?= $wave ?> + 180; // The +180 is to correct for the image
-    console.log("Wave = "+wave_direction);
     var wind_direction = <?= $wind ?>;
+    
+    // Build the url for ajax requests
+    var listenerUrl = <?= json_encode($this->Url->build(['action' => 'sailEventListener'])) ?>;
 </script>
 
 <?= $this->Html->css('animate') ?>

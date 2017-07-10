@@ -1,17 +1,34 @@
 // the boat object 
-function Boat() {
+function Boat(currentTime) {
     this.team = 0;
     this.north = 0;
     this.east = 0;
     this.speed = 0;
     this.direction = 170;
     this.element = '#boat-0'
+    this.lastMessage = currentTime;
+    this.lastUpdate  = currentTime;
+    this.drawn = {
+        'north': 0,
+        'east':  0,
+        'top':   0,
+        'left':  0
+    }
 }
 ;
 
 // extend the boat object
 Boat.prototype = {
-    'updateData': function (speed, direction) {
+    'animate': function() {
+        // This method will calculate where the boat has to go to stay close to the data
+        // Calculate where the boat should be
+        exceptedNorth = this.north + Math.cos(this.direction / 180 * Math.PI) * this.speed * millis() - this.LastMessage;
+        exceptedEast = this.north + Math.cos(this.direction / 180 * Math.PI) * this.speed * millis() - this.LastMessage;
+        
+    },
+    'updateData': function (north, east, speed, direction) {
+        this.north = north;
+        this.east = east;
         this.speed = speed;
         this.direction = direction;
         var knots = Math.round(convertSpeedtoKN(speed) * 10) / 10;
@@ -32,7 +49,7 @@ Boat.prototype = {
         var src = $boat_flag.attr('src') + crews[i].flag_image;
         $boat_flag.attr('src', src);
     },
-    'moveBoat': function (target_y, target_x, direction) {
+    'moveBoat': function (target_y, target_x, direction, draw_time) {
         if (run != 1)
             return false; // check of de animatie moet lopen 
 
@@ -50,7 +67,7 @@ Boat.prototype = {
                 $boat.animate({
                     'left': target_x + 'px',
                     'top': target_y + 'px'
-                }, refresh_time, 'linear'); // stop verplaatsen 200 ms voor dat de boot weer draait naar een nieuwe direction
+                }, draw_time, 'linear'); // stop verplaatsen 200 ms voor dat de boot weer draait naar een nieuwe direction
             }
         }, 'linear');
 
