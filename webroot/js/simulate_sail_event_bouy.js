@@ -28,6 +28,7 @@ Bouy.prototype = {
       // This method is called when a boat left this bouy.
       // The rounded time should be saved. This is done in the dashboard.
       // Send a message to the dashboard
+    	console.log('rounded!!!!');
       Dashboard.bouyRounded(boat,this.number);
     
     },

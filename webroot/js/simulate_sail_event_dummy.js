@@ -21,7 +21,6 @@ var north_direction = 0;
 var listenerUrl;
 
 var simulation = 1; // TODO - Set this to 0 when done buildings
-var startTime;
 
 var utm = "+proj=utm +zone=31";
 var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
@@ -31,7 +30,6 @@ var boats = [];
 var run = 1; // global variable for running the animation 1 = run & 0 = stop
 var end_animation = 1; // stop the animation after 2 minutes
 var race_veld = 'Eredivisie zeilen J/70'; // TODO get from backend 
-
 
 var screenUTMRange = {
     'centerEast': 1E9,
@@ -291,13 +289,9 @@ function listen() {
     listenTimer = millis();
     $.ajax({
         type: 'POST',
-        url: listenerUrl + "/1/"+startTime,
+        url: listenerUrl + "/1/",
         success: function (data) {
-            console.log(data);
             crews = $.parseJSON(data);
-            console.log(crews[0].tracker.heading);
-            console.log(crews[0].tracker.test);
-            console.log(crews[0].tracker.time);
             // Update the crews with the new data
             var boat;
             for (var i = 0; i < crews.length; i++) {
