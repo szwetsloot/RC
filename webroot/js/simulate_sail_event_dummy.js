@@ -349,6 +349,7 @@ function createBoats() {
         boat.drawn.north = boat.north;
         boat.drawn.east = boat.east;
         boat.updatePosition(i + 1);
+        boat.checkBouys();
         boat.setTeam(i);
         boat.animateMarker();
         boat.moveBoat();
