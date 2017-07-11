@@ -125,12 +125,14 @@ Boat.prototype = {
     },
     'checkBouys': function() {
         // This method will check the status on the current bouy and keep track of rounding it
-        console.log("test");
+        var ref = this;
         setTimeout(function() {ref.checkBouys()}, 100);
-        
-        for (var i = 0; i < bouys[i].length; i++) {
+        //console.log(this.nextBouy);
+        for (var i = 0; i < bouys.length; i++) {
+            console.log(bouys[i].order);
             if (bouys[i].order == this.nextBouy) {
                 var bouyUpdate = bouys[i].calculateBoatStatus(this);
+                console.log("Status = "+bouyUpdate);
                 if (this.bouyStatus == 3) {
                     if (bouyUpdate == 4) {
                         this.bouyStatus = 4;

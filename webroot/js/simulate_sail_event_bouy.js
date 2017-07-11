@@ -34,7 +34,7 @@ Bouy.prototype = {
     },
     'calculateBoatStatus': function (boat) {
         // This method will check if there are boats within range of this bouy   
-        if (norm2Dist(boat, bouy) > 50)
+        if (norm2Dist(boat, this) > 50)
             return 0;
 
         if (this.type == 1) { // Start bouy
