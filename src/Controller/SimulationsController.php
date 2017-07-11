@@ -6,6 +6,9 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 
 define("SIMULATION", 1);
+define("TEST", "test 1");
+define("TEST_VELOCITY", 50);
+define("BOUY_DIST", 30);
 
 /**
  * Simulations Controller
@@ -71,23 +74,46 @@ class SimulationsController extends AppController {
             $bouy['north'] = $this->GPoint->N();
             $bouy['east'] = $this->GPoint->E();
         }
-        
+
         // If the simulatiion is running, reset the location of the boats to the locations of the bouys
         if (SIMULATION) {
-            foreach ($crews as $i => &$crew) {
-                $crew['tracker']['north'] = $bouys[0]['north'];
-                $crew['tracker']['east'] = $bouys[0]['east'];
-                $this->Trackers->save($crew->tracker);
+            if (TEST == "test 1") { // This test is a simple round the bouy
+                $startBouy = array_filter($bouys, function($q) {
+                    return $q['order'] == 1;
+                });
+                $startBouy = array_shift($startBouy);
+                $secondBouy = array_filter($bouys, function($q) use ($startBouy) {
+                    return $q['prev'] == $startBouy['id'];
+                });
+                $secondBouy = array_shift($secondBouy);
+                $angle = atan2($secondBouy['north'] - $startBouy['north'], $secondBouy['east'] - $startBouy['east']);
+                foreach ($crews as $i => &$crew) {
+                    // For this test we start 10m north of the startbouy
+                    $crew['tracker']['north'] = $startBouy['north'] - (BOUY_DIST * sin($angle));
+                    $crew['tracker']['east'] = $startBouy['east'] + (BOUY_DIST * cos($angle));
+                    $crew['tracker']['heading'] = $angle * 180 / pi();
+                    if ($i == 0) {
+                        $crew['tracker']['velocity'] = TEST_VELOCITY;
+                    } else {
+                        $crew['tracker']['velocity'] = 0;
+                    }
+                }
             }
+
+            /* foreach ($crews as $i => &$crew) {
+              $crew['tracker']['north'] = $bouys[0]['north'];
+              $crew['tracker']['east'] = $bouys[0]['east'];
+              $this->Trackers->save($crew->tracker);
+              } */
         }
 
         $data = $this->getWindWaveData();
         $wind = $data[1];
         $wave = $data[0];
-
+        $startTime = round(microtime(true) * 1000);
         $this->set(
                 compact(
-                        'crews', 'bouys', 'wind', 'wave'
+                        'crews', 'bouys', 'wind', 'wave', 'startTime'
                 )
         );
     }
@@ -108,7 +134,7 @@ class SimulationsController extends AppController {
         $waveDirection = 0;
         foreach ($data->series[0]->data as $item) {
             // Parse the dateTime to check if it is most recent
-            $time = strtotime($item->dateTime)."<br />";
+            $time = strtotime($item->dateTime) . "<br />";
             if ($time > $maxTime) {
                 $maxTime = $time;
                 $waveDirection = $item->value;
@@ -123,38 +149,51 @@ class SimulationsController extends AppController {
         $maxTime = 0;
         foreach ($data->series[0]->data as $item) {
             // Parse the dateTime to check if it is most recent
-            $time = strtotime($item->dateTime)."<br />";
+            $time = strtotime($item->dateTime) . "<br />";
             if ($time > $maxTime) {
                 $maxTime = $time;
                 $windDirection = $item->value;
             }
         }
-        
+
         return [$waveDirection, $windDirection];
     }
 
-    public function sailEventListener($type = 0, $unit = null) {
+    public function sailEventListener($type = 0, $startTime = null) {
         if (SIMULATION) {
-            die(json_encode($this->simulationListener($type, $unit)));
+            die(json_encode($this->simulationListener($type, $startTime)));
         } else {
 // TODO - Here the data from the database should be loaded
         }
     }
 
-    private function simulationListener($type, $unit) {
+    private function simulationListener($type, $startTime) {
 
         if ($type == 0) { // Get bouys
-            return $this->simulationListenerGetBouys($unit);
+            return $this->simulationListenerGetBouys($startTime);
         } elseif ($type == 1) { // Get boats
-            return $this->simulationListenerGetBoats($unit);
+            return $this->simulationListenerGetBoats($startTime);
         }
     }
 
-    private function simulationListenerGetBouys($unit) {
+    private function simulationListenerGetBouys($startTime) {
         return $unit;
     }
 
-    private function simulationListenerGetBoats($unit) {
+    private function simulationListenerGetBoats($startTime) {
+        // Get the bouys
+        $bouys = $this->Bouys->find()
+                ->contain(['trackers'])
+                ->all()
+                ->toArray();
+        $this->GPoint = $this->loadComponent('GPoint');
+        foreach ($bouys as &$bouy) {
+            $this->GPoint->setLongLat($bouy->Trackers['longitude'], $bouy->Trackers['latitude']);
+            $this->GPoint->convertLLtoTM(0);
+            $bouy['north'] = $this->GPoint->N();
+            $bouy['east'] = $this->GPoint->E();
+        }
+
         // Retrieve the crews from the database
         $crews = $this->SaillingCrews->find()
                 ->contain(['Trackers'])
@@ -166,19 +205,81 @@ class SimulationsController extends AppController {
         $crews = array_filter($crews, function($e) use ($eventCrews) {
             return in_array($e->id, $eventCrews);
         });
-        
+
+        $startBouy = array_filter($bouys, function($q) {
+            return $q['order'] == 1;
+        });
+        $startBouy = array_shift($startBouy);
+        $secondBouy = array_filter($bouys, function($q) use ($startBouy) {
+            return $q['prev'] == $startBouy['id'];
+        });
+        $secondBouy = array_shift($secondBouy);
+        $angle = atan2($secondBouy['north'] - $startBouy['north'], $secondBouy['east'] - $startBouy['east']);
+
+        $start = array(
+            'north' => $startBouy['north'] - (BOUY_DIST * sin($angle)),
+            'east' => $startBouy['east'] + (BOUY_DIST * cos($angle))
+        );
+        $end = array(
+            'north' => $secondBouy['north'] + (BOUY_DIST * sin($angle)),
+            'east' => $secondBouy['east'] - (BOUY_DIST * cos($angle))
+        );
+        if (TEST == "test 1") {
+            $mils = round(microtime(true) * 1000);
+            foreach ($crews as $i => &$crew) {
+                if ($i == 0) {
+                    // Go straight till above the first bouy
+                    $sElapsed = ($mils - $startTime) / 1000;
+                    $crew['tracker']['time'] = $sElapsed;
+                    if ($sElapsed <= (160.67 / TEST_VELOCITY)) {
+                        $crew['tracker']['north'] = $start['north'] + ($sElapsed * TEST_VELOCITY) * sin($angle);
+                        $crew['tracker']['east'] = $start['east'] + ($sElapsed * TEST_VELOCITY) * cos($angle);
+                        $crew['tracker']['heading'] = $angle * 180 / pi() + pi();
+                        $crew['tracker']['velocity'] = 20;
+                    } else if (
+                            $sElapsed > (160.67 / TEST_VELOCITY) &&
+                            $sElapsed <= ((160.67 + BOUY_DIST * pi()) / TEST_VELOCITY)
+                    ) {
+                        $anglePerc = $crew['tracker']['north'] = ($sElapsed - (160.67 / TEST_VELOCITY)) / (10 * pi()) * TEST_VELOCITY;
+                        $crew['tracker']['test'] = $anglePerc;
+                        if ($anglePerc >= 0.9) {
+                            $crew['tracker']['velocity'] = 0;
+                            $anglePerc = 0.9;
+                        }
+                        $crew['tracker']['north'] = $secondBouy['north'] + BOUY_DIST * sin($angle - pi() * $anglePerc + pi() / 2);
+                        $crew['tracker']['east'] = $secondBouy['east'] + BOUY_DIST * cos($angle - pi() * $anglePerc + pi() / 2);
+                        $crew['tracker']['heading'] = ($angle + $anglePerc * pi()) * 180 / pi();
+                    } elseif (
+                            $sElapsed > ((160.67 + BOUY_DIST * pi()) / TEST_VELOCITY) && 
+                            $sElapsed <= ((160.67 * 2 + BOUY_DIST * pi()) / TEST_VELOCITY)
+                    ) {
+                        $sElapsed -= ((160.67 + BOUY_DIST * pi()) / TEST_VELOCITY);
+                        $crew['tracker']['north'] = $end['north'] - ($sElapsed * TEST_VELOCITY) * sin($angle);
+                        $crew['tracker']['east'] = $end['east'] - ($sElapsed * TEST_VELOCITY) * cos($angle);
+                        $crew['tracker']['heading'] = $angle * 180 / pi() - pi();
+                        $crew['tracker']['velocity'] = 20;
+                    }
+                } else {
+                    $crew['tracker']['north'] = $start['north'];
+                    $crew['tracker']['east'] = $start['east'];
+                    $crew['tracker']['velocity'] = 0;
+                }
+            }
+            return $crews;
+        }
+
         // Conver the wgs84 to utm
         $this->GPoint = $this->loadComponent('GPoint');
         foreach ($crews as &$crew) {
-            
+
             // Update the data (approximately a circle)
             $crew->tracker->north += sin($crew->tracker->heading / 180 * pi()) * $crew->tracker->velocity;
-            $crew->tracker->east  += cos($crew->tracker->heading / 180 * pi()) * $crew->tracker->velocity;
-            
-            $crew->tracker->velocity = 5 + rand(0, 4) ;
-            $crew->tracker->heading += 360 / 10 + rand(-1,1);
+            $crew->tracker->east += cos($crew->tracker->heading / 180 * pi()) * $crew->tracker->velocity;
+
+            $crew->tracker->velocity = 5 + rand(0, 4);
+            $crew->tracker->heading += 360 / 10 + rand(-1, 1);
             $crew->tracker->heading %= 360;
-            
+
             // Save the new data
             $this->Trackers->save($crew->tracker);
         }

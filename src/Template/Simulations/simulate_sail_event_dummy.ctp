@@ -16,6 +16,9 @@
 
     // Build the url for ajax requests
     var listenerUrl = <?= json_encode($this->Url->build(['action' => 'sailEventListener'])) ?>;
+    
+    // Extra variables
+    var startTime = <?= json_encode($startTime) ?>;
 </script>
 
 <?= $this->Html->css('animate') ?>

@@ -37,7 +37,7 @@ Boat.prototype = {
         ref.drawn.east += Math.cos(boat.direction / 180 * Math.PI) * boat.speed * (millis() - boat.lastUpdate) / 1000;
         console.log();
         // Correct for changes
-        var factor = 0.97;
+        var factor = 0.7;
         ref.drawn.north = ref.drawn.north * factor + expectedNorth * (1 - factor);
         ref.drawn.east = ref.drawn.east * factor + expectedEast * (1 - factor);
         var direction = Math.atan2(ref.drawn.north - drawnNorth, ref.drawn.east - drawnEast) * 180 / Math.PI;
