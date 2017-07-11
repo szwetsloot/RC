@@ -129,10 +129,13 @@ Boat.prototype = {
     'checkBouys': function() {
         var ref = this;
         setTimeout(function() { ref.checkBouys(); }, 100);
+        /*if (this.id == 1)
+            console.log("Status = "+ref.bouyStatus);*/
         // This method will check the status on the current bouy and keep track of rounding it
         for (var i = 0; i < bouys.length; i++) {
             if (bouys[i].order == this.nextBouy) {
                 var bouyUpdate = bouys[i].calculateBoatStatus(this);
+                //console.log("Update = "+bouyUpdate);
                 if (this.bouyStatus == 3) {
                     if (bouyUpdate == 4) {
                         this.bouyStatus = 4;
@@ -150,6 +153,8 @@ Boat.prototype = {
                         for (var j = 0; j < bouys.length; j++) {
                             if (bouys[j].prev == bouys[i].id) {
                                 ref.nextBouy = bouys[j].order;
+                                console.log("next Bouy = "+ref.nextBouy);
+                                break;
                             }
                         }
                     }
@@ -157,7 +162,7 @@ Boat.prototype = {
                     if (bouyUpdate == 0) {
                         // Don't update
                     } else {
-                        this.bouyStatus == bouyUpdate;
+                        this.bouyStatus = bouyUpdate;
                     }
                 } else if (this.bouyStatus == 0) {
                     // Started rounding, send a message to the bouy
