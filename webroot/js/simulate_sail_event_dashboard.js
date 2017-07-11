@@ -1,10 +1,9 @@
 var browser_location = $(location).attr('href').replace('simulations/simulate-sail-event-dummy/7','');
 var image_base_url = browser_location+'/img/sail_event_v2/teams/';
 
-// define the 
+// define the global variables
 var bouy_stopwatch; // stopwatch that runs when boat rounds a bouy
 var race_stopwatch; // stopwatch which starts when screen is finished loading
-
 
 $(function(){ 		
 	// TODO fire this function when the actual race starts
@@ -17,13 +16,20 @@ var Dashboard = {
 	crewmembers : [],
 	athlete : 0,
 	boatinfoTimeout: null,
+	athlete_rotator : null,
 }
 
 // This function shows the right dashboard panels when a boat rounds a bouy
 Dashboard.bouyRounded = function(boat, bouy_id){
-	console.log(boat);
+	//console.log(boat);
 	
 	var boat_id = boat.id;
+	
+	
+	// check if boat is the first boat to pass thiss bouy
+	// 
+	// if so show the bouy counter
+	// else just append this boat 
 	
 	// if object already exists reset old stopwatch 
 	if(bouy_stopwatch != null) bouy_stopwatch.stop(); 
@@ -38,6 +44,7 @@ Dashboard.bouyRounded = function(boat, bouy_id){
 	
 	// stop ophalen van data van vorige boot
 	clearTimeout(Dashboard.boatinfoTimeout);
+	clearTimeout(Dashboard.athlete_rotator);
 	// brede balk onderaan het scherm
 	Dashboard.showCrewInfo(boat_id);
 }
@@ -94,14 +101,13 @@ Dashboard.showCrewInfo = function(crew_id){
 	$club_flag.attr('src', image_base_url+crew.flag_image)
 	
 	$panel.show();
+	
 	// start rotating the atletes
 	Dashboard.rotateAthletes();
 	
 	// repeat function every 500 ms
 	this.boatinfoTimeout = setTimeout(function(){ Dashboard.showCrewInfo(crew_id); },500);
 }
-
-
 
 // Het panel met een lijst met doorkomsttijden van een boei
 Dashboard.showBouyInfo = function(name){
@@ -119,7 +125,7 @@ Dashboard.showBouyInfo = function(name){
 	$name.text(name);
 	$veld.text(race_veld); // global variable from main js file
 	
-	// TO DO 
+	// TODO check if boat should be added or  
 	// simulate popups --> needs to be called by the bouy object
 	Dashboard.addBoatToBouy(0,1);	
 	
@@ -130,11 +136,10 @@ Dashboard.showBouyInfo = function(name){
 	setTimeout(function(){
 		Dashboard.addBoatToBouy(2,3);	
 		}, 6000);
-	
-	
+
 }
 
-
+// add the html of boat to the existing list
 Dashboard.addBoatToBouy = function(boat_id, position){
 	
 	var crew = crews[boat_id];	
@@ -157,16 +162,13 @@ Dashboard.addBoatToBouy = function(boat_id, position){
 	$('#bouy-info ul').append(li);
 }
 
-
-
-
-
 // functie die de profiel foto's van de athletes laat in en uit faden
 Dashboard.rotateAthletes = function() {
     $athletes_list = $('#boat-info .team-members ul li');    
     $athletes_list.eq(this.athlete).show().delay(2800).fadeOut();
     this.athlete = (this.athlete < ($athletes_list.length - 1)) ? this.athlete += 1 : 0;
-    setTimeout('Dashboard.rotateAthletes()', 3000);
+    //console.log('Dashboard.rotateAthletes');
+    this.athlete_rotator = setTimeout('Dashboard.rotateAthletes()', 3000);
 }
 
 // Stopwatch
@@ -188,7 +190,7 @@ function Stopwatch(obj, name){
 }
 
 
-
+// Stopwatch
 Stopwatch.prototype.start = function(){
 	// stop het bewegen van de bootjes na een tijd gedefineerd by end animation
     if (this.minutes > end_animation) run = 0;
