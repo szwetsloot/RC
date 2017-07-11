@@ -227,52 +227,47 @@ class SimulationsController extends AppController {
         if (TEST == "test 1") {
             $mils = round(microtime(true) * 1000);
             foreach ($crews as $i => &$crew) {
-                if ($i == 0) {
-                    // Go straight till above the first bouy
-                    $sElapsed = ($mils - $startTime) / 1000;
-                    $diff = ((160.67 * 2 + BOUY_DIST * pi() * 2) / TEST_VELOCITY);
-                    while ($sElapsed > $diff) $sElapsed -= $diff;
-                    $crew['tracker']['time'] = $sElapsed;
-                    if ($sElapsed <= (160.67 / TEST_VELOCITY)) {
-                        $crew['tracker']['north'] = $start['north'] + ($sElapsed * TEST_VELOCITY) * sin($angle);
-                        $crew['tracker']['east'] = $start['east'] + ($sElapsed * TEST_VELOCITY) * cos($angle);
-                        $crew['tracker']['heading'] = ($angle) * 180 / pi();
-                        $crew['tracker']['velocity'] = TEST_VELOCITY;
-                    } else if (
-                            $sElapsed > (160.67 / TEST_VELOCITY) &&
-                            $sElapsed <= ((160.67 + BOUY_DIST * pi()) / TEST_VELOCITY)
-                    ) {
-                        $anglePerc = ($sElapsed - (160.67 / TEST_VELOCITY)) / (BOUY_DIST * pi()) * TEST_VELOCITY;
-                        $crew['tracker']['test'] = $anglePerc;
-                        $crew['tracker']['north'] = $secondBouy['north'] + BOUY_DIST * sin($angle - pi() * $anglePerc + pi() / 2);
-                        $crew['tracker']['east'] = $secondBouy['east'] + BOUY_DIST * cos($angle - pi() * $anglePerc + pi() / 2);
-                        $crew['tracker']['heading'] = ($angle - $anglePerc * pi()) * 180 / pi();
-                        $crew['tracker']['velocity'] = TEST_VELOCITY;
-                    } elseif (
-                            $sElapsed > ((160.67 + BOUY_DIST * pi()) / TEST_VELOCITY) && 
-                            $sElapsed <= ((160.67 * 2 + BOUY_DIST * pi()) / TEST_VELOCITY)
-                    ) {
-                        $sElapsed -= ((160.67 + BOUY_DIST * pi()) / TEST_VELOCITY);
-                        $crew['tracker']['north'] = $end['north'] - ($sElapsed * TEST_VELOCITY) * sin($angle);
-                        $crew['tracker']['east'] = $end['east'] - ($sElapsed * TEST_VELOCITY) * cos($angle);
-                        $crew['tracker']['heading'] = $angle * 180 / pi() + 180;
-                        $crew['tracker']['velocity'] = TEST_VELOCITY;
-                    } elseif (
-                            $sElapsed > ((160.67 * 2 + BOUY_DIST * pi()) / TEST_VELOCITY) && 
-                            $sElapsed <= ((160.67 * 2 + BOUY_DIST * pi() * 2) / TEST_VELOCITY)
-                            ) {
-                        $sElapsed -= ((160.67 * 2 + BOUY_DIST * pi()) / TEST_VELOCITY);
-                        $anglePerc = $crew['tracker']['north'] = $sElapsed / (BOUY_DIST * pi()) * TEST_VELOCITY;
-                        $crew['tracker']['test'] = $anglePerc;
-                        $crew['tracker']['north'] = $startBouy['north'] + BOUY_DIST * sin($angle - pi() * $anglePerc - pi() / 2);
-                        $crew['tracker']['east'] = $startBouy['east'] + BOUY_DIST * cos($angle - pi() * $anglePerc - pi() / 2);
-                        $crew['tracker']['heading'] = ($angle - $anglePerc * pi()) * 180 / pi() + 180;
-                        $crew['tracker']['velocity'] = TEST_VELOCITY;
-                    }
-                } else {
-                    $crew['tracker']['north'] = $start['north'];
-                    $crew['tracker']['east'] = $start['east'];
-                    $crew['tracker']['velocity'] = 0;
+                $velocity = TEST_VELOCITY * (1 - 0.2 * $i);
+                // Go straight till above the first bouy
+                $sElapsed = ($mils - $startTime) / 1000;
+                $diff = ((160.67 * 2 + BOUY_DIST * pi() * 2) / $velocity);
+                while ($sElapsed > $diff) $sElapsed -= $diff;
+                $crew['tracker']['time'] = $sElapsed;
+                if ($sElapsed <= (160.67 / $velocity)) {
+                    $crew['tracker']['north'] = $start['north'] + ($sElapsed * $velocity) * sin($angle);
+                    $crew['tracker']['east'] = $start['east'] + ($sElapsed * $velocity) * cos($angle);
+                    $crew['tracker']['heading'] = ($angle) * 180 / pi();
+                    $crew['tracker']['velocity'] = $velocity;
+                } else if (
+                        $sElapsed > (160.67 / $velocity) &&
+                        $sElapsed <= ((160.67 + BOUY_DIST * pi()) / $velocity)
+                ) {
+                    $anglePerc = ($sElapsed - (160.67 / $velocity)) / (BOUY_DIST * pi()) * $velocity;
+                    $crew['tracker']['test'] = $anglePerc;
+                    $crew['tracker']['north'] = $secondBouy['north'] + BOUY_DIST * sin($angle - pi() * $anglePerc + pi() / 2);
+                    $crew['tracker']['east'] = $secondBouy['east'] + BOUY_DIST * cos($angle - pi() * $anglePerc + pi() / 2);
+                    $crew['tracker']['heading'] = ($angle - $anglePerc * pi()) * 180 / pi();
+                    $crew['tracker']['velocity'] = $velocity;
+                } elseif (
+                        $sElapsed > ((160.67 + BOUY_DIST * pi()) / $velocity) && 
+                        $sElapsed <= ((160.67 * 2 + BOUY_DIST * pi()) / $velocity)
+                ) {
+                    $sElapsed -= ((160.67 + BOUY_DIST * pi()) / $velocity);
+                    $crew['tracker']['north'] = $end['north'] - ($sElapsed * $velocity) * sin($angle);
+                    $crew['tracker']['east'] = $end['east'] - ($sElapsed * $velocity) * cos($angle);
+                    $crew['tracker']['heading'] = $angle * 180 / pi() + 180;
+                    $crew['tracker']['velocity'] = $velocity;
+                } elseif (
+                        $sElapsed > ((160.67 * 2 + BOUY_DIST * pi()) / $velocity) && 
+                        $sElapsed <= ((160.67 * 2 + BOUY_DIST * pi() * 2) / $velocity)
+                        ) {
+                    $sElapsed -= ((160.67 * 2 + BOUY_DIST * pi()) / $velocity);
+                    $anglePerc = $crew['tracker']['north'] = $sElapsed / (BOUY_DIST * pi()) * $velocity;
+                    $crew['tracker']['test'] = $anglePerc;
+                    $crew['tracker']['north'] = $startBouy['north'] + BOUY_DIST * sin($angle - pi() * $anglePerc - pi() / 2);
+                    $crew['tracker']['east'] = $startBouy['east'] + BOUY_DIST * cos($angle - pi() * $anglePerc - pi() / 2);
+                    $crew['tracker']['heading'] = ($angle - $anglePerc * pi()) * 180 / pi() + 180;
+                    $crew['tracker']['velocity'] = $velocity;
                 }
             }
             return $crews;
