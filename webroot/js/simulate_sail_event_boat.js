@@ -127,23 +127,28 @@ Boat.prototype = {
         var ref = this;
         setTimeout(function() { ref.checkBouys(); }, 100);
         // This method will check the status on the current bouy and keep track of rounding it
-        for (var i = 0; i < bouys[i].length; i++) {
+        for (var i = 0; i < bouys.length; i++) {
             if (bouys[i].order == this.nextBouy) {
                 var bouyUpdate = bouys[i].calculateBoatStatus(this);
-                console.log(bouyUpdate);
                 if (this.bouyStatus == 3) {
                     if (bouyUpdate == 4) {
                         this.bouyStatus = 4;
                     } else if (bouyUpdate != 0) {
                         this.bouyStatus = bouyUpdate;
                     }
-                } else if (this.bouyStatus = 4) {
+                } else if (this.bouyStatus == 4) {
                     if (bouyUpdate == 3) {
                         this.bouyStatus = 3;
                     } else if (bouyUpdate == 0) {
                         // Done rounding, send a message to the bouy
-                        bouys[i].rounded(this);
-                        this.nextBouy++;
+                        bouys[i].rounded(ref);
+                        ref.bouyStatus = 0;
+                        // Find the bouy which is next
+                        for (var j = 0; j < bouys.length; j++) {
+                            if (bouys[j].prev == bouys[i].id) {
+                                ref.nextBouy = bouys[j].order;
+                            }
+                        }
                     }
                 } else if (this.bouyStatus > 0) {
                     if (bouyUpdate == 0) {
@@ -153,7 +158,9 @@ Boat.prototype = {
                     }
                 } else if (this.bouyStatus == 0) {
                     // Started rounding, send a message to the bouy
-                    bouys[i].boatEntered(this);
+                    if (bouyUpdate != 0) {
+                        bouys[i].boatEntered(this);
+                    }
                     this.bouyStatus = bouyUpdate;
                 }
             }

@@ -1,5 +1,6 @@
 // Bouy object
 function Bouy() {
+    this.id = 0;
     this.north = 0;
     this.east = 0;
     this.number = 0;
@@ -22,7 +23,7 @@ Bouy.prototype = {
         // This method is called when a boat entered this bouy.
         // If this is the firstboat to do this it should send a message to the dashboard
         // TODO - send message to the dashboard
-        
+        console.log("Entered!!!");
     },
     'rounded': function(boat) {
       // This method is called when a boat left this bouy.
@@ -36,7 +37,9 @@ Bouy.prototype = {
         // This method will check if there are boats within range of this bouy   
         if (norm2Dist(boat, this) > 50)
             return 0;
-
+        
+        var bouy = this;
+        
         if (this.type == 1) { // Start bouy
             // This bouy consist of either 2 bouys or a bouy and a ship.
             // TODO
@@ -44,9 +47,10 @@ Bouy.prototype = {
             // Find the previous and the next  bouy
             var prevBouy, nextBouy;
             for (var i = 0; i < bouys.length; i++) {
-                if (bouys[i].prev == this.id) nextBouy = bouys[i];
-                if (bouys[i].id == this.prev) prevBouy = bouys[i];
+                if (bouys[i].prev == bouy.id) nextBouy = bouys[i];
+                if (bouys[i].id == bouy.prev) prevBouy = bouys[i];
             }
+            
             
             // Calculate the angle with the preivous bouy and the next bouy.
             var prevAngle = getAngle(bouy, prevBouy) * 180 / Math.PI;

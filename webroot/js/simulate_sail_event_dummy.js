@@ -78,6 +78,7 @@ function createBouys() {
     for (var i = 0; i < bouys.length; i++) {
         var bouy = bouys[i];
         bouys[i] = new Bouy;
+        bouys[i].id = bouy.id;
         bouys[i].north = bouy.north;
         bouys[i].east = bouy.east;
         bouys[i].number = bouy.id;
