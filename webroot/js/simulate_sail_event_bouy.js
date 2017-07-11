@@ -29,7 +29,7 @@ Bouy.prototype = {
       // The rounded time should be saved. This is done in the dashboard.
       // Send a message to the dashboard
     	console.log('rounded!!!!');
-      Dashboard.bouyRounded(boat,this.number);
+      //Dashboard.bouyRounded(boat,this.number);
     
     },
     'calculateBoatStatus': function (boat) {
