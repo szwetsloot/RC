@@ -5,3 +5,4 @@ tmp/
 /nbproject/private/
 logs/error.log
 *.orig
+logs/

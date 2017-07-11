@@ -7,7 +7,7 @@ use Cake\Event\Event;
 
 define("SIMULATION", 1);
 define("TEST", "test 1");
-define("TEST_VELOCITY", 50);
+define("TEST_VELOCITY", 30);
 define("BOUY_DIST", 30);
 
 /**
@@ -236,17 +236,18 @@ class SimulationsController extends AppController {
                     if ($sElapsed <= (160.67 / TEST_VELOCITY)) {
                         $crew['tracker']['north'] = $start['north'] + ($sElapsed * TEST_VELOCITY) * sin($angle);
                         $crew['tracker']['east'] = $start['east'] + ($sElapsed * TEST_VELOCITY) * cos($angle);
-                        $crew['tracker']['heading'] = $angle * 180 / pi() + pi();
+                        $crew['tracker']['heading'] = ($angle) * 180 / pi();
                         $crew['tracker']['velocity'] = TEST_VELOCITY;
                     } else if (
                             $sElapsed > (160.67 / TEST_VELOCITY) &&
                             $sElapsed <= ((160.67 + BOUY_DIST * pi()) / TEST_VELOCITY)
                     ) {
-                        $anglePerc = $crew['tracker']['north'] = ($sElapsed - (160.67 / TEST_VELOCITY)) / (BOUY_DIST * pi()) * TEST_VELOCITY;
+                        $anglePerc = ($sElapsed - (160.67 / TEST_VELOCITY)) / (BOUY_DIST * pi()) * TEST_VELOCITY;
                         $crew['tracker']['test'] = $anglePerc;
                         $crew['tracker']['north'] = $secondBouy['north'] + BOUY_DIST * sin($angle - pi() * $anglePerc + pi() / 2);
                         $crew['tracker']['east'] = $secondBouy['east'] + BOUY_DIST * cos($angle - pi() * $anglePerc + pi() / 2);
-                        $crew['tracker']['heading'] = ($angle + $anglePerc * pi()) * 180 / pi();
+                        $crew['tracker']['heading'] = ($angle - $anglePerc * pi()) * 180 / pi();
+                        $crew['tracker']['velocity'] = TEST_VELOCITY;
                     } elseif (
                             $sElapsed > ((160.67 + BOUY_DIST * pi()) / TEST_VELOCITY) && 
                             $sElapsed <= ((160.67 * 2 + BOUY_DIST * pi()) / TEST_VELOCITY)
@@ -254,7 +255,7 @@ class SimulationsController extends AppController {
                         $sElapsed -= ((160.67 + BOUY_DIST * pi()) / TEST_VELOCITY);
                         $crew['tracker']['north'] = $end['north'] - ($sElapsed * TEST_VELOCITY) * sin($angle);
                         $crew['tracker']['east'] = $end['east'] - ($sElapsed * TEST_VELOCITY) * cos($angle);
-                        $crew['tracker']['heading'] = $angle * 180 / pi() - pi();
+                        $crew['tracker']['heading'] = $angle * 180 / pi() + 180;
                         $crew['tracker']['velocity'] = TEST_VELOCITY;
                     } elseif (
                             $sElapsed > ((160.67 * 2 + BOUY_DIST * pi()) / TEST_VELOCITY) && 
@@ -265,7 +266,8 @@ class SimulationsController extends AppController {
                         $crew['tracker']['test'] = $anglePerc;
                         $crew['tracker']['north'] = $startBouy['north'] + BOUY_DIST * sin($angle - pi() * $anglePerc - pi() / 2);
                         $crew['tracker']['east'] = $startBouy['east'] + BOUY_DIST * cos($angle - pi() * $anglePerc - pi() / 2);
-                        $crew['tracker']['heading'] = ($angle + $anglePerc * pi()) * 180 / pi();
+                        $crew['tracker']['heading'] = ($angle - $anglePerc * pi()) * 180 / pi() + 180;
+                        $crew['tracker']['velocity'] = TEST_VELOCITY;
                     }
                 } else {
                     $crew['tracker']['north'] = $start['north'];
