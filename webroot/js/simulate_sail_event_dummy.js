@@ -21,6 +21,7 @@ var north_direction = 0;
 var listenerUrl;
 
 var simulation = 1; // TODO - Set this to 0 when done buildings
+var startTime;
 
 var utm = "+proj=utm +zone=31";
 var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
@@ -55,9 +56,9 @@ $(function () {
     // Draw the elements
     drawHeightLines();
     drawWaves();
-    createBoats();
     setArrows();
     moveBouys();
+    createBoats();
 
     // Start listenening
     listen();
@@ -289,7 +290,7 @@ function listen() {
     listenTimer = millis();
     $.ajax({
         type: 'POST',
-        url: listenerUrl + "/1/",
+        url: listenerUrl + "/1/"+startTime,
         success: function (data) {
             crews = $.parseJSON(data);
             // Update the crews with the new data

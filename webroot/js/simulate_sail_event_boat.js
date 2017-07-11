@@ -130,6 +130,7 @@ Boat.prototype = {
         for (var i = 0; i < bouys.length; i++) {
             if (bouys[i].order == this.nextBouy) {  
                 var bouyUpdate = bouys[i].calculateBoatStatus(this);
+                console.log(bouyUpdate);
                 if (this.bouyStatus == 3) {
                     if (bouyUpdate == 4) {
                         this.bouyStatus = 4;
