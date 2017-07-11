@@ -75,15 +75,15 @@ class SimulationsController extends AppController {
         // If the simulatiion is running, reset the location of the boats to the locations of the bouys
         if (SIMULATION) {
             foreach ($crews as $i => &$crew) {
-                $crew['tracker']['north'] = $bouys[$i]['north'];
-                $crew['tracker']['east'] = $bouys[$i]['east'];
+                $crew['tracker']['north'] = $bouys[0]['north'];
+                $crew['tracker']['east'] = $bouys[0]['east'];
                 $this->Trackers->save($crew->tracker);
             }
         }
 
         $data = $this->getWindWaveData();
-        $wind = $data[0];
-        $wave = $data[1];
+        $wind = $data[1];
+        $wave = $data[0];
 
         $this->set(
                 compact(
@@ -104,14 +104,32 @@ class SimulationsController extends AppController {
         $context = stream_context_create($options);
         $result = file_get_contents($url, false, $context);
         $data = json_decode($result);
-        $waveDirection = $data->series[0]->data[0]->value;
+        $maxTime = 0;
+        $waveDirection = 0;
+        foreach ($data->series[0]->data as $item) {
+            // Parse the dateTime to check if it is most recent
+            $time = strtotime($item->dateTime)."<br />";
+            if ($time > $maxTime) {
+                $maxTime = $time;
+                $waveDirection = $item->value;
+            }
+        }
 
         $url = "https://waterinfo.rws.nl/api/details/chart?expertParameter=Windrichting___20Lucht___20t.o.v.___20ware___20Noorden___20in___20graad&values=-48,0&locationCode=4529";
         $context = stream_context_create($options);
         $result = file_get_contents($url, false, $context);
         $data = json_decode($result);
-        $windDirection = $data->series[0]->data[0]->value;
-
+        $windDirection = 0;
+        $maxTime = 0;
+        foreach ($data->series[0]->data as $item) {
+            // Parse the dateTime to check if it is most recent
+            $time = strtotime($item->dateTime)."<br />";
+            if ($time > $maxTime) {
+                $maxTime = $time;
+                $windDirection = $item->value;
+            }
+        }
+        
         return [$waveDirection, $windDirection];
     }
 

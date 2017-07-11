@@ -17,6 +17,8 @@ function Boat(currentTime) {
         'left': 0,
         'direction': 0,
     };
+    this.nextBouy = 0;
+    this.bouyStatus = 0;
 }
 ;
 // extend the boat object
@@ -120,6 +122,39 @@ Boat.prototype = {
         // update de positie pas na de calcTrail
         boat.top = ref.drawn.top;
         boat.left = ref.drawn.left;
+    },
+    'checkBouys': function() {
+        // This method will check the status on the current bouy and keep track of rounding it
+        for (var i = 0; i < bouys[i].length; i++) {
+            if (bouys[i].order == this.nextBouy) {
+                var bouyUpdate = bouys[i].calculateBoatStatus(this);
+                if (this.bouyStatus == 3) {
+                    if (bouyUpdate == 4) {
+                        this.bouyStatus = 4;
+                    } else if (bouyUpdate != 0) {
+                        this.bouyStatus = bouyUpdate;
+                    }
+                } else if (this.bouyStatus = 4) {
+                    if (bouyUpdate == 3) {
+                        this.bouyStatus = 3;
+                    } else if (bouyUpdate == 0) {
+                        // Done rounding, send a message to the bouy
+                        bouys[i].rounded(this);
+                        this.nextBouy++;
+                    }
+                } else if (this.bouyStatus > 0) {
+                    if (bouyUpdate == 0) {
+                        // Don't update
+                    } else {
+                        this.bouyStatus == bouyUpdate;
+                    }
+                } else if (this.bouyStatus == 0) {
+                    // Started rounding, send a message to the bouy
+                    bouys[i].boatEntered(this);
+                    this.bouyStatus = bouyUpdate;
+                }
+            }
+        }
     }
 };
 //calc distance between boat and next bouy

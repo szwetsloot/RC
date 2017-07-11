@@ -61,6 +61,17 @@ class BouysTable extends Table
             ->integer('combination')
             ->allowEmpty('combination');
 
+        $validator
+            ->allowEmpty('name');
+
+        $validator
+            ->integer('prev')
+            ->allowEmpty('prev');
+
+        $validator
+            ->integer('order')
+            ->allowEmpty('order');
+
         return $validator;
     }
 

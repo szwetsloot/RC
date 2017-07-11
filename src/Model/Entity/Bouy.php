@@ -10,6 +10,9 @@ use Cake\ORM\Entity;
  * @property int $tracker_id
  * @property int $type
  * @property int $combination
+ * @property string $name
+ * @property int $prev
+ * @property int $order
  *
  * @property \App\Model\Entity\Tracker $tracker
  */
