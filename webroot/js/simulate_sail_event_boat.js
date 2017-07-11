@@ -61,7 +61,10 @@ Boat.prototype = {
         this.direction = Math.round(direction);
         this.lastMessage = millis();
         var knots = Math.round(convertSpeedtoKN(speed) * 10) / 10;
-        this.element.find('.extra p').html(knots + 'kN  ' + this.direction + '&deg;');
+        
+        var corrected_direction = ( this.direction + 90 ) % 360;
+        
+        this.element.find('.extra p').html(knots + 'kN  ' + corrected_direction + '&deg;');
     },
     'updatePosition': function (position) {
         this.position = position;
@@ -194,6 +197,10 @@ Boat.prototype.calcDistanceBouy = function (step = 0) {
             self.calcDistanceBouy(step + 1);
         }, d_t);
 }
+
+Boat.prototype.calcPositionBoat = function () { 
+	
+};
 
 function getRotationDegrees(obj) {
     var matrix = obj.css("-webkit-transform") ||
