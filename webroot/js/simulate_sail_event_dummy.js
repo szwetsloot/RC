@@ -42,55 +42,54 @@ var screenUTMRange = {
 
 $(function () {
     console.log('-------');
-    console.log(crews);
 
+    // Create the bouys
     createBouys();
+
     // Calculate the longest distance between two bouys to determine the horizontal location
     calculateLongestDistanceBouys();
     // Calculate the range of the screen based on the positions of the bouys
     calculateScreenRange();
-    // Move the bouys to their correct location
-    moveBouys();
 
     // Draw the elements
     drawHeightLines();
     drawWaves();
     createBoats();
     setArrows();
+    moveBouys();
 
     // Start listenening
     listen();
-
-    // Test function
-    setTimeout(function() {
-        bouyStatus(1, 1);
-    }, 2000);
+    
+    // Recalculate variables on screen resize
+    $(window).on('resize', function() {
+        // Calculate the longest distance between two bouys to determine the horizontal location
+        calculateLongestDistanceBouys();
+        // Calculate the range of the screen based on the positions of the bouys
+        calculateScreenRange();
+        // Draw the elements
+        moveBouys();
+    });
 });
 
 function createBouys() {
     for (var i = 0; i < bouys.length; i++) {
-        
+        var bouy = bouys[i];
+        bouys[i] = new Bouy;
+        bouys[i].north = bouy.north;
+        bouys[i].east = bouy.east;
+        bouys[i].number = bouy.id;
+        bouys[i].type = bouy.type;
+        bouys[i].prev = bouy.prev;
+        bouys[i].order = bouy.order;
+        bouys[i].element = $('#bouy-' + bouy.id);
     }
 }
 
-//calculate new position
-function calculateVector(boat_obj, speed, direction) {
-
-    var target = {}; // huidige positie
-    var time = refresh_time / 1000;
-
-    direction = toRadians(direction);
-
-    // calculate target -> sos cas toa
-    var vector_distance = time * speed; // afgelegde afstand in meters
-    var vector_vertical = Math.sin(direction) * vector_distance; // verticale component in meters
-    var vector_horizontal = Math.cos(direction) * vector_distance; // horizontale component
-
-    // add vectors to current position
-    target.top = boat_obj.top + vector_vertical;
-    target.left = boat_obj.left + vector_horizontal;
-
-    return target;
+function moveBouys() {
+    for (var i = 0; i < bouys.length; i++) {
+        bouys[i].move();
+    }
 }
 
 /* DRAW ELEMENTS */
@@ -201,18 +200,6 @@ function calculateScreenRange() {
     screenUTMRange.centerEast += (screenHorMax + screenHorMin) / 2;
 }
 
-//This function will move the bouys to their correct location
-function moveBouys() {
-
-    // Calculate the coordinates for each bouy
-    for (var i = 0; i < bouys.length; i++) {
-        var element = $('#bouy-' + i);
-        var target = convertToPixels(element, bouys[i].east, bouys[i].north);
-        element.css('left', target.left + 'px');
-        element.css('top', target.top + 'px');
-    }
-}
-
 // This function draws the wavves
 function drawWaves() {
     $waves_container = $('#waves-container');
@@ -287,7 +274,9 @@ function setArrows() {
     $wind.css('-webkit-transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
     $wind.css('transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
 
-    console.log("Wave = " + wave_direction);
+    console.log("Wind = "+wind_direction);
+    console.log("Wave = "+wave_direction);
+
     $waves.css('-ms-transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
     $waves.css('-webkit-transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
     $waves.css('transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
@@ -296,7 +285,7 @@ function setArrows() {
 // This function continually gets data from the server
 var listenTimer; // This variable is used to make sure we don't listen too quick in simulations
 function listen() {
-    listenTimer = millis();    
+    listenTimer = millis();
     $.ajax({
         type: 'POST',
         url: listenerUrl + "/1/",
@@ -335,6 +324,7 @@ function listen() {
 ;
 
 function createBoats() {
+    // Check which bouy is first
     for (var i = 0; i < crews.length; i++) {
         var crew = crews[i];
         var boat = boats[i] = new Boat(millis());
@@ -353,6 +343,8 @@ function createBoats() {
         boat.east = crew.tracker.east;
         boat.direction = crew.tracker.heading;
         boat.speed = crew.tracker.velocity;
+        boat.nextBouy = 2;
+        boat.bouyStatus = 0;
         boat.drawn.north = boat.north;
         boat.drawn.east = boat.east;
         boat.updatePosition(i + 1);
@@ -418,7 +410,7 @@ function convertToPixels(obj, obj_east, obj_north) {
     east -= cEast;
     north -= cNorth;
     var target = {};
-    
+
     //console.log(cEast);
     //console.log(obj_east);
 
@@ -507,14 +499,19 @@ function bouyStatus(boat_id, bouy_id) {
         var prevAngle = getAngle(bouy, prevBouy) * 180 / Math.PI;
         var nextAngle = getAngle(bouy, nextBouy) * 180 / Math.PI;
         var bissect = (prevAngle + nextAngle) / 2;
-        
+
         // Get the angle between the boat and the bouy
         var cAngle = getAngle(bouy, boat) - bissect;
-        while (Math.abs(cAngle) > 180) cAngle -= Math.sign(cAngle) * 360;
-        if (cAngle > 0 && cAngle <= 90) return 1;
-        if (cAngle < 0 && cAngle >= -90) return 2;
-        if (cAngle > 90 && cAngle <= 180) return 3;
-        if (cAngle < -90 && cAngle >= -180) return 4;
+        while (Math.abs(cAngle) > 180)
+            cAngle -= Math.sign(cAngle) * 360;
+        if (cAngle > 0 && cAngle <= 90)
+            return 1;
+        if (cAngle < 0 && cAngle >= -90)
+            return 2;
+        if (cAngle > 90 && cAngle <= 180)
+            return 3;
+        if (cAngle < -90 && cAngle >= -180)
+            return 4;
     }
     if (bouy.type == 3) { // Finish bouy
         // This bouy consist of either 2 bouys or a bouy and a ship.

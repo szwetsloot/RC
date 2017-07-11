@@ -3,18 +3,17 @@
 /**
   * @var \App\View\AppView $this
   */
-  
 ?>
 
 <script type='text/javascript'>
     // Initialize the crews
     var crews = <?= json_encode($crews) ?>;
     var bouys = <?= json_encode($bouys) ?>;
-    
+
     // Initialize the wind and wave direction
-    var wave_direction = <?= $wave ?> + 180; // The +180 is to correct for the image
-    var wind_direction = <?= $wind ?>;
-    
+    var wave_direction = <?= $wave ?> + 90; // The +90 is to correct for the image
+    var wind_direction = <?= $wind ?> + 180; // The + 180 is to correct for the different 0-direciton
+
     // Build the url for ajax requests
     var listenerUrl = <?= json_encode($this->Url->build(['action' => 'sailEventListener'])) ?>;
 </script>
@@ -28,6 +27,7 @@
 <?= $this->Html->script('simulate_sail_event_dummy') ?>
 <?= $this->Html->script('simulate_sail_event_dashboard') ?>
 <?= $this->Html->script('simulate_sail_event_boat') ?>
+<?= $this->Html->script('simulate_sail_event_bouy') ?>
 
 <div id='background-image'></div>
 <div id='height-line-container'></div>
@@ -49,24 +49,20 @@
 </div>
 
 <div id='bouy-container'>
-	<div class="bouy" id='bouy-0'>
-		1
-		<div class="tooltip animated fadeInUp"></div>
-	</div>
-	<div class="bouy" id='bouy-1'>
-		2A
-		<div class="tooltip animated fadeInUp"></div>
-	</div>
-	<div class="bouy" id='bouy-2'>
-		2B
-		<div class="tooltip animated fadeInUp"></div>
-	</div>
-	<div class="bouy blue-bouy" id='bouy-3'>
-		<div class="tooltip animated fadeInUp"></div>
-	</div>
-	<div class="bouy blue-bouy" id='bouy-4'>
-		<div class="tooltip animated fadeInUp"></div>
-	</div>
+    <?php foreach ($bouys as $bouy): ?>
+    <div class="bouy" id='bouy-<?= $bouy->id ?>'>
+        <?= $bouy->name; ?>
+        <div class="tooltip animated fadeInUp"></div>
+    </div>
+    <?php endforeach; ?>
+    <!--
+    <div class="bouy blue-bouy" id='bouy-3'>
+            <div class="tooltip animated fadeInUp"></div>
+    </div>
+    <div class="bouy blue-bouy" id='bouy-4'>
+            <div class="tooltip animated fadeInUp"></div>
+    </div>
+    -->
 </div>
 
 
