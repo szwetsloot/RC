@@ -9,7 +9,7 @@ $(function () {
 
 	Dashboard.rotateAthletes();
 	
-	race_stopwatch = new Stopwatch('#race-time');
+	race_stopwatch = new Stopwatch('#race-time','race tijd');
 	
 	
 	// TODO replace with event trigger when boat rounds a bouy
@@ -23,7 +23,7 @@ $(function () {
 		if(bouy_stopwatch != null) bouy_stopwatch.stop(); 
 		
 		// start nieuwe counter
-		bouy_stopwatch = new Stopwatch('#bouy-counter');
+		bouy_stopwatch = new Stopwatch('#bouy-counter', 'boei 1');
 		
 		Dashboard.showBouyInfo();
 		
@@ -64,15 +64,17 @@ Dashboard.showCrewInfo = function(crew_id){
 	var $club_flag = $club_info.find('img');
 	var $club_competition = $club_info.find('.competition');
 	
-	if( tracker.roll_angle == 0 )
-		tracker.roll_angle = 0;
+	// check if variables are set in database -> otherwise set 0
+	var roll_angle = tracker.roll_angle == null ? 0 : tracker.roll_angle;
+	var ranking = crew.ranking == null ? 0 : crew.ranking;
+	var points = crew.points == null ? 0 : crew.points;
 	
 	// update information
 	$speed.text('Snelheid: '+ boat_speed +'Kn');
-	$boat_roll.html('helling: '+tracker.roll_angle+'&deg;');
+	$boat_roll.html('helling: '+roll_angle+'&deg;');
 	$boat_location.text( Math.round(tracker.east)+'m, '+Math.round(tracker.north)+'m' );
 	$boat_target.text( 'Volgende boei '+boat.distance_bouy+'m' );
-	$club_competition.text('positie:'+crew.ranking+', '+crew.points+' punten') // werkt plas als dit in de db staat
+	$club_competition.text('positie:'+ ranking +', '+ points +' punten');
 	
 	$club_name.text(crew.name);
 	$club_flag.attr('src', image_base_url+crew.flag_image)
@@ -118,7 +120,7 @@ Dashboard.addBoatToBouy = function(boat_id, position){
 	if(position == 1){
 		var counter = race_stopwatch.time;
 	} else{
-		var counter = '+'+bouy_stopwatch.time;
+		var counter = '+'+bouy_stopwatch.time; // deze wordt gestart wanneer de eerste boot de roei rond
 	}
 	
 	var li = '<li class="animated fadeInLeft">';		
@@ -144,8 +146,9 @@ Dashboard.rotateAthletes = function() {
 }
 
 // Stopwatch
-function Stopwatch(obj){
+function Stopwatch(obj, name){
 		this.obj = obj;
+		this.name = name;
 		this.count = 0;
 		this.clearTime = null;
 		this.clearState = null;
@@ -190,7 +193,7 @@ Stopwatch.prototype.start = function(){
     
     // display the stopwatch 
     $(this.obj).find('.counter').text(this.time);
-   // $('#bouy-counter .counter').text('+' + this.mins + this.secs);
+    $(this.obj).find('.label').text(this.name);
         
     // call the seconds counter after displaying the stop watch and increment seconds by +1 to keep it counting
     this.seconds++;
