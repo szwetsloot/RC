@@ -293,11 +293,7 @@ function listen() {
         type: 'POST',
         url: listenerUrl + "/1/"+startTime,
         success: function (data) {
-            console.log(data);
             crews = $.parseJSON(data);
-            console.log(crews[0].tracker.heading);
-            console.log(crews[0].tracker.test);
-            console.log(crews[0].tracker.time);
             // Update the crews with the new data
             var boat;
             for (var i = 0; i < crews.length; i++) {
