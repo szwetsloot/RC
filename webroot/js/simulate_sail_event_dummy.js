@@ -163,7 +163,7 @@ function calculateScreenRange() {
     var rot = screenUTMRange.rotation; // This variable is just for shorter notation
     horMax = 0;
     verMax = 0;
-    for (i = 0; i < bouys.length; i++) {
+    for (var i = 0; i < bouys.length; i++) {
         bouyEast = (bouys[i].east - screenEast) * Math.cos(rot) - (bouys[i].north - screenNorth) * Math.sin(rot);
         bouyNorth = (bouys[i].east - screenEast) * Math.sin(rot) + (bouys[i].north - screenNorth) * Math.cos(rot);
         if (Math.abs(bouyEast) > horMax)
@@ -206,7 +206,7 @@ function drawWaves() {
     $waves_container = $('#waves-container');
     $waves_container.empty();
 
-    for (i = 0; i < 20; i++) {
+    for (var i = 0; i < 20; i++) {
         var wave = document.createElement('div');
         $(wave).addClass('wave')
                 .appendTo($waves_container);
@@ -329,7 +329,6 @@ function createBoats() {
     for (var i = 0; i < crews.length; i++) {
         var crew = crews[i];
         var boat = boats[i] = new Boat(millis());
-
         var boatElement = $('.boat#boat-' + crew.id);
 
         var x = boatElement.position();
@@ -357,7 +356,6 @@ function createBoats() {
         // create for each boat a canvas to draw the trail
         createCanvas(i);
     }
-
 }
 ;
 
@@ -435,7 +433,7 @@ function calcTrail(x_target, y_target, boat) {
     var d_x = (x_target - x_cur) / steps;
     var d_y = (y_target - y_cur) / steps;
 
-    for (i = 0; i < steps; i++) {
+    for (var i = 0; i < steps; i++) {
 
         var x_step = x_cur + (d_x * i);
         var y_step = y_cur + (d_y * i);
