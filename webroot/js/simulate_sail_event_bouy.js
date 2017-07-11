@@ -40,10 +40,10 @@ Bouy.prototype = {
         
         var bouy = this;
         
-        if (this.type == 1) { // Start bouy
+        if (bouy.type == 1) { // Start bouy
             // This bouy consist of either 2 bouys or a bouy and a ship.
             // TODO
-        } else if (this.type == 2) { // Normal bouy
+        } else if (bouy.type == 2) { // Normal bouy
             // Find the previous and the next  bouy
             var prevBouy, nextBouy;
             for (var i = 0; i < bouys.length; i++) {
@@ -58,18 +58,19 @@ Bouy.prototype = {
             var bissect = (prevAngle + nextAngle) / 2;
 
             // Get the angle between the boat and the bouy
-            var cAngle = getAngle(bouy, boat) - bissect;
+            var cAngle = getAngle(bouy, boat) * 180 / Math.PI - bissect;
             while (Math.abs(cAngle) > 180)
                 cAngle -= Math.sign(cAngle) * 360;
+            //console.log("Angle = "+cAngle);
             if (cAngle > 0 && cAngle <= 90)
-                return 1;
-            if (cAngle < 0 && cAngle >= -90)
                 return 2;
+            if (cAngle < 0 && cAngle >= -90)
+                return 1;
             if (cAngle > 90 && cAngle <= 180)
-                return 3;
-            if (cAngle < -90 && cAngle >= -180)
                 return 4;
-        } else if (this.type == 3) { // Finish bouy
+            if (cAngle < -90 && cAngle >= -180)
+                return 3;
+        } else if (bouy.type == 3) { // Finish bouy
 
         }
     },
