@@ -1,36 +1,15 @@
 var browser_location = $(location).attr('href').replace('simulations/simulate-sail-event-dummy/7','');
 var image_base_url = browser_location+'/img/sail_event_v2/teams/';
-	
-var bouy_stopwatch;
-var race_stopwatch;
+
+// define the 
+var bouy_stopwatch; // stopwatch that runs when boat rounds a bouy
+var race_stopwatch; // stopwatch which starts when screen is finished loading
 
 
-$(function () { 		
-
-	Dashboard.rotateAthletes();
-	
+$(function(){ 		
+	// TODO fire this function when the actual race starts
+	// vars = jquery element, tekst label
 	race_stopwatch = new Stopwatch('#race-time','race tijd');
-	
-	// TODO replace with event trigger when boat rounds a bouy
-	$('.boat-icon').on('click', function(){
-		$('#bouy-counter').show();
-		
-		// stop ophalen van data van vorige boot
-		clearTimeout(Dashboard.boatinfoTimeout);
-		
-		// if object already exists reset old stopwatch 
-		if(bouy_stopwatch != null) bouy_stopwatch.stop(); 
-		
-		// start nieuwe counter
-		bouy_stopwatch = new Stopwatch('#bouy-counter', 'boei 1');
-		
-		Dashboard.showBouyInfo('start');
-		
-		var boat_id = $(this).parent().attr('id').replace('boat-','');
-		Dashboard.showCrewInfo(boat_id);
-	});
-	
-	
 });
 
 var Dashboard = {
@@ -39,6 +18,30 @@ var Dashboard = {
 	athlete : 0,
 	boatinfoTimeout: null,
 }
+
+// This function shows the right dashboard panels when a boat rounds a bouy
+Dashboard.bouyRounded = function(boat, bouy_id){
+	console.log(boat);
+	
+	var boat_id = boat.id;
+	
+	// if object already exists reset old stopwatch 
+	if(bouy_stopwatch != null) bouy_stopwatch.stop(); 
+	
+	// tellertje rechts onder
+	$('#bouy-counter').show();
+	// start nieuwe counter
+	bouy_stopwatch = new Stopwatch('#bouy-counter', 'boei '+bouy_id);
+	
+	// Show list ( top left ) met doorkomstentijden 
+	Dashboard.showBouyInfo('boei '+bouy_id);
+	
+	// stop ophalen van data van vorige boot
+	clearTimeout(Dashboard.boatinfoTimeout);
+	// brede balk onderaan het scherm
+	Dashboard.showCrewInfo(boat_id);
+}
+
 
 // Het horizontale panel op de onderrand van het scherm
 Dashboard.showCrewInfo = function(crew_id){
@@ -91,6 +94,8 @@ Dashboard.showCrewInfo = function(crew_id){
 	$club_flag.attr('src', image_base_url+crew.flag_image)
 	
 	$panel.show();
+	// start rotating the atletes
+	Dashboard.rotateAthletes();
 	
 	// repeat function every 500 ms
 	this.boatinfoTimeout = setTimeout(function(){ Dashboard.showCrewInfo(crew_id); },500);
@@ -104,12 +109,17 @@ Dashboard.showBouyInfo = function(name){
 	// define dom elements
 	var $panel = $('#bouy-info');
 	var $list = $panel.find('ul');
+	var $veld = $panel.find('.label');
 	var $name = $panel.find('.counter');
 	$list.empty();
 	
+	$panel.show();
+	
 	// update dom information
 	$name.text(name);
+	$veld.text(race_veld); // global variable from main js file
 	
+	// TO DO 
 	// simulate popups --> needs to be called by the bouy object
 	Dashboard.addBoatToBouy(0,1);	
 	

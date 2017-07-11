@@ -8,8 +8,7 @@ function Bouy() {
     this.element = '';
     this.dashboard = 0;
     
-}
-;
+};
 
 Bouy.prototype = {
     'move': function () {
@@ -19,16 +18,18 @@ Bouy.prototype = {
         ref.element.css('left', target.left + 'px');
         ref.element.css('top', target.top + 'px');
     },
-    'boatEntered': function() {
+    'boatEntered': function(boat) {
         // This method is called when a boat entered this bouy.
         // If this is the firstboat to do this it should send a message to the dashboard
         // TODO - send message to the dashboard
         
     },
-    'rounded': function() {
+    'rounded': function(boat) {
       // This method is called when a boat left this bouy.
       // The rounded time should be saved. This is done in the dashboard.
-      // TODO - send a message to the dashboard
+      // Send a message to the dashboard
+      Dashboard.bouyRounded(boat,this.number);
+    
     },
     'calculateBoatStatus': function (boat) {
         // This method will check if there are boats within range of this bouy   
