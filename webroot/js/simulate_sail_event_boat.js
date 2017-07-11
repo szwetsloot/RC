@@ -125,8 +125,6 @@ Boat.prototype = {
     },
     'checkBouys': function() {
         // This method will check the status on the current bouy and keep track of rounding it
-        console.log("test");
-        var ref = this;
         for (var i = 0; i < bouys[i].length; i++) {
             if (bouys[i].order == this.nextBouy) {
                 var bouyUpdate = bouys[i].calculateBoatStatus(this);
@@ -157,7 +155,6 @@ Boat.prototype = {
                 }
             }
         }
-        setTimeout(ref.checkBouys, 100);
     }
 };
 //calc distance between boat and next bouy
