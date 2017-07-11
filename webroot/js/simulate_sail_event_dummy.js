@@ -30,6 +30,7 @@ var refresh_time = 6000;
 var boats = [];
 var run = 1; // global variable for running the animation 1 = run & 0 = stop
 var end_animation = 1; // stop the animation after 2 minutes
+var race_veld = 'Eredivisie zeilen J/70'; // TODO get from backend 
 
 
 var screenUTMRange = {
