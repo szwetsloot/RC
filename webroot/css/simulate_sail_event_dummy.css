@@ -511,6 +511,7 @@ li{
 
 /* grote balk onderaan het scherm */
 #boat-info{
+	display: none;
 	z-index: 6;
 	position: fixed;
 	bottom: 60px;
@@ -646,7 +647,7 @@ li{
 	transform: rotate(-15deg);
 }
 
-.team-data .medal{
+.team-data #medal{
 	position: relative;
 	float: left;
 	height: 25px;
@@ -672,8 +673,17 @@ li{
 }
 
 .medal-1{
-	background-image: url(../img/sail_event_v2/medals-01.png)
+	background-image: url(../img/sail_event_v2/medals-01.png);
 }
+
+.medal-2{
+	background-image: url(../img/sail_event_v2/medals-02.png);
+}
+
+.medal-3{
+	background-image: url(../img/sail_event_v2/medals-03.png);
+}
+
 
 #boat-info .team-data img{
 	position: absolute;

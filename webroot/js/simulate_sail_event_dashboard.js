@@ -11,7 +11,6 @@ $(function () {
 	
 	race_stopwatch = new Stopwatch('#race-time','race tijd');
 	
-	
 	// TODO replace with event trigger when boat rounds a bouy
 	$('.boat-icon').on('click', function(){
 		$('#bouy-counter').show();
@@ -25,7 +24,7 @@ $(function () {
 		// start nieuwe counter
 		bouy_stopwatch = new Stopwatch('#bouy-counter', 'boei 1');
 		
-		Dashboard.showBouyInfo();
+		Dashboard.showBouyInfo('start');
 		
 		var boat_id = $(this).parent().attr('id').replace('boat-','');
 		Dashboard.showCrewInfo(boat_id);
@@ -63,21 +62,35 @@ Dashboard.showCrewInfo = function(crew_id){
 	var $club_name = $club_info.find('.club-name');
 	var $club_flag = $club_info.find('img');
 	var $club_competition = $club_info.find('.competition');
+	var $medal = $club_info.find('#medal')
 	
 	// check if variables are set in database -> otherwise set 0
 	var roll_angle = tracker.roll_angle == null ? 0 : tracker.roll_angle;
 	var ranking = crew.ranking == null ? 0 : crew.ranking;
 	var points = crew.points == null ? 0 : crew.points;
+	var target_bouy = boat.distance_bouy == null? 'unknown' : boat.distance_bouy+'m';
+	var position = boat.position; // positie race
+	
+	if(position < 3){ // tijdelijk met position --> moet worden vervangen met ranking
+		$medal.removeClass();
+		$medal.addClass('medal-'+position); // tijdelijk met position --> moet worden vervangen met ranking
+		$medal.show();
+	} else{
+		$medal.hide();
+	}
 	
 	// update information
+	$position.text(position);
 	$speed.text('Snelheid: '+ boat_speed +'Kn');
 	$boat_roll.html('helling: '+roll_angle+'&deg;');
 	$boat_location.text( Math.round(tracker.east)+'m, '+Math.round(tracker.north)+'m' );
-	$boat_target.text( 'Volgende boei '+boat.distance_bouy+'m' );
+	$boat_target.text( 'Volgende boei: '+target_bouy );
 	$club_competition.text('positie:'+ ranking +', '+ points +' punten');
 	
 	$club_name.text(crew.name);
 	$club_flag.attr('src', image_base_url+crew.flag_image)
+	
+	$panel.show();
 	
 	// repeat function every 500 ms
 	this.boatinfoTimeout = setTimeout(function(){ Dashboard.showCrewInfo(crew_id); },500);
@@ -86,18 +99,19 @@ Dashboard.showCrewInfo = function(crew_id){
 
 
 // Het panel met een lijst met doorkomsttijden van een boei
-Dashboard.showBouyInfo = function(){
+Dashboard.showBouyInfo = function(name){
 	
 	// define dom elements
 	var $panel = $('#bouy-info');
 	var $list = $panel.find('ul');
-	
+	var $name = $panel.find('.counter');
 	$list.empty();
-			
-	// simulate popups
-	setTimeout(function(){
-		Dashboard.addBoatToBouy(0,1);	
-		}, 1000);
+	
+	// update dom information
+	$name.text(name);
+	
+	// simulate popups --> needs to be called by the bouy object
+	Dashboard.addBoatToBouy(0,1);	
 	
 	setTimeout(function(){
 		Dashboard.addBoatToBouy(1,2);	
