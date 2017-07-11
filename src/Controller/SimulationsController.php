@@ -73,7 +73,15 @@ class SimulationsController extends AppController {
         }
         
         // If the simulatiion is running, reset the location of the boats to the locations of the bouys
+        $test = "test 1";
         if (SIMULATION) {
+            if ($test == "test 1") { // This test is a simple round the bouy
+                $startBouy = b
+                foreach ($crew as $i => $crew) {
+                    
+                }
+            }
+            
             foreach ($crews as $i => &$crew) {
                 $crew['tracker']['north'] = $bouys[0]['north'];
                 $crew['tracker']['east'] = $bouys[0]['east'];
@@ -133,28 +141,28 @@ class SimulationsController extends AppController {
         return [$waveDirection, $windDirection];
     }
 
-    public function sailEventListener($type = 0, $unit = null) {
+    public function sailEventListener($type = 0, $startTime = null) {
         if (SIMULATION) {
-            die(json_encode($this->simulationListener($type, $unit)));
+            die(json_encode($this->simulationListener($type, $startTime)));
         } else {
 // TODO - Here the data from the database should be loaded
         }
     }
 
-    private function simulationListener($type, $unit) {
+    private function simulationListener($type, $startTime) {
 
         if ($type == 0) { // Get bouys
-            return $this->simulationListenerGetBouys($unit);
+            return $this->simulationListenerGetBouys($startTime);
         } elseif ($type == 1) { // Get boats
-            return $this->simulationListenerGetBoats($unit);
+            return $this->simulationListenerGetBoats($startTime);
         }
     }
 
-    private function simulationListenerGetBouys($unit) {
+    private function simulationListenerGetBouys($startTime) {
         return $unit;
     }
 
-    private function simulationListenerGetBoats($unit) {
+    private function simulationListenerGetBoats($startTime) {
         // Retrieve the crews from the database
         $crews = $this->SaillingCrews->find()
                 ->contain(['Trackers'])
