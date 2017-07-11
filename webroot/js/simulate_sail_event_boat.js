@@ -124,6 +124,8 @@ Boat.prototype = {
         boat.left = ref.drawn.left;
     },
     'checkBouys': function() {
+        var ref = this;
+        setTimeout(function() { ref.checkBouys(); }, 100);
         // This method will check the status on the current bouy and keep track of rounding it
         for (var i = 0; i < bouys[i].length; i++) {
             if (bouys[i].order == this.nextBouy) {
