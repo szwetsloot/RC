@@ -683,6 +683,7 @@ li{
 }
 
 #bouy-counter{
+	display: none;
 	position: fixed;
 	bottom: 190px;
 	border-radius: 5px 0 0 5px;
