@@ -62,9 +62,9 @@ $(function () {
 
     // Start listenening
     listen();
-    
+
     // Recalculate variables on screen resize
-    $(window).on('resize', function() {
+    $(window).on('resize', function () {
         // Calculate the longest distance between two bouys to determine the horizontal location
         calculateLongestDistanceBouys();
         // Calculate the range of the screen based on the positions of the bouys
@@ -101,23 +101,55 @@ function moveBouys() {
 function calculateLongestDistanceBouys() {
     var i, j;
     dist = 0;
-    bouy1 = 0;
-    bouy2 = 0;
+    var bouy1, bouy2;
     for (i = 0; i < bouys.length; i++) {
         for (j = 0; j < bouys.length; j++) {
             if (i === j)
                 continue; // Don't compare the same bouys because the distance = 0
-            dist_c = norm2Dist(bouys[i], bouys[j]);
+            var bouyA = deepcopy(bouys[i]);
+            var bouyB = deepcopy(bouys[j]);
+            if (bouyA.order == bouyB.order)
+                continue; // These are a pair
+            if (bouyA.type == 1 || bouyA.type == 3) {
+                // Find the other part of the pair
+                var k;
+                for (k = 0; k < bouys.length; k++) {
+                    if (i == k) continue;
+                    if (bouys[k].order == bouyA.order)
+                        break;
+                }
+                // Get the centre of the pair
+                bouyA.north = (bouyA.north + bouys[k].north) / 2;
+                bouyA.east = (bouyA.east + bouys[k].east) / 2;
+            }
+            if (bouyB.type == 1 || bouyB.type == 3) {
+                // Find the other part of the pair
+                var k;
+                for (k = 0; k < bouys.length; k++) {
+                    if (j == k)
+                        continue;
+                    if (bouys[k].order == bouyB.order)
+                        break;
+                }
+                
+                // Get the centre of the pair
+                bouyB.north = (bouyB.north + bouys[k].north) / 2;
+                bouyB.east = (bouyB.east + bouys[k].east) / 2;
+            }
+            dist_c = norm2Dist(bouyA, bouyB);
+
             if (dist_c > dist) { // This distance is the longest
                 dist = dist_c;
-                bouy1 = i;
-                bouy2 = j;
+                bouy1 = bouyA;
+                bouy2 = bouyB;
+                console.log(bouy1.id+" - "+bouy2.id);
             }
         }
     }
 
     // Swap the bouys so that the lowest horizontal position is on the lowest bouy
-    if (bouys[bouy1].east > bouys[bouy2].east) {
+    if (bouy1.east > bouy2.east) {
+        console.log("Switch");  
         var tmp = bouy1;
         bouy1 = bouy2;
         bouy2 = tmp;
@@ -128,7 +160,7 @@ function calculateLongestDistanceBouys() {
     //console.log(dist);
 
     // Calculate the Angle that we need to rotate so that these two horizontal
-    screenUTMRange.rotation = -Math.atan2(bouys[bouy1].north - bouys[bouy2].north, bouys[bouy1].east - bouys[bouy2].east);
+    screenUTMRange.rotation = -Math.atan2(bouy1.north - bouy2.north, bouy1.east - bouy2.east);
     // console.log(screenUTMRange.rotation);
     // Correct 180 degrees if necessary
     if (screenUTMRange.rotation < -Math.PI / 2)
@@ -277,8 +309,8 @@ function setArrows() {
     $wind.css('-webkit-transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
     $wind.css('transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
 
-    console.log("Wind = "+wind_direction);
-    console.log("Wave = "+wave_direction);
+    console.log("Wind = " + wind_direction);
+    console.log("Wave = " + wave_direction);
 
     $waves.css('-ms-transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
     $waves.css('-webkit-transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
@@ -291,7 +323,7 @@ function listen() {
     listenTimer = millis();
     $.ajax({
         type: 'POST',
-        url: listenerUrl + "/1/"+startTime,
+        url: listenerUrl + "/1/" + startTime,
         success: function (data) {
             crews = $.parseJSON(data);
             // Update the crews with the new data
@@ -549,4 +581,8 @@ function rotatePoint(rotation, start_east, start_north, center_east = 0, center_
 function millis() {
     var d = new Date();
     return d.getTime();
+}
+
+function deepcopy(item) {
+    return JSON.parse(JSON.stringify(item));
 }
