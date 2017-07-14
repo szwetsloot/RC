@@ -108,7 +108,7 @@ Boat.prototype = {
         }, {
             done: function () {
                 ref.moveBoat();
-            },  
+            },
             easing: 'linear'
         });
         $boat_icon.animate(
@@ -137,16 +137,19 @@ Boat.prototype = {
         boat.top = ref.drawn.top;
         boat.left = ref.drawn.left;
     },
-    'checkBouys': function() {
+    'checkBouys': function () {
         var ref = this;
-        setTimeout(function() { ref.checkBouys(); }, 100);
-        /*if (this.id == 1)
-            console.log("Status = "+ref.bouyStatus);*/
+        setTimeout(function () {
+            ref.checkBouys();
+        }, 100);
+        
         // This method will check the status on the current bouy and keep track of rounding it
        
         for (var i = 0; i < bouys.length; i++) {
             if (bouys[i].order == this.nextBouy) {
                 var bouyUpdate = bouys[i].calculateBoatStatus(this);
+                if (bouyUpdate == undefined)
+                    return;
                 //console.log("Update = "+bouyUpdate);
                 if (this.bouyStatus == 3) {
                     if (bouyUpdate == 4) {
@@ -171,12 +174,12 @@ Boat.prototype = {
                             }
                         }
                     }
-                } else if (this.bouyStatus > 0) {
-                    if (bouyUpdate == 0) {
-                        // Don't update
-                    } else {
-                        this.bouyStatus = bouyUpdate;
-                    }
+                } else if (this.bouyStatus == 1) {
+                    if (bouyUpdate == 3)
+                        this.bouyStatus = 3;
+                } else if (this.bouyStatus == 2) {
+                    if (bouyUpdate == 1)
+                        this.bouyStatus = 1;
                 } else if (this.bouyStatus == 0) {
                     // Started rounding, send a message to the bouy
                     if (bouyUpdate != 0) {
