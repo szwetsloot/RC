@@ -10,6 +10,7 @@ function Boat(currentTime) {
     this.lastMessage = currentTime;
     this.lastUpdate = currentTime;
     this.lastDraw = currentTime;
+    this.num = null;
     this.boatIcon = '';
     this.drawn = {
         'north': 0,
@@ -129,19 +130,20 @@ Boat.prototype = {
                     }
                 }
         );
-
-        //calcTrail(ref.drawn.left, ref.drawn.left, boat.num); // draw the trail of the boat
-
-        // in de functie calcTrail wordt de huidge positie gebruikt
-        // update de positie pas na de calcTrail
+        
+        drawTrail(ref.drawn.left, ref.drawn.top, boat.num); // draw the trail of the boat
+        
         boat.top = ref.drawn.top;
         boat.left = ref.drawn.left;
+
+      
     },
     'checkBouys': function () {
         var ref = this;
         setTimeout(function () {
             ref.checkBouys();
         }, 100);
+        
         
         // This method will check the status on the current bouy and keep track of rounding it
        
@@ -184,6 +186,8 @@ Boat.prototype = {
                     // Started rounding, send a message to the bouy
                     if (bouyUpdate != 0) {
                         bouys[i].boatEntered(this);
+
+                    	console.log(ref.id);
                     }
                     this.bouyStatus = bouyUpdate;
                 }

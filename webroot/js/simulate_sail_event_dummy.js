@@ -373,7 +373,6 @@ function createBoats() {
         var crew = crews[i];
         var boat = boats[i] = new Boat(millis());
         var boatElement = $('.boat#boat-' + crew.id);
-
         var x = boatElement.position();
 
         boat.top = x.top;
@@ -415,10 +414,38 @@ function createCanvas(i) {
     $('#canvas-' + crews[i].id).attr('width', $('html').width());
     $('#canvas-' + crews[i].id).attr('height', $('html').height());
 
+    ctx.setLineDash([2,15]);
     ctx.lineWidth = 1;
-    ctx.strokeStyle = 'white';
+    
+    var color;
+    
+    var boat_num = i + 1;
+    
+    switch(boat_num ) {
+	    case 1:
+	    	color = '#fff'; // wit
+	        break;
+	    case 2:
+	        color = '#1b7ebc'; // blauw
+	        break;
+	    case 3:
+	        color = '#383838';  // zwart
+	        break;
+	    case 4:
+	    	color = '#13c54c'; // groen
+	        break;
+	    case 5:
+	        color = '#fec835'; // geel
+	        break;
+	    case 6:
+	        color = '#fe2d2d'; // rood
+	        break;
+	    default:
+	    	color = '#fff';
+	} 
+    
+    ctx.strokeStyle = color;
 
-    ctx.moveTo(x.left, x.top);
 }
 
 
@@ -463,53 +490,15 @@ function convertToPixels(obj, obj_east, obj_north) {
     return target;
 }
 
-function calcTrail(x_target, y_target, boat) {
+function drawTrail(x_target, y_target, num_boat) {
+	var x = x_target;
+	var y = y_target;
 
-    var steps = 12;
-    var d_t = refresh_time / steps;
-    var waypoints = [];
-
-    // get old coordinates
-    var y_cur = boats[boat].top;
-    var x_cur = boats[boat].left;
-
-    var d_x = (x_target - x_cur) / steps;
-    var d_y = (y_target - y_cur) / steps;
-
-    for (var i = 0; i < steps; i++) {
-
-        var x_step = x_cur + (d_x * i);
-        var y_step = y_cur + (d_y * i);
-
-        waypoints.push({
-            x: x_step,
-            y: y_step
-        });
-    }
-
-    drawTrail(waypoints, d_t, boat);
-
-}
-
-function drawTrail(waypoints, t, boat) {
-
-    if (waypoints.length === 0)
-        return false;
-
-    var x = waypoints[0].x;
-    var y = waypoints[0].y;
-
-    var $canvas = document.querySelector('#canvas-' + boats[boat].id);
+    var $canvas = document.querySelector('#canvas-' + boats[num_boat].id);
     var ctx = $canvas.getContext('2d');
 
-    ctx.lineTo(waypoints[0].x, waypoints[0].y);
+    ctx.lineTo(x,y);
     ctx.stroke();
-
-    waypoints.shift();  // remove first item of array
-
-    setTimeout(function () {
-        drawTrail(waypoints, t, boat);
-    }, t);
 }
 
 

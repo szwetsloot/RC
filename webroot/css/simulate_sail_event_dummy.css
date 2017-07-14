@@ -119,27 +119,9 @@ li{
 	height: 100%;
 }
 
-#boat-container, #bouy-container,#waves-container,#height-line-container,#background-image{
-	/*-webkit-animation-name: zoom;
- 	-webkit-animation-duration:35s;
-    -webkit-animation-timing-function: linear;*/
+.ease-transform{
+    transition: transform 2s ease-in-out;
 }
-
-@-webkit-keyframes zoom {
-   0% {
-     transform: translateX(0px) scale(1); 
-   }
-   5% { 
-     transform: translateX(800px) scale(2); /* X should be multiplied with the scale factor */ 
-   }
-   
-    100% { 
-     transform: translateX(800px) scale(2); /* X should be multiplied with the scale factor */ 
-   }
-}
-
-
-
 
 #waves-container{
 	width: 200vw;
@@ -177,6 +159,10 @@ li{
 	z-index: 1;
 	width: 100%;
 	height: 100%;
+	top: 0;
+	left: 0;
+	position: absolute;
+	transform: scale(1);
 }
 
 .height-line {
@@ -434,7 +420,7 @@ li{
 * blauw 	: #1b7ebc;
 * geel 		: #d1bd6d;
 * geel 		: #fec835; mooie kleur geel maar niet realistisch
-* groen		:;
+* groen		: #13c54c;
 * rood		: #fe2d2d;
 */
 

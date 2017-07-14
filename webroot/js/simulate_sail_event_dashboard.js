@@ -25,6 +25,9 @@ var Dashboard = {
 // called by bouy rounded event
 // This function shows the right dashboard panels when a boat rounds a bouy
 Dashboard.bouyRounded = function(boat, bouy){
+
+	//console.log(boat.id+': '+boat.bouyHistory.length);
+	
 	$('#boat-info').removeClass('fadeInUp').addClass('fadeOutDown');
 	$('#boat-info').hide();
 	var bouy_name = bouy.order;
@@ -32,13 +35,14 @@ Dashboard.bouyRounded = function(boat, bouy){
 	// als de eerste boat klaar is start stopwatch
 	if( boat.position == 1 ){	
 		Dashboard.startBouyCounter(bouy_name);
+		Dashboard.resetZoom();
 	}
-	
+
 	// check of de volgende boten ook om dezelfde boei gaan
 	// bouyHistory checkt of de boten om evenveel boeien gaan
 	// voor als boten een boei achterlopen
 	if( this.showBouy == bouy_name && boat.bouyHistory.length == this.numPassedBouys ){		
-		
+
 		// hide the bouy if the last boat rounds the bouy
 		if(boat.position == boats.length ) Dashboard.deactivateBouy();
 
@@ -124,7 +128,8 @@ Dashboard.activateBouy = function(boat, bouy){
 	if( boat.position == 1 ){	
 		$('#bouy-counter').hide();
 		this.showBouy = bouy_name;
-		this.numPassedBouys = boat.bouyHistory.length + 1; // + 1 want history wordt pas geupdate met bouy rounded event			
+		this.numPassedBouys = boat.bouyHistory.length + 1; // + 1 want history wordt pas geupdate met bouy rounded event		
+		Dashboard.zoomBouy(bouy_element);
 	}
 	
 	// define dom elements
@@ -213,6 +218,49 @@ Dashboard.sortBoats = function(){
 		var top = margin_top+ ( height * i );
 		$boat_item.animate({top: top },100);
 	});
+}
+
+// zoom towards the bouy - units in pixels
+Dashboard.zoomBouy = function(bouy_element){
+	
+	// translate everything so the bouy is positioned in the center of the screen
+	// scale everything
+	var zoom_selector = '#height-line-container'; // add zoom class??? // translate-zoom
+	var translate_selector = '#boat-container, #bouy-container';
+	
+	$(zoom_selector).addClass('ease-transform');
+	$(translate_selector).addClass('ease-transform');
+	
+    // Get the screen size in pixel
+    var screenWidth = $('html').width();
+    var screenHeight = $('html').height();
+    
+    $bouy = bouy_element;
+    var bouy_pos = $bouy.position();
+    
+    var d_x = ( screenWidth / 2 ) - bouy_pos.left;
+    var d_y = ( screenHeight / 2 ) - bouy_pos.top;
+    
+    var scale = 1.5; // TODO define dynamic
+    
+    // translation should be multiplied with the scale factor
+    d_x *= scale;
+    d_y *= scale;
+    
+    
+    $(translate_selector).css('transform', 'translate('+d_x+'px,'+d_y+'px) scale('+scale+')');
+    $(zoom_selector).css('transform', 'scale('+scale+')');
+
+    
+}
+
+Dashboard.resetZoom = function(){
+
+	var zoom_selector = '#height-line-container'; // add zoom class??? // translate-zoom
+	var translate_selector = '#boat-container, #bouy-container';
+	
+	$(translate_selector).css('transform', 'translate(0px,0px) scale(1)');
+    $(zoom_selector).css('transform', 'scale(1)');
 }
 
 // functie die de profiel foto's van de athletes laat in en uit faden
