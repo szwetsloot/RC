@@ -23,8 +23,9 @@ Bouy.prototype = {
         // This method is called when a boat entered this bouy.
 
         // First boat activates the next bouy
-    	if(boat.position == 1)
+    	if(boat.position == 1){
     		Dashboard.activateBouy(boat,this);
+    	}
     },
     'rounded': function(boat) {
       // This method is called when a boat left this bouy.
@@ -37,8 +38,7 @@ Bouy.prototype = {
 
         var bouy = this;
 
-        if (boat.id != 1)
-            return;
+       // if (boat.id != 1) return;
 
         if (bouy.type == 1) { // Start bouy
             // This bouy consist of either 2 bouys or a bouy and a ship.

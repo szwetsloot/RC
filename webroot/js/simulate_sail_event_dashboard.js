@@ -25,8 +25,6 @@ var Dashboard = {
 // called by bouy rounded event
 // This function shows the right dashboard panels when a boat rounds a bouy
 Dashboard.bouyRounded = function(boat, bouy){
-
-	//console.log(boat.id+': '+boat.bouyHistory.length);
 	
 	$('#boat-info').removeClass('fadeInUp').addClass('fadeOutDown');
 	$('#boat-info').hide();
@@ -35,25 +33,35 @@ Dashboard.bouyRounded = function(boat, bouy){
 	// als de eerste boat klaar is start stopwatch
 	if( boat.position == 1 ){	
 		Dashboard.startBouyCounter(bouy_name);
-		Dashboard.resetZoom();
+		setTimeout(function(){
+			Dashboard.resetZoom();
+		},5000)
 	}
-
+	
 	// check of de volgende boten ook om dezelfde boei gaan
 	// bouyHistory checkt of de boten om evenveel boeien gaan
 	// voor als boten een boei achterlopen
 	if( this.showBouy == bouy_name && boat.bouyHistory.length == this.numPassedBouys ){		
 
-		// hide the bouy if the last boat rounds the bouy
-		if(boat.position == boats.length ) Dashboard.deactivateBouy();
-
 		Dashboard.addBoatToBouy(boat.id,boat.position);	
 		
-		// Boat info = brede balk onderaan het scherm
-		// stop ophalen van data van vorige boot
-		clearTimeout(Dashboard.boatinfoTimeout);		
-		Dashboard.showCrewInfo(boat.id); // herhaalt zich elke 500 ms voor nieuwe data
+		// positie 1 wordt al eerder weergeven
+		if( boat.position != 1 ) Dashboard.showCrewInfo(boat.id); // herhaalt zich elke 500 ms voor nieuwe data
+		
+		this.athlete = 0;
 		Dashboard.rotateAthletes(); // show de atheletes van de crew
+		
+		// last boat rounding this bouy deactivate the bouy after 4s
+		if( boat.position === boats.length ){
+			setTimeout(function(){
+				Dashboard.deactivateBouy();
+			},4000)
+		}
 	}
+	
+	
+
+	
 }
 
 // Het horizontale panel op de onderrand van het scherm
@@ -61,10 +69,14 @@ Dashboard.showCrewInfo = function(crew_id){
 	// select team
 	// TODO crew id moet worden opgezocht in de array
 	
+
+	// stop ophalen van data van vorige boot
+	clearTimeout(Dashboard.boatinfoTimeout);
+	
 	var crew = crews[crew_id - 1];
 	var tracker = crew.tracker;
 	var boat = boats[crew_id - 1];
-	var boat_speed = Math.round(convertSpeedtoKN(boat.speed) * 10) / 10;
+	var boat_speed = Math.round(convertSpeedtoKN(boat.speed) * 10 + ( Math.random() * 12 ) ) / 10;
 	
 	// define dom elements
 	var $panel = $('#boat-info');
@@ -114,6 +126,13 @@ Dashboard.showCrewInfo = function(crew_id){
 	this.boatinfoTimeout = setTimeout(function(){ Dashboard.showCrewInfo(crew_id); },500);
 }
 
+Dashboard.hideCrewInfo = function(){
+	$('#boat-info').removeClass('fadeInUp').addClass('fadeOutDown');
+	this.athlete = 0;
+	clearTimeout(Dashboard.boatinfoTimeout);
+	clearTimeout(Dashboard.athlete_rotator);
+}
+
 // called by bouy entered event
 Dashboard.activateBouy = function(boat, bouy){
 	
@@ -130,6 +149,9 @@ Dashboard.activateBouy = function(boat, bouy){
 		this.showBouy = bouy_name;
 		this.numPassedBouys = boat.bouyHistory.length + 1; // + 1 want history wordt pas geupdate met bouy rounded event		
 		Dashboard.zoomBouy(bouy_element);
+		this.athlete = 0;
+		Dashboard.rotateAthletes(); // show de atheletes van de crew
+		Dashboard.showCrewInfo(boat.id);
 	}
 	
 	// define dom elements
@@ -139,7 +161,7 @@ Dashboard.activateBouy = function(boat, bouy){
 	var $name = $panel.find('.counter');
 	
 	$list.empty();	
-	$panel.show();
+	$panel.removeClass('fadeOutUp').addClass('fadeInDown').show();
 	$('.bouy').removeClass('active');
 	 bouy_element.addClass('active');
 	
@@ -150,6 +172,8 @@ Dashboard.activateBouy = function(boat, bouy){
 
 // TODO use this function to hide the bouy info panel and show race overview
 Dashboard.deactivateBouy = function(){
+	$('#bouy-info').removeClass('fadeInDown').addClass('fadeOutUp');
+	$('#bouy-counter').hide();
 	$('.bouy').removeClass('active');
 }
 
@@ -221,8 +245,7 @@ Dashboard.sortBoats = function(){
 }
 
 // zoom towards the bouy - units in pixels
-Dashboard.zoomBouy = function(bouy_element){
-	
+Dashboard.zoomBouy = function(bouy_element){	
 	// translate everything so the bouy is positioned in the center of the screen
 	// scale everything
 	var zoom_selector = '#height-line-container'; // add zoom class??? // translate-zoom
@@ -255,7 +278,6 @@ Dashboard.zoomBouy = function(bouy_element){
 }
 
 Dashboard.resetZoom = function(){
-
 	var zoom_selector = '#height-line-container'; // add zoom class??? // translate-zoom
 	var translate_selector = '#boat-container, #bouy-container';
 	
@@ -265,12 +287,23 @@ Dashboard.resetZoom = function(){
 
 // functie die de profiel foto's van de athletes laat in en uit faden
 Dashboard.rotateAthletes = function() {
+	var ref = this;
+	
     $athletes_list = $('#boat-info .team-members ul li');    
     $athletes_list.eq(this.athlete - 1).fadeOut(); // dit is om zeker te weten dat de vorige wordt gehide
-    $athletes_list.eq(this.athlete).show().delay(2800).fadeOut(0);
-    this.athlete = (this.athlete < ($athletes_list.length - 1)) ? this.athlete += 1 : 0;
-	clearTimeout(Dashboard.athlete_rotator);
-    Dashboard.athlete_rotator = setTimeout('Dashboard.rotateAthletes()', 3000);
+    $athletes_list.eq(this.athlete).show().delay(2800).fadeOut(0, function(){ 
+    	if( ref.athlete == ($athletes_list.length - 1) ){
+    		setTimeout('Dashboard.hideCrewInfo()',4000) // hide panel when all athletes have been shown
+    	}
+    })
+    
+    // if there are athletes left repeat the function
+    if(this.athlete < ($athletes_list.length - 1)){
+    	this.athlete += 1;
+    	clearTimeout(Dashboard.athlete_rotator);
+        Dashboard.athlete_rotator = setTimeout('Dashboard.rotateAthletes()', 3000);
+    } 
+	
 }
 
 // Stopwatch

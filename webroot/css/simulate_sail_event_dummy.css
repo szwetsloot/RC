@@ -120,7 +120,7 @@ li{
 }
 
 .ease-transform{
-    transition: transform 2s ease-in-out;
+    transition: transform 4s ease-in-out;
 }
 
 #waves-container{
@@ -203,27 +203,7 @@ li{
 	height: 100%;
 	width: 100%;	
 }
-/*
-#bouy-0{
-	left:45%;
-	top:20%;
-}
 
-#bouy-1{
-	left:80%;
-	top:50%;
-}
-
-#bouy-2{
-	left:55%;
-	top:80%;
-}
-
-#bouy-3{
-	left:20%;
-	top:60%;
-}
-*/
 
 
 .bouy{
@@ -264,12 +244,12 @@ li{
 .bouy.active:before{
 	content: '';
     position: absolute;
-    height: 500px;
-    width: 500px;
+    height: 200px;
+    width: 200px;
     border: 3px dashed #fec835;
     border-radius: 50%;
-    top: -243px;
-    left: -243px;
+    top: -93px;
+    left: -93px;
     animation-name: spin;
     animation-duration: 120s;
     animation-iteration-count: infinite;
@@ -592,7 +572,7 @@ li{
 #boat-overview{
 	z-index: 6;
 	position: fixed;
-	top: 63%;
+	top: 30px;
 	left: 30px;
 	width: 300px;	
 }
@@ -601,7 +581,7 @@ li{
 	display: none;
 	z-index: 6;
 	position: fixed;
-	top: 30px;
+	top: 63%;
 	left: 30px;
 	width: 300px;
 }
@@ -615,7 +595,7 @@ li{
 	display:inline-block;
 	width: 100%;
 	top: -50px;
-	background: #fff;
+	background: rgba(255,255,255,0.8);
 	border-radius: 15px 0 0 15px;
 	padding: 2px 3px;
 	white-space: nowrap;

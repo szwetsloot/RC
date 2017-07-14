@@ -61,14 +61,6 @@
        	</div>
     </div>
     <?php endforeach; ?>
-    <!--
-    <div class="bouy blue-bouy" id='bouy-3'>
-            <div class="tooltip animated fadeInUp"></div>
-    </div>
-    <div class="bouy blue-bouy" id='bouy-4'>
-            <div class="tooltip animated fadeInUp"></div>
-    </div>
-    -->
 </div>
 
 
@@ -153,21 +145,21 @@
 						<?= $this->Html->image('sail_event_v2/team-members/alwinvandaelen-kwvdekaag.jpg') ?>
                     </div>
                     <h4>Alwin van Daelen</h4>
-                    <h5>Stuurvrouw, 22 jaar</h5>					
+                    <h5>Schipper, 51 jaar</h5>					
                 </li>				
                 <li class="animated fadeInRight">
                     <div class="profile-pic">
 						<?= $this->Html->image('sail_event_v2/team-members/peterbisschop-kwvdekaag.jpg') ?>
                     </div>
                     <h4>Peter Bisschop</h4>
-                    <h5>Stuurvrouw, 22 jaar</h5>					
+                    <h5>53 jaar</h5>					
                 </li>
                 <li class="animated fadeInRight">
                     <div class="profile-pic">
 						<?= $this->Html->image('sail_event_v2/team-members/rutgervaneeuwijk-kwvdekaag.jpg') ?>
                     </div>
                     <h4>Rutger Van Eeuwijk</h4>
-                    <h5>Stuurvrouw, 22 jaar</h5>					
+                    <h5>25 jaar</h5>					
                 </li>
             </ul>
         </div>

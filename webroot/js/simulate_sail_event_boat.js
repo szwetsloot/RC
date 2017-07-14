@@ -148,10 +148,12 @@ Boat.prototype = {
         // This method will check the status on the current bouy and keep track of rounding it
        
         for (var i = 0; i < bouys.length; i++) {
+
             if (bouys[i].order == this.nextBouy) {
                 var bouyUpdate = bouys[i].calculateBoatStatus(this);
                 if (bouyUpdate == undefined)
                     return;
+                
                 //console.log("Update = "+bouyUpdate);
                 if (this.bouyStatus == 3) {
                     if (bouyUpdate == 4) {
@@ -186,8 +188,6 @@ Boat.prototype = {
                     // Started rounding, send a message to the bouy
                     if (bouyUpdate != 0) {
                         bouys[i].boatEntered(this);
-
-                    	console.log(ref.id);
                     }
                     this.bouyStatus = bouyUpdate;
                 }
