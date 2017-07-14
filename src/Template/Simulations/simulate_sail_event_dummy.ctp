@@ -55,7 +55,10 @@
     <?php foreach ($bouys as $bouy): ?>
     <div class="bouy" id='bouy-<?= $bouy->id ?>'>
         <?= $bouy->name; ?>
-        <div class="tooltip animated fadeInUp"></div>
+        <div class="tooltip animated fadeInUp">
+        	lat: <?= $bouy->Trackers['latitude'] ?> <br>
+        	lng: <?= $bouy->Trackers['longitude'] ?>
+       	</div>
     </div>
     <?php endforeach; ?>
     <!--
@@ -74,7 +77,7 @@
 <div id="wedstrijdbaan"></div>
 <div id="dashboard">
 
-    <div id="bouy-info" class="animated fadeInDown">
+    <div id="bouy-info" class="info-list animated fadeInDown">
         <div class="info-bar"><span class="label">Eredivisie zeilen J/70</span><span class="counter">Boei 1</span></div>
         <ul>
             <li class="animated fadeInLeft">
@@ -97,6 +100,24 @@
             </li>
         </ul>
     </div>
+    
+     <div id="boat-overview" class="info-list animated fadeInLeft">
+        <div class="info-bar"><span class="label">Eredivisie zeilen J/70</span></div>
+        <ul>
+        <?php foreach ($crews as $i => $crew): ?>
+		    <li id="info-boat-<?= $crew->id ?>" class="animated fadeInLeft">
+                <div class="position"><?= $crew->id ?></div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/'.$crew->flag_image ) ?></div>
+                <div class="name"><?= $crew->shortname ?></div>
+                <div class="counter">14.6kN / 180&deg; / 82m</div>
+            </li>
+		<?php endforeach; ?>
+        
+           
+            
+        </ul>
+    </div>
+    
     <div id="race-time" class="info-bar animated fadeInRight"><span class="label">Race tijd</span><span class="counter">00:00,0</span></div>
     <div id="arrow-container" class="animated fadeInRight">
         <div id="north-arrow" class="arrow">

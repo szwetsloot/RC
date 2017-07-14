@@ -305,6 +305,14 @@ function listen() {
                         break;
                     }
                 }
+                
+                // calc the progress between the previous and next bouy
+                boat.calcPositionBoat();
+                
+                boat.calcDistanceBouy();
+
+            	Dashboard.sortBoats();
+            	boat.calcPositionBoat();
                 // Set the variables
                 boat.updateData(
                         crew.tracker.north,
@@ -312,6 +320,7 @@ function listen() {
                         crew.tracker.velocity,
                         crew.tracker.heading
                         );
+                
             }
         },
         complete: function (e, data) {

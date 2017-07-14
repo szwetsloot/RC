@@ -7,7 +7,7 @@ use Cake\Event\Event;
 
 define("SIMULATION", 1);
 define("TEST", "test 1");
-define("TEST_VELOCITY", 30);
+define("TEST_VELOCITY", 10);
 define("BOUY_DIST", 30);
 
 /**
@@ -227,7 +227,7 @@ class SimulationsController extends AppController {
         if (TEST == "test 1") {
             $mils = round(microtime(true) * 1000);
             foreach ($crews as $i => &$crew) {
-                $velocity = TEST_VELOCITY * (1 - 0.2 * $i);
+                $velocity = TEST_VELOCITY * (1 - 0.05 * $i);
                 // Go straight till above the first bouy
                 $sElapsed = ($mils - $startTime) / 1000;
                 $diff = ((160.67 * 2 + BOUY_DIST * pi() * 2) / $velocity);
