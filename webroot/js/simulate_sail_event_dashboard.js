@@ -9,6 +9,7 @@ $(function(){
 	// TODO fire this function when the actual race starts
 	// vars = jquery element, tekst label
 	race_stopwatch = new Stopwatch('#race-time','race tijd');
+	Dashboard.showMovie();
 });
 
 var Dashboard = {
@@ -26,13 +27,16 @@ var Dashboard = {
 // This function shows the right dashboard panels when a boat rounds a bouy
 Dashboard.bouyRounded = function(boat, bouy){
 	
-	$('#boat-info').removeClass('fadeInUp').addClass('fadeOutDown');
+	$('#boat-info').switchClass('fadeInUp','fadeOutDown');
 	$('#boat-info').hide();
 	var bouy_name = bouy.order;
 	
 	// als de eerste boat klaar is start stopwatch
 	if( boat.position == 1 ){	
 		Dashboard.startBouyCounter(bouy_name);
+		// TODO DIT IS NIET NETJES
+		$('#bg-movie').attr( 'src', 'https://www.youtube.com/embed/z8jors5jY64?rel=0&vq=hd720&controls=0&showinfo=0&mute=1&autoplay=1&Loop=1');
+		
 		setTimeout(function(){
 			Dashboard.resetZoom();
 		},5000)
@@ -53,6 +57,7 @@ Dashboard.bouyRounded = function(boat, bouy){
 		
 		// last boat rounding this bouy deactivate the bouy after 4s
 		if( boat.position === boats.length ){
+			bouy_stopwatch.stop();
 			setTimeout(function(){
 				Dashboard.deactivateBouy();
 			},4000)
@@ -118,7 +123,10 @@ Dashboard.showCrewInfo = function(crew_id){
 	$club_name.text(crew.name);
 	$club_flag.attr('src', image_base_url+crew.flag_image)
 	
-	$panel.addClass('fadeInUp').removeClass('fadeOutDown');
+	$panel.switchClass('fadeOutDown','fadeInUp');
+	$('#wave-bg').switchClass('fadeOutDown','fadeInUp');
+	
+	$('#wave-bg').show();
 	
 	$panel.show();
 		
@@ -127,7 +135,8 @@ Dashboard.showCrewInfo = function(crew_id){
 }
 
 Dashboard.hideCrewInfo = function(){
-	$('#boat-info').removeClass('fadeInUp').addClass('fadeOutDown');
+	$('#boat-info').switchClass('fadeInUp','fadeOutDown');
+	$('#wave-bg').switchClass('fadeInUp','fadeOutDown');
 	this.athlete = 0;
 	clearTimeout(Dashboard.boatinfoTimeout);
 	clearTimeout(Dashboard.athlete_rotator);
@@ -155,13 +164,16 @@ Dashboard.activateBouy = function(boat, bouy){
 	}
 	
 	// define dom elements
+	var $data_panel = $('#bouy-data');
 	var $panel = $('#bouy-info');
 	var $list = $panel.find('ul');
 	var $veld = $panel.find('.label');
 	var $name = $panel.find('.counter');
 	
 	$list.empty();	
-	$panel.removeClass('fadeOutUp').addClass('fadeInDown').show();
+	$panel.switchClass('fadeOutUp','fadeInDown').show();
+	$data_panel.switchClass('fadeOutUp','fadeInDown').show();
+	
 	$('.bouy').removeClass('active');
 	 bouy_element.addClass('active');
 	
@@ -172,9 +184,11 @@ Dashboard.activateBouy = function(boat, bouy){
 
 // TODO use this function to hide the bouy info panel and show race overview
 Dashboard.deactivateBouy = function(){
-	$('#bouy-info').removeClass('fadeInDown').addClass('fadeOutUp');
+	$('#bouy-data').switchClass('fadeInDown','fadeOutUp');
+	$('#bouy-info').switchClass('fadeInDown','fadeOutUp');
 	$('#bouy-counter').hide();
 	$('.bouy').removeClass('active');
+	Dashboard.showMovie();
 }
 
 // counter rechts onder
@@ -305,6 +319,13 @@ Dashboard.rotateAthletes = function() {
     } 
 	
 }
+
+
+Dashboard.showMovie = function(){
+	
+	$('#bg-movie').fadeIn().delay(8000).fadeOut()
+}
+
 
 // Stopwatch
 function Stopwatch(obj, name){

@@ -25,6 +25,8 @@
 <?= $this->Html->css('simulate_sail_event_dummy') ?>
 
 <?= $this->Html->script('http://code.jquery.com/jquery.min.js') ?>
+<?= $this->Html->script('https://code.jquery.com/ui/1.12.1/jquery-ui.min.js') ?>
+
 <?= $this->Html->script('node_modules/proj4/dist/proj4') ?>
 
 <?= $this->Html->script('simulate_sail_event_dummy') ?>
@@ -124,6 +126,27 @@
         </div>
 
     </div>
+    
+    <div id="bouy-data" class="info-list animated fadeInDown" >
+        <div class="info-bar"><span class="label">Boei 1</span></div>
+        <ul>
+            <li class="animated fadeInLeft">
+                <div class="position">1</div>
+                <div class="name">diepte</div>
+                <div class="counter">6 m</div>
+            </li>
+            <li class="animated fadeInLeft">
+                <div class="position">1</div>
+                <div class="name">Stroming</div>
+                <div class="counter">+2.1 S</div>
+            </li>
+            <li class="animated fadeInLeft">
+                <div class="position">1</div>
+                <div class="name">Wind</div>
+               <div class="counter">5 Bft, NW</div>
+            </li>
+        </ul>
+    </div>
 
     <div id="boat-info" class="animated fadeInUp">
         <div class="boat-data">
@@ -173,8 +196,64 @@
             </div>
         </div>
     </div>
+    <div id="wave-bg" class="animated fadeInUp"></div>
 
 
     <div id="bouy-counter" class="info-bar animated fadeInUp"><span class="label">Boei 1</span><span class="counter">+00,0</span></div>
+    
+     <div id="start-panel" class="panel info-list animated fadeInDown">
+     	<div class="panel-header">
+     		<?= $this->Html->image('sail_event_v2/logo-horizontaal.png',['class' => 'race-logo']) ?>
+     		<h1>Start</h1>
+     		<?= $this->Html->image('sail_event_v2/otis-blauw.png',['class' => 'dev-logo']) ?>
+        </div>
+       
+        <div class="info-bar"><span class="label">Eredivisie zeilen J/70</span></div>
+        <div class="list-header">Start NR     | Vereniging | Schipper Ranking competitie |  Punten </div>
+        <ul>
+            <li class="animated fadeInLeft">
+                <div class="position">1</div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?></div>
+                <div class="name">WV Neptunes</div>
+                <div class="counter">10:06,5</div>
+            </li>
+            <li class="animated fadeInLeft">
+                <div class="position">2</div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/12.Giesbeek.png') ?></div>
+                <div class="name">R.R. & Z.V. Maas en roer</div>
+                <div class="counter">+2.1 S</div>
+            </li>
+            <li class="animated fadeInLeft">
+                <div class="position">3</div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/18.Westeinder.png') ?></div>
+                <div class="name">KWV de Kaag</div>
+                <div class="counter">+13,5 S</div>
+            </li>
+            <li class="animated fadeInLeft">
+                <div class="position">1</div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?></div>
+                <div class="name">WV Neptunes</div>
+                <div class="counter">10:06,5</div>
+            </li>
+            <li class="animated fadeInLeft">
+                <div class="position">2</div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/12.Giesbeek.png') ?></div>
+                <div class="name">R.R. & Z.V. Maas en roer</div>
+                <div class="counter">+2.1 S</div>
+            </li>
+            <li class="animated fadeInLeft">
+                <div class="position">3</div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/18.Westeinder.png') ?></div>
+                <div class="name">KWV de Kaag</div>
+                <div class="counter">+13,5 S</div>
+            </li>
+        </ul>
+        
+    </div>
+
+    <iframe id="bg-movie" src="https://www.youtube.com/embed/z8jors5jY64?rel=0&vq=hd720&controls=0&showinfo=0&mute=1&loop=1&autoplay=1" frameborder="0" allowfullscreen></iframe>
+    
 	<?= $this->Html->image('sail_event_v2/otis.png',['class' => 'otis-logo']) ?>
+	
+	<div class="overlay"></div>
 </div>

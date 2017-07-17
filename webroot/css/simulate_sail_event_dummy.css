@@ -12,8 +12,11 @@
  * bouy-container					2
  * canvas							2
  * boat-container					3
+ * movie							4
  * dashboard						5
  * boat info						6
+ * overlay							7
+ * panel (schermvullend)			8
  *
  */
  
@@ -42,6 +45,12 @@
     font-style: normal;
 
 }
+
+@import url("sailing-dummy/base.css");
+@import url("sailing-dummy/info-bar.css");
+@import url("sailing-dummy/parcour.css");
+@import url("sailing-dummy/boat-info.css");
+@import url("sailing-dummy/panel.css");
  
 *{
 	font-family: 'bebas_neue';
@@ -71,6 +80,28 @@ li{
 	list-style: none;
 }
  
+.overlay{
+	background: rgba(0,0,0,0.2);
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0; 
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 7;
+} 
+
+#bg-movie{
+	display: none;
+	position: fixed;
+	width: 100%;
+	height: 117%;
+	top: 0; 
+	left: 0;
+	z-index: 4;
+}
+ 
 /* general elements */
 .info-bar{
 	overflow: hidden;
@@ -94,7 +125,7 @@ li{
 	content: '';
 	position: absolute;
 	right: -10px;
-	top: -10px;
+	top: -11px;
 	background: #005b7f;
 	width: 40px;
 	height: 130%;
@@ -532,6 +563,12 @@ li{
 	z-index: 5;
 }
 
+#race-time{
+	position: fixed;
+	top: 30px;
+	right: 30px;
+	z-index: 5;
+}
 
 .otis-logo{
 	position: fixed;
@@ -540,6 +577,7 @@ li{
 	width: 120px;
 	height: auto;
 	opacity: 0.8;
+	z-index: 10;
 }
 
 #arrow-container {
@@ -547,6 +585,7 @@ li{
 	right: 30px;
 	top: 90px;
 	width: 85px;
+	z-index: 5;
 }
 
 .arrow{
@@ -591,6 +630,108 @@ li{
 	width: 300px;
 }
 
+#bouy-data{
+	display: none;
+	z-index: 6;
+	position: fixed;
+	top: 30px;
+	Right: 200px;
+	width: 160px;
+}
+
+#bouy-data .position{
+	margin-right: 10px;
+}
+
+#start-panel{
+}
+
+.overlay{
+	display: none;
+}
+
+.panel{
+	position: absolute;
+	width: 80%;
+	height: 80%;
+	top: 10%;
+	left: 10%;
+	z-index: 8;
+}
+
+.panel-header{
+	width: calc( 100% - 40px );
+	padding: 10px 20px 20px 20px;
+	background: rgba(255,255,255,0.95);
+	
+	-webkit-box-shadow: 0px 0px 89px -15px rgba(0,0,0,0.65);
+	-moz-box-shadow: 0px 0px 89px -15px rgba(0,0,0,0.65);
+	box-shadow: 0px 0px 89px -15px rgba(0,0,0,0.65);
+}
+
+.panel-header img{
+	height: 50px;
+	width: auto;
+}
+
+.panel-header img:last-child{
+	height: 40px;
+	margin-top: 5px;
+	opacity: 0.8;
+}
+
+.panel .race-logo{
+}
+
+.panel .dev-logo{
+	float: right;
+}
+
+.panel h1{
+	position: absolute;
+	left: 25%;
+	top: 20px;
+	width: 50%;
+	font-size: 34px;
+	letter-spacing: 10px;
+	text-align: center;
+	color: #005b7f;
+}
+
+.panel .info-bar{
+	border-radius :0;	
+	margin-top: -10px;
+}
+
+.panel .info-bar .label{
+	width: 50%;
+}
+
+.panel.info-list ul li:nth-child(1), #bouy-data.info-list ul li:nth-child(1){
+	animation-delay: 1.4s;
+}
+
+.panel.info-list ul li:nth-child(2), #bouy-data.info-list ul li:nth-child(2){
+	animation-delay: 1.8s;
+}
+
+.panel.info-list ul li:nth-child(3), #bouy-data.info-list ul li:nth-child(3){
+	animation-delay: 2.2s;
+}
+
+.panel.info-list ul li:nth-child(4), #bouy-data.info-list ul li:nth-child(4){
+	animation-delay: 2.6s;
+}
+
+.panel.info-list ul li:nth-child(5), #bouy-data.info-list ul li:nth-child(5){
+	animation-delay: 3s;
+}
+
+.panel.info-list ul li:nth-child(6), #bouy-data.info-list ul li:nth-child(6){
+	animation-delay: 3.4s;
+}
+
+/* */
 .info-list .info-bar{
 	margin-bottom: 2px;
 }
@@ -643,6 +784,21 @@ li{
 	-webkit-box-shadow: inset 0px -67px 40px -23px rgba(0,0,0,0.27);
 	-moz-box-shadow: inset 0px -67px 40px -23px rgba(0,0,0,0.27);
 	box-shadow: inset 0px -67px 40px -23px rgba(0,0,0,0.27);
+}
+
+#wave-bg{
+	display: none;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background-image: url(../img/sail_event_v2/waves.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: bottom;
+	left: 0;
+	bottom: 0;
+	opacity: 0.6;
+	z-index: 5;
 }
 
 #boat-info .boat-data{
@@ -821,9 +977,4 @@ li{
 	left: calc( 50% + 300px );
 }
 
-#race-time{
-	position: fixed;
-	top: 30px;
-	right: 30px;
-}
 
