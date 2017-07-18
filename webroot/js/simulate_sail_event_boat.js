@@ -105,7 +105,7 @@ Boat.prototype = {
         var startRotation = getRotationDegrees($boat_icon);
         $boat.animate({
             left: ref.drawn.left,
-            top: ref.drawn.top
+            top: ref.drawn.top 
         }, {
             done: function () {
                 ref.moveBoat();
@@ -131,7 +131,14 @@ Boat.prototype = {
                 }
         );
         
-        drawTrail(ref.drawn.left, ref.drawn.top, boat.num); // draw the trail of the boat
+        
+        if( this.countMove < 4 ){
+        	this.countMove += 1;
+        } else{
+        	this.countMove = 0;
+        	drawTrail(ref.drawn.left, ref.drawn.top, boat.num); // draw the trail of the boat
+        }
+        
         
         boat.top = ref.drawn.top;
         boat.left = ref.drawn.left;

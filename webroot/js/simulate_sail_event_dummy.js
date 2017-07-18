@@ -493,12 +493,24 @@ function convertToPixels(obj, obj_east, obj_north) {
 function drawTrail(x_target, y_target, num_boat) {
 	var x = x_target;
 	var y = y_target;
+	
+	var breadcrumb = document.createElement('div');
+	$(breadcrumb).addClass('start-'+num_boat)
+				.addClass('breadcrumb')
+				.css({'top':y,'left':x})
+				.appendTo('#trail-container');
+	setTimeout(function(){
+		$(breadcrumb).fadeOut(3000);		
+	},22000);
+	setTimeout(function(){
+		$(breadcrumb).remove();		
+	},25000);
 
-    var $canvas = document.querySelector('#canvas-' + boats[num_boat].id);
-    var ctx = $canvas.getContext('2d');
+    //var $canvas = document.querySelector('#canvas-' + boats[num_boat].id);
+    //var ctx = $canvas.getContext('2d');
 
-    ctx.lineTo(x,y);
-    ctx.stroke();
+    //ctx.lineTo(x,y);
+    //ctx.stroke();
 }
 
 

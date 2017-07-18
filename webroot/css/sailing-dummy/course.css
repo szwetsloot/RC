@@ -6,6 +6,15 @@
 	height: 100%;
 }
 
+#trail-container{
+	z-index: 3;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;	
+}
+
 #waves-container{
 	width: 200vw;
 	height: 200vh;
@@ -204,4 +213,31 @@
     border-right: solid 6px #222;
     border-bottom: solid 5px transparent;
     border-left: solid 5px transparent;
+}
+
+.start-1.breadcrumb{
+	top: 30%;
+	left: 40%;
+}
+
+.start-2.breadcrumb{
+	top: 35%;
+	left: 45%;
+}
+
+.start-3.breadcrumb{
+	top: 25%;
+	left: 45%;
+}
+
+.breadcrumb{
+	position: absolute;
+	opacity: 0.6;
+	margin-top: -4px;
+	margin-left: -4px;
+	height: 8px;
+	width: 8px;
+	border-radius: 50%;
+	border-width: 2px;
+	border-style: solid;
 }

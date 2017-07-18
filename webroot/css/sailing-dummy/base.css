@@ -117,3 +117,28 @@ li{
 .start-6 .position, .start-6.position{
 	background: #fe2d2d;
 }
+
+/* BREADCRUMBS */
+.start-1.breadcrumb{
+	border-color: #fff;
+}
+
+.start-2.breadcrumb{
+	border-color: #1b7ebc;
+}
+
+.start-3.breadcrumb{
+	border-color: #383838;
+}
+
+.start-4.breadcrumb{
+	border-color: #13c54c;
+}
+
+.start-5.breadcrumb{
+	border-color: #fec835;
+}
+
+.start-6.breadcrumb{
+	border-color: #fe2d2d;
+}

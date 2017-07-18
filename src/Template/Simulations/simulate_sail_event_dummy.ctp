@@ -34,9 +34,14 @@
 <?= $this->Html->script('simulate_sail_event_boat') ?>
 <?= $this->Html->script('simulate_sail_event_bouy') ?>
 
-<div id='background-image'></div>
-<div id='height-line-container'></div>
+<div id="background-image"></div>
+<div id="height-line-container"></div>
 <div id="waves-container"></div>
+<div id="trail-container">
+	<!-- <div class="start-1 breadcrumb"></div>
+	<div class="start-2 breadcrumb"></div>
+	<div class="start-3 breadcrumb"></div> -->
+</div>
 
 <div id="boat-container">	
 <?php foreach ($crews as $i => $crew): ?>

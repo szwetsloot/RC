@@ -275,12 +275,13 @@ Dashboard.zoomBouy = function(bouy_element){
 	// translate everything so the bouy is positioned in the center of the screen
 	// scale everything
 	var zoom_selector = '#height-line-container'; // add zoom class??? // translate-zoom
-	var translate_selector = '#boat-container, #bouy-container';
+	var translate_selector = '#boat-container, #bouy-container, #trail-container';
 	var $waves = $('#waves-container');
 	var rotation = getRotationDegrees($waves);
 	
 	$(zoom_selector).addClass('ease-transform');
 	$(translate_selector).addClass('ease-transform');
+	$waves.addClass('ease-transform');
 	
     // Get the screen size in pixel
     var screenWidth = $('html').width();
@@ -301,13 +302,13 @@ Dashboard.zoomBouy = function(bouy_element){
     // The elements have the css class ease-transform which forces them to animate transformation
     $(translate_selector).css('transform', 'translate('+d_x+'px,'+d_y+'px) scale('+scale+')');
     $(zoom_selector).css('transform', 'scale('+scale+')');
-    $waves.css('transform', 'scale('+scale+') rotate('+rotation+'deg)');
+    $waves.css('transform', 'scale('+ (scale*2) +') rotate('+rotation+'deg)');
     
 }
 
 Dashboard.resetZoom = function(){
 	var zoom_selector = '#height-line-container'; // add zoom class??? // translate-zoom
-	var translate_selector = '#boat-container, #bouy-container';
+	var translate_selector = '#boat-container, #bouy-container, #trail-container';
 	var $waves = $('#waves-container');
 	var rotation = getRotationDegrees($waves);
 		
