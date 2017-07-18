@@ -1,0 +1,207 @@
+/* Simulator */
+#bouy-container,
+#height-line-container,
+#boat-container{
+	width: 100%;
+	height: 100%;
+}
+
+#waves-container{
+	width: 200vw;
+	height: 200vh;
+	top: -50vh;
+	left: -50vw;
+	position: absolute;
+}
+
+.wave{
+	position: relative;
+	display:inline-block;
+	height: 100%;
+	width: 5%;	
+	opacity:0.6;
+	/*background-image: url(../../img/sail_event_v2/wave.png);
+	background-size: 100% 100%;	
+	*/
+	background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(237,237,237,0.08) 50%, rgba(0,0,0,0.08) 51%, rgba(0,0,0,0) 100%);
+	background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(237,237,237,0.08) 50%,rgba(0,0,0,0.08) 51%,rgba(0,0,0,0) 100%);
+	background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(237,237,237,0.08) 50%,rgba(0,0,0,0.08) 51%,rgba(0,0,0,0) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#00000000',GradientType=1 );
+		
+	-webkit-animation-name: move-waves;
+ 	-webkit-animation-duration: 12s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes move-waves {
+   from {
+     transform: translateX(0%);
+   }
+   to { 
+     transform: translateX(200%);
+   }
+}
+
+#height-line-container{
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	position: absolute;
+	transform: scale(1);
+}
+
+.height-line {
+	position: absolute;
+	width: 400%;
+	margin-left: -200%;
+	height: 1px; 
+	background-color: #fff;
+	opacity: 0.5;
+}
+
+/* tijdelijke laag om parcour weer te laten zien */
+#wedstrijdbaan{
+	display: none;
+	position: fixed;
+	background-image: url(../../img/sail_event_v2/parcour.png);
+	background-size:contain;
+	height: 226px;
+	width: 800px;
+	top: calc( 50% - 113px );
+	left: calc( 50% - 400px );
+}
+
+#bouy-container{
+	z-index: 3;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;	
+}
+
+#boat-container{
+	z-index: 2;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;	
+}
+
+#start{
+	height: 200px;
+	position: fixed;
+	left: 80%;
+	width: 4px;
+	top: calc( 50% - 100px );
+	background-image: linear-gradient(white 50%, rgba(255,255,255,0) 0%);
+	background-position: top right;
+	background-size: 4px 10px;
+	background-repeat: repeat-y;
+	opacity: 0.6;
+	z-index: 2;
+}
+
+#start.restricted{
+	background-image: linear-gradient(#dc1e1e 50%, rgba(255,255,255,0) 0%);
+}
+
+.bouy{
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	margin-top: -10px;
+	margin-left: -10px;
+	border-radius: 50%;
+	background-color: #ffc600;
+	color: #75652e;
+    font-size: 13px;
+    text-align: center;
+    line-height: 19px;
+    text-indent: 2px;
+
+	-webkit-box-shadow: inset 5px -5px 10px 0px rgba(0,0,0,0.4);
+	-moz-box-shadow: inset 5px -5px 10px 0px rgba(0,0,0,0.2);
+	box-shadow: inset 5px -5px 5px 0px rgba(0,0,0,0.4);
+}
+
+.blue-bouy{
+	width: 15px;
+	height: 15px;
+	background: #94bced;
+} 
+
+
+.bouy.active:before{
+	content: '';
+    position: absolute;
+    height: 200px;
+    width: 200px;
+    border: 3px dashed #fec835;
+    border-radius: 50%;
+    top: -93px;
+    left: -93px;
+    animation-name: spin;
+    animation-duration: 120s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    opacity: 0.6;
+
+}
+
+@keyframes spin {
+    from {transform:rotate(360deg);}
+    to {transform:rotate(0deg);}
+}
+
+
+/* TOOLTIP */
+.bouy:hover .tooltip {
+    visibility: visible;
+    display: block;
+    font-family: 'bebas_neue_book';
+}
+
+.tooltirep {
+    position: relative;
+    display: inline-block;
+}
+
+
+.tooltip{
+    visibility: hidden;
+    display:none;
+    white-space: nowrap;
+    background-color: #222;
+    color: #fff;
+    text-align: left;
+    border-radius: 2px;
+    padding: 3px 8px;
+    position: absolute;
+    font-weight: bold;
+    font-size: 10px;
+    line-height: 12px;
+    font-family: 'bebas_neue_book';
+    z-index: 1; /* buttons zijn 100 */
+    top: -8px;
+    left: 35px;
+    opacity:0.9;
+    animation-duration: 0.1s; /* TODO crossebrowser */
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -6px;
+    border-style: solid;
+    border-top: solid 5px transparent;
+    border-right: solid 6px #222;
+    border-bottom: solid 5px transparent;
+    border-left: solid 5px transparent;
+}

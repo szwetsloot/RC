@@ -1,0 +1,190 @@
+
+
+#dummy-boat{
+	display: none;
+}
+
+.boat{
+	display: block;
+	position: relative;
+	z-index: 3;
+}
+
+#boat-1{
+	left: 80%;
+	top: 45%;	
+}
+
+#boat-2{
+	left: 60%;
+	top: 25%;	
+}
+
+#boat-3{
+	left: 25%;
+	top: 50%;	
+}
+
+.boat-icon {
+	width: 50px;
+	height: 17px;
+	background-image: url(../../img/sail_event_v2/boat-2.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+	margin-top: -9px;
+	margin-left: -25px;
+	
+}
+
+.boat-icon:before{
+	content: '';
+	display: block;
+	position: absolute;
+	top: calc( 50% - 5px );
+	right: 3px;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 5px 0 4px 15px;
+	border-color: transparent;
+}
+
+.boat-icon:after{
+	content: '';
+	position: absolute;
+	width: 50px;
+	height: 17px;
+	background-image: url(../../img/sail_event_v2/sail.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+	
+	/*-ms-transform: rotate(-45deg);
+    -ms-transform-origin: 63.7% 50%; 
+    -webkit-transform: rotate(-45deg); 
+    -webkit-transform-origin: 63.7% 50%;  */
+    transform-origin: 63.7% 50%;
+    
+	-webkit-animation-name: move-sail;
+ 	-webkit-animation-duration: 12s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes move-sail {
+   0% {     
+	transform: rotateZ(-45deg);	
+   }
+   25% {      
+	transform: rotateZ(0deg);	
+   }
+   50% {     
+	transform: rotateZ(-45deg) rotateX(0deg);	
+   }
+   51% {     
+	transform: rotateZ(-45deg) rotateX(180deg);	
+   }
+   75% {     
+	transform: rotateZ(45deg) rotateX(180deg);	
+   }
+   99% {     
+	transform: rotateZ(-45deg) rotateX(180deg);	
+   }
+}
+
+/* labeltje van de bewegende bootjes */
+.boat-stats{
+	position: absolute;
+	display:inline-block;
+	top: -40px;
+	/*min-width: 135px;*/
+	margin-top: -12.5px;
+	margin-left: -35px;		
+	/* background: #fff; */
+	border-radius: 15px 0 0 15px;
+	padding: 2px 3px;
+	white-space: nowrap;
+}
+
+.boat-stats:after{
+	content: '';
+	position: absolute;
+	background: #fff;
+	height: 60px;
+	width: 1px;
+	left: 33px;
+	top: 0;
+	opacity: 0.6;
+}
+
+.boat-stats div{
+	float: left;
+}
+
+.boat-stats .name{
+	display: none;
+	line-height: 24px;
+	padding: 0 15px 0 5px;
+	font-size: 12px;
+	float: right;
+}
+
+
+#boat-1 .position {
+	background-color: #fff;
+	color: #272727;
+}
+
+#boat-2 .position {
+	background-color: #fec835;
+}
+
+#boat-3 .position{
+	background-color: #13c54c;	
+}
+
+#boat-1 .boat-icon:before{
+	border-left-color: #fff;	
+}
+
+#boat-2 .boat-icon:before{
+	border-left-color: #d1bd6d;
+	border-left-color: #fec835;
+}
+
+#boat-3 .boat-icon:before{
+	border-left-color: #13c54c;	
+}
+
+.team-flag img{
+	height: 24px;
+	width: auto;
+	margin:0 8px;
+}
+
+.boat-stats .extra{
+	position: absolute;
+	top: 28px;
+	left: 35px;
+	font-size: 14px;
+	line-height: 14px;
+	overflow: hidden;
+	padding-right: 20px;
+}
+
+.boat-stats .extra p {
+	/* background-color: #005b7f; */	
+	padding: 3px 5px 2px 10px;
+	color: #fff;
+}
+
+.boat-stats .extra:after{
+	content: '';
+	position: absolute;
+	right: 10px;
+	top: -10px;
+	/* background: #005b7f; */
+	width: 40px;
+	height: 130%;
+	z-index: -1;
+	transform: rotate(25deg);	
+}

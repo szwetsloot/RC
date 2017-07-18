@@ -1,0 +1,124 @@
+/*
+ * big panel for start and finish 
+ */
+#start-panel{
+	display: block;
+}
+
+#overlay{
+	display: block;
+}
+
+.panel{
+	position: absolute;
+	width: 80%;
+	height: 80%;
+	top: 10%;
+	left: 10%;
+	z-index: 8;
+}
+
+.panel-header{
+	width: calc( 100% - 40px );
+	padding: 10px 20px 20px 20px;
+	background: rgba(255,255,255,0.95);
+	margin-bottom: 30px;
+	
+	-webkit-box-shadow: 0px 0px 89px -15px rgba(0,0,0,0.65);
+	-moz-box-shadow: 0px 0px 89px -15px rgba(0,0,0,0.65);
+	box-shadow: 0px 0px 89px -15px rgba(0,0,0,0.65);
+}
+
+.panel-header img{
+	height: 50px;
+	width: auto;
+}
+
+.panel .race-logo{
+}
+
+.panel .dev-logo{
+	float: right;
+	height: 40px;
+	margin-top: 5px;
+	opacity: 0.8;
+}
+
+.panel h1{
+	position: absolute;
+	left: 25%;
+	top: 20px;
+	width: 50%;
+	font-size: 34px;
+	letter-spacing: 10px;
+	text-align: center;
+	color: #005b7f;
+}
+
+.panel .info-bar{
+	border-radius :0;	
+	margin-top: 10px;
+	position: absolute;	
+	z-index: 10;
+	width: 100%;
+}
+
+.panel .info-bar .label:after{
+	width: 500px;
+}
+
+.panel  .list-header span{
+	color: #fff;
+}
+
+.panel .list-header .name{
+	width:  calc( 30% + 20px );
+	display: inline-block;
+}
+
+.panel .list-header .ranking{
+	float: right;
+	margin-right: 15px;
+}
+
+.panel .medal{
+	height: 20px;
+	margin-left: 5px;
+}
+
+.panel.info-list ul li .name{
+	font-size: 18px;
+	min-width: 30%;
+}
+
+.panel.info-list ul li .counter{
+	float: right;
+	font-size: 18px;
+	color: #272727;
+	text-align: left;
+	width: 120px;
+}
+
+.panel.info-list ul li:nth-child(1), #bouy-data.info-list ul li:nth-child(1){
+	animation-delay: 1.4s;
+}
+
+.panel.info-list ul li:nth-child(2), #bouy-data.info-list ul li:nth-child(2){
+	animation-delay: 1.8s;
+}
+
+.panel.info-list ul li:nth-child(3), #bouy-data.info-list ul li:nth-child(3){
+	animation-delay: 2.2s;
+}
+
+.panel.info-list ul li:nth-child(4), #bouy-data.info-list ul li:nth-child(4){
+	animation-delay: 2.6s;
+}
+
+.panel.info-list ul li:nth-child(5), #bouy-data.info-list ul li:nth-child(5){
+	animation-delay: 3s;
+}
+
+.panel.info-list ul li:nth-child(6), #bouy-data.info-list ul li:nth-child(6){
+	animation-delay: 3.4s;
+}

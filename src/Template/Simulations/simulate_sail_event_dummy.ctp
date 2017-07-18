@@ -63,14 +63,11 @@
        	</div>
     </div>
     <?php endforeach; ?>
+    <div id="start" class="restricted"></div>    
 </div>
-
-
-
 
 <div id="wedstrijdbaan"></div>
 <div id="dashboard">
-
     <div id="bouy-info" class="info-list animated fadeInDown">
         <div class="info-bar"><span class="label">Eredivisie zeilen J/70</span><span class="counter">Boei 1</span></div>
         <ul>
@@ -113,6 +110,7 @@
     </div>
     
     <div id="race-time" class="info-bar animated fadeInRight"><span class="label">Race tijd</span><span class="counter">00:00,0</span></div>
+    <div id="penalty" class="info-bar animated fadeInUp"><span class="label">Penalty</span><span class="counter penalty">Scheveningen</span></div>
     <div id="arrow-container" class="animated fadeInRight">
         <div id="north-arrow" class="arrow">
             N
@@ -127,21 +125,21 @@
 
     </div>
     
-    <div id="bouy-data" class="info-list animated fadeInDown" >
+    <div id="bouy-data" class="info-list right-list animated fadeInRight" >
         <div class="info-bar"><span class="label">Boei 1</span></div>
         <ul>
             <li class="animated fadeInLeft">
-                <div class="position">1</div>
+                <div class="position">D</div>
                 <div class="name">diepte</div>
                 <div class="counter">6 m</div>
             </li>
             <li class="animated fadeInLeft">
-                <div class="position">1</div>
+                <div class="position">S</div>
                 <div class="name">Stroming</div>
                 <div class="counter">+2.1 S</div>
             </li>
             <li class="animated fadeInLeft">
-                <div class="position">1</div>
+                <div class="position">W</div>
                 <div class="name">Wind</div>
                <div class="counter">5 Bft, NW</div>
             </li>
@@ -189,7 +187,7 @@
         <div class="team-data-container">
             <div class="team-data">
                 <h2 class="club-name">R.R. &amp; Z.V. Maas en roer</h2>
-                <div id="medal" class="medal-1"></div>
+                <div class="medal medal-1"></div>
                 <h3 style="text-decoration: underline;">Ranking competitie</h3>
                 <h3 class="competition">Positie 1, 18 punten</h3>
 			<?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?>
@@ -206,54 +204,72 @@
      		<?= $this->Html->image('sail_event_v2/logo-horizontaal.png',['class' => 'race-logo']) ?>
      		<h1>Start</h1>
      		<?= $this->Html->image('sail_event_v2/otis-blauw.png',['class' => 'dev-logo']) ?>
+     		<div class="info-bar"><span class="label">Eredivisie zeilen J/70</span></div>
         </div>
        
-        <div class="info-bar"><span class="label">Eredivisie zeilen J/70</span></div>
-        <div class="list-header">Start NR     | Vereniging | Schipper Ranking competitie |  Punten </div>
+        
+        <div class="list-header">
+        		<span>Start NR | </span>
+             	<span class="name">Vereniging</span>
+             	<span>Schipper</span>
+             	<span class="ranking">Ranking competitie</span>
+        </div>
         <ul>
             <li class="animated fadeInLeft">
-                <div class="position">1</div>
+                <div class="position start-1">1</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?></div>
                 <div class="name">WV Neptunes</div>
-                <div class="counter">10:06,5</div>
+                <div class="medal medal-1"></div>
+                <div class="skipper">Peter Bisshop</div>
+                <div class="counter">1 | 20 punten</div>
             </li>
             <li class="animated fadeInLeft">
-                <div class="position">2</div>
+                <div class="position start-2">2</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/12.Giesbeek.png') ?></div>
                 <div class="name">R.R. & Z.V. Maas en roer</div>
-                <div class="counter">+2.1 S</div>
+                <div class="medal medal-2"></div>
+                <div class="skipper">Peter Bisshop</div>
+                <div class="counter">2 | 40 punten</div>
             </li>
             <li class="animated fadeInLeft">
-                <div class="position">3</div>
+                <div class="position start-3">3</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/18.Westeinder.png') ?></div>
                 <div class="name">KWV de Kaag</div>
-                <div class="counter">+13,5 S</div>
+                <div class="medal medal-3"></div>
+                <div class="skipper">Peter Bisshop</div>
+                <div class="counter">3 | 60 punten</div>
             </li>
             <li class="animated fadeInLeft">
-                <div class="position">1</div>
+                <div class="position start-4">1</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?></div>
                 <div class="name">WV Neptunes</div>
-                <div class="counter">10:06,5</div>
+                <div class="medal"></div>
+                <div class="skipper">Peter Bisshop</div>
+                <div class="counter">4 | 80 punten</div>
             </li>
             <li class="animated fadeInLeft">
-                <div class="position">2</div>
+                <div class="position start-5">5</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/12.Giesbeek.png') ?></div>
                 <div class="name">R.R. & Z.V. Maas en roer</div>
-                <div class="counter">+2.1 S</div>
+                <div class="medal"></div>
+                <div class="skipper">Peter Bisshop</div>
+                <div class="counter">5 | 100 punten</div>
             </li>
             <li class="animated fadeInLeft">
-                <div class="position">3</div>
+                <div class="position start-6">6</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/18.Westeinder.png') ?></div>
                 <div class="name">KWV de Kaag</div>
-                <div class="counter">+13,5 S</div>
+                <div class="medal"></div>
+                <div class="skipper">Peter Bisshop</div>
+                <div class="counter">6 | 120 punten</div>
             </li>
         </ul>
         
     </div>
 
-    <iframe id="bg-movie" src="https://www.youtube.com/embed/z8jors5jY64?rel=0&vq=hd720&controls=0&showinfo=0&mute=1&loop=1&autoplay=1" frameborder="0" allowfullscreen></iframe>
+    <iframe id="live-stream" src="https://www.youtube.com/embed/z8jors5jY64?rel=0&vq=hd720&controls=0&showinfo=0&mute=1&loop=1&end=124&autoplay=1&playlist=z8jors5jY64" frameborder="0"></iframe>
     
 	<?= $this->Html->image('sail_event_v2/otis.png',['class' => 'otis-logo']) ?>
 	
-	<div class="overlay"></div>
+	<div id="overlay"></div>
 </div>

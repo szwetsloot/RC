@@ -9,7 +9,12 @@ $(function(){
 	// TODO fire this function when the actual race starts
 	// vars = jquery element, tekst label
 	race_stopwatch = new Stopwatch('#race-time','race tijd');
-	Dashboard.showMovie();
+	//Dashboard.showshowLiveStream();
+	setTimeout(function(){
+		$('#start').removeClass('restricted');
+		$('#start-panel').fadeOut();
+		$('#overlay').fadeOut();
+	},6000);
 });
 
 var Dashboard = {
@@ -34,11 +39,13 @@ Dashboard.bouyRounded = function(boat, bouy){
 	// als de eerste boat klaar is start stopwatch
 	if( boat.position == 1 ){	
 		Dashboard.startBouyCounter(bouy_name);
-		// TODO DIT IS NIET NETJES
-		$('#bg-movie').attr( 'src', 'https://www.youtube.com/embed/z8jors5jY64?rel=0&vq=hd720&controls=0&showinfo=0&mute=1&autoplay=1&Loop=1');
 		
 		setTimeout(function(){
 			Dashboard.resetZoom();
+			//Dashboard.showPenalty(crews[boat.team].shortname);
+			// geef random boat een penalty voor de leuk
+			var num = Math.floor((Math.random() * ( crews.length - 1 ) ) );
+			Dashboard.showPenalty(crews[num].shortname);
 		},5000)
 	}
 	
@@ -63,10 +70,6 @@ Dashboard.bouyRounded = function(boat, bouy){
 			},4000)
 		}
 	}
-	
-	
-
-	
 }
 
 // Het horizontale panel op de onderrand van het scherm
@@ -74,7 +77,6 @@ Dashboard.showCrewInfo = function(crew_id){
 	// select team
 	// TODO crew id moet worden opgezocht in de array
 	
-
 	// stop ophalen van data van vorige boot
 	clearTimeout(Dashboard.boatinfoTimeout);
 	
@@ -95,7 +97,7 @@ Dashboard.showCrewInfo = function(crew_id){
 	var $club_name = $club_info.find('.club-name');
 	var $club_flag = $club_info.find('img');
 	var $club_competition = $club_info.find('.competition');
-	var $medal = $club_info.find('#medal')
+	var $medal = $club_info.find('.medal')
 	
 	// check if variables are set in database -> otherwise set 0
 	var roll_angle = tracker.roll_angle == null ? 0 : tracker.roll_angle;
@@ -182,13 +184,12 @@ Dashboard.activateBouy = function(boat, bouy){
 	$veld.text(race_veld); // global variable from main js file
 }
 
-// TODO use this function to hide the bouy info panel and show race overview
 Dashboard.deactivateBouy = function(){
 	$('#bouy-data').switchClass('fadeInDown','fadeOutUp');
 	$('#bouy-info').switchClass('fadeInDown','fadeOutUp');
 	$('#bouy-counter').hide();
 	$('.bouy').removeClass('active');
-	Dashboard.showMovie();
+	Dashboard.showLiveStream();
 }
 
 // counter rechts onder
@@ -258,12 +259,25 @@ Dashboard.sortBoats = function(){
 	});
 }
 
+function getRotationDegrees(obj) {
+    var matrix = obj.css("transform");
+    if(matrix !== 'none') {
+        var values = matrix.split('(')[1].split(')')[0].split(',');
+        var a = values[0];
+        var b = values[1];
+        var angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
+    } else { var angle = 0; }
+    return (angle < 0) ? angle + 360 : angle;
+}
+
 // zoom towards the bouy - units in pixels
 Dashboard.zoomBouy = function(bouy_element){	
 	// translate everything so the bouy is positioned in the center of the screen
 	// scale everything
 	var zoom_selector = '#height-line-container'; // add zoom class??? // translate-zoom
 	var translate_selector = '#boat-container, #bouy-container';
+	var $waves = $('#waves-container');
+	var rotation = getRotationDegrees($waves);
 	
 	$(zoom_selector).addClass('ease-transform');
 	$(translate_selector).addClass('ease-transform');
@@ -284,19 +298,22 @@ Dashboard.zoomBouy = function(bouy_element){
     d_x *= scale;
     d_y *= scale;
     
-    
+    // The elements have the css class ease-transform which forces them to animate transformation
     $(translate_selector).css('transform', 'translate('+d_x+'px,'+d_y+'px) scale('+scale+')');
     $(zoom_selector).css('transform', 'scale('+scale+')');
-
+    $waves.css('transform', 'scale('+scale+') rotate('+rotation+'deg)');
     
 }
 
 Dashboard.resetZoom = function(){
 	var zoom_selector = '#height-line-container'; // add zoom class??? // translate-zoom
 	var translate_selector = '#boat-container, #bouy-container';
-	
+	var $waves = $('#waves-container');
+	var rotation = getRotationDegrees($waves);
+		
 	$(translate_selector).css('transform', 'translate(0px,0px) scale(1)');
     $(zoom_selector).css('transform', 'scale(1)');
+    $waves.css('transform', 'scale(1) rotate('+rotation+'deg)');
 }
 
 // functie die de profiel foto's van de athletes laat in en uit faden
@@ -320,10 +337,14 @@ Dashboard.rotateAthletes = function() {
 	
 }
 
+Dashboard.showPenalty = function(name){
+	$penalty = $('#penalty');
+	$penalty.find('.counter').text(name);
+	$penalty.show().delay(5000).fadeOut();
+}
 
-Dashboard.showMovie = function(){
-	
-	$('#bg-movie').fadeIn().delay(8000).fadeOut()
+Dashboard.showLiveStream = function(){		
+	$('#live-stream').fadeIn().delay(8000).fadeOut();
 }
 
 
