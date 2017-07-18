@@ -272,7 +272,7 @@
         
     </div>
 
-    <iframe id="live-stream" src="https://www.youtube.com/embed/z8jors5jY64?rel=0&vq=hd720&controls=0&showinfo=0&mute=1&loop=1&end=124&autoplay=1&playlist=z8jors5jY64" frameborder="0"></iframe>
+    <iframe id="live-stream" src="https://www.youtube.com/embed/z8jors5jY64?rel=0&vq=hd720&controls=0&showinfo=0&end=124&mute=1&autoplay=1&loop=1&playlist=z8jors5jY64" frameborder="0"></iframe>
     
 	<?= $this->Html->image('sail_event_v2/otis.png',['class' => 'otis-logo']) ?>
 	

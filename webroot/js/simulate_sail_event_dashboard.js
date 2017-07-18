@@ -9,7 +9,7 @@ $(function(){
 	// TODO fire this function when the actual race starts
 	// vars = jquery element, tekst label
 	race_stopwatch = new Stopwatch('#race-time','race tijd');
-	//Dashboard.showshowLiveStream();
+	Dashboard.showLiveStream();
 	setTimeout(function(){
 		$('#start').removeClass('restricted');
 		$('#start-panel').fadeOut();
@@ -345,7 +345,7 @@ Dashboard.showPenalty = function(name){
 }
 
 Dashboard.showLiveStream = function(){		
-	$('#live-stream').fadeIn().delay(8000).fadeOut();
+	$('#live-stream').fadeIn().delay(8000).fadeOut();	
 }
 
 
@@ -378,6 +378,7 @@ Stopwatch.prototype.start = function(){
     	this.seconds = 0;
     	this.minutes += 1;
     }
+    
     // you use the javascript tenary operator to format how the minutes should look and add
     // 0 to minutes if less than 10 
     this.mins = (this.minutes < 10) ? ('0' + this.minutes + ':') : (this.minutes + ':');
