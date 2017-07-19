@@ -44,7 +44,7 @@ var screenUTMRange = {
 
 $(function () {
     console.log('-------');
-
+    //console.log(norm2Dist(bouys[0], bouys[1]))
     // Create the bouys
     createBouys();
 
@@ -99,6 +99,8 @@ function moveBouys() {
 //This function will calculate the longest distance between two bouys.
 //This distance will be used as the horizontal line on the screen
 function calculateLongestDistanceBouys() {
+	console.log(bouys);
+	
     var i, j;
     dist = 0;
     var bouy1, bouy2;
@@ -131,7 +133,9 @@ function calculateLongestDistanceBouys() {
                     if (bouys[k].order == bouyB.order)
                         break;
                 }
-                
+                console.log(k);
+                console.log(bouys.length);
+                console.log(bouys[k]);
                 // Get the centre of the pair
                 bouyB.north = (bouyB.north + bouys[k].north) / 2;
                 bouyB.east = (bouyB.east + bouys[k].east) / 2;
@@ -206,7 +210,7 @@ function calculateScreenRange() {
             verMax = Math.abs(bouyNorth);
     }
 
-    var factor = 1.8;
+    var factor = 1.6;
     screenUTMRange.centerEast = screenEast;
     screenUTMRange.centerNorth = screenNorth;
 
@@ -493,6 +497,8 @@ function convertToPixels(obj, obj_east, obj_north) {
 function drawTrail(x_target, y_target, num_boat) {
 	var x = x_target;
 	var y = y_target;
+	
+	if(num_boat != 0) return false;
 	
 	var breadcrumb = document.createElement('div');
 	$(breadcrumb).addClass('start-'+num_boat)

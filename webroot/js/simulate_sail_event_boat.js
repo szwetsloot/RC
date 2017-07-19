@@ -131,8 +131,9 @@ Boat.prototype = {
                 }
         );
         
+        //drawTrail(ref.drawn.left, ref.drawn.top, boat.num); // draw the trail of the boat
         
-        if( this.countMove < 4 ){
+        if( this.countMove < 1 ){
         	this.countMove += 1;
         } else{
         	this.countMove = 0;

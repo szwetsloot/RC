@@ -9,7 +9,7 @@ $(function(){
 	// TODO fire this function when the actual race starts
 	// vars = jquery element, tekst label
 	race_stopwatch = new Stopwatch('#race-time','race tijd');
-	Dashboard.showLiveStream();
+	//Dashboard.showLiveStream();
 	setTimeout(function(){
 		$('#start').removeClass('restricted');
 		$('#start-panel').fadeOut();
@@ -19,10 +19,11 @@ $(function(){
 
 var Dashboard = {
 	crew : null,
-	crewmembers : [],
+	showBoats : [],
 	athlete : 0,
 	boatinfoTimeout: null,
-	athlete_rotator : null,
+	athleteTimeout : null,
+	animatingAthletes : false,
 	showBouy : null,
 	numPassedBouys : 0,
 }
@@ -31,9 +32,7 @@ var Dashboard = {
 // called by bouy rounded event
 // This function shows the right dashboard panels when a boat rounds a bouy
 Dashboard.bouyRounded = function(boat, bouy){
-	
-	$('#boat-info').switchClass('fadeInUp','fadeOutDown');
-	$('#boat-info').hide();
+
 	var bouy_name = bouy.order;
 	
 	// als de eerste boat klaar is start stopwatch
@@ -42,6 +41,7 @@ Dashboard.bouyRounded = function(boat, bouy){
 		
 		setTimeout(function(){
 			Dashboard.resetZoom();
+			
 			//Dashboard.showPenalty(crews[boat.team].shortname);
 			// geef random boat een penalty voor de leuk
 			var num = Math.floor((Math.random() * ( crews.length - 1 ) ) );
@@ -56,11 +56,16 @@ Dashboard.bouyRounded = function(boat, bouy){
 
 		Dashboard.addBoatToBouy(boat.id,boat.position);	
 		
-		// positie 1 wordt al eerder weergeven
-		if( boat.position != 1 ) Dashboard.showCrewInfo(boat.id); // herhaalt zich elke 500 ms voor nieuwe data
-		
-		this.athlete = 0;
-		Dashboard.rotateAthletes(); // show de atheletes van de crew
+		// positie 1 wordt al eerder weergeven tijdens het activeren van de boei
+		if( boat.position != 1 ){
+			
+			// voeg boat id toe aan de animatie query
+			this.showBoats.push(boat.id);
+			
+			// if not animating initiate new rotation of athletes 
+			if( this.animatingAthletes == false ) Dashboard.showCrewInfo(boat.id);		
+			
+		}
 		
 		// last boat rounding this bouy deactivate the bouy after 4s
 		if( boat.position === boats.length ){
@@ -74,12 +79,32 @@ Dashboard.bouyRounded = function(boat, bouy){
 
 // Het horizontale panel op de onderrand van het scherm
 Dashboard.showCrewInfo = function(crew_id){
-	// select team
-	// TODO crew id moet worden opgezocht in de array
+	console.log('showCrewInfo');
+	
+	this.athlete = 0;
+	
+	//start retrieving the data
+	Dashboard.updateCrewInfo(crew_id); // updates the info every 500ms 	
+	Dashboard.rotateAthletes(); // show de atheletes van de crew
+	
+	var $panel = $('#boat-info');
+	var $wave_bg = $('#wave-bg')
+	
+	$panel.switchClass('fadeOutDown','fadeInUp');
+	$wave_bg.switchClass('fadeOutDown','fadeInUp');
+	
+	$panel.show();
+	$wave_bg.show();	
+}
+
+//deze functie update the informatie elke 500 ms
+Dashboard.updateCrewInfo = function(crew_id){
 	
 	// stop ophalen van data van vorige boot
 	clearTimeout(Dashboard.boatinfoTimeout);
 	
+	// select team
+	// TODO crew id moet worden opgezocht in de array
 	var crew = crews[crew_id - 1];
 	var tracker = crew.tracker;
 	var boat = boats[crew_id - 1];
@@ -125,23 +150,26 @@ Dashboard.showCrewInfo = function(crew_id){
 	$club_name.text(crew.name);
 	$club_flag.attr('src', image_base_url+crew.flag_image)
 	
-	$panel.switchClass('fadeOutDown','fadeInUp');
-	$('#wave-bg').switchClass('fadeOutDown','fadeInUp');
-	
-	$('#wave-bg').show();
-	
-	$panel.show();
-		
 	// repeat function every 500 ms
-	this.boatinfoTimeout = setTimeout(function(){ Dashboard.showCrewInfo(crew_id); },500);
+	this.boatinfoTimeout = setTimeout(function(){ Dashboard.updateCrewInfo(crew_id); },500);
 }
 
 Dashboard.hideCrewInfo = function(){
+	console.log('hideCrewInfo');
 	$('#boat-info').switchClass('fadeInUp','fadeOutDown');
 	$('#wave-bg').switchClass('fadeInUp','fadeOutDown');
-	this.athlete = 0;
 	clearTimeout(Dashboard.boatinfoTimeout);
-	clearTimeout(Dashboard.athlete_rotator);
+}
+
+Dashboard.resetCrewInfo = function(crew_id){
+
+	var crew_id = crew_id;	
+	Dashboard.hideCrewInfo();
+	
+	setTimeout(function(){
+		Dashboard.showCrewInfo(crew_id);
+	},5000);
+	
 }
 
 // called by bouy entered event
@@ -160,9 +188,8 @@ Dashboard.activateBouy = function(boat, bouy){
 		this.showBouy = bouy_name;
 		this.numPassedBouys = boat.bouyHistory.length + 1; // + 1 want history wordt pas geupdate met bouy rounded event		
 		Dashboard.zoomBouy(bouy_element);
-		this.athlete = 0;
-		Dashboard.rotateAthletes(); // show de atheletes van de crew
-		Dashboard.showCrewInfo(boat.id);
+		this.showBoats.push(boat.id);
+		if( this.animatingAthletes == false ) Dashboard.showCrewInfo(boat.id);
 	}
 	
 	// define dom elements
@@ -320,22 +347,43 @@ Dashboard.resetZoom = function(){
 // functie die de profiel foto's van de athletes laat in en uit faden
 Dashboard.rotateAthletes = function() {
 	var ref = this;
+	this.animatingAthletes = true;
+
+	clearTimeout(Dashboard.athleteTimeout);
 	
     $athletes_list = $('#boat-info .team-members ul li');    
-    $athletes_list.eq(this.athlete - 1).fadeOut(); // dit is om zeker te weten dat de vorige wordt gehide
-    $athletes_list.eq(this.athlete).show().delay(2800).fadeOut(0, function(){ 
+    $athletes_list.fadeOut(); // dit is om zeker te weten dat de vorige wordt gehide
+    $athletes_list.eq(ref.athlete).show().delay(3000).fadeOut(0, function(){ 
+    	
+    	// Als dit de laatste athlete is
     	if( ref.athlete == ($athletes_list.length - 1) ){
-    		setTimeout('Dashboard.hideCrewInfo()',4000) // hide panel when all athletes have been shown
+        	ref.showBoats.shift(); // remove huidige crew van de queue
+        	
+        	// reset values
+        	ref.athlete = 0;
+        	console.log('restart athlete:'+ref.athlete);
+        	// als er nog teams in de wachtrij staan restart bouy info
+        	if( ref.showBoats.length >= 1){
+        		
+        		/*setTimeout(function(){
+        				Dashboard.resetCrewInfo( ref.showBoats[0] );
+        			},4000);  */
+        		Dashboard.resetCrewInfo( ref.showBoats[0] )
+        	} else{ // klaar sluit alles af
+        		console.log('sluit af');
+            	ref.animatingAthletes = false;
+        		setTimeout('Dashboard.hideCrewInfo()',4000) // hide panel when all athletes have been shown
+        	}        		
+    	
+    	} else{ // er zijn meer atheles dus run deze fuctie nog een keer	
+    		
+    		ref.athlete += 1;
+    		console.log('volgende athelete'+ref.athlete);
+            //Dashboard.athleteTimeout = setTimeout('Dashboard.rotateAthletes()', 3000);
+    		Dashboard.rotateAthletes();
     	}
     })
-    
-    // if there are athletes left repeat the function
-    if(this.athlete < ($athletes_list.length - 1)){
-    	this.athlete += 1;
-    	clearTimeout(Dashboard.athlete_rotator);
-        Dashboard.athlete_rotator = setTimeout('Dashboard.rotateAthletes()', 3000);
-    } 
-	
+    	
 }
 
 Dashboard.showPenalty = function(name){
