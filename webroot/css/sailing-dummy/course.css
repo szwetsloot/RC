@@ -140,9 +140,11 @@
 	box-shadow: inset 5px -5px 5px 0px rgba(0,0,0,0.4);
 }
 
-.bouy:nth-child(4),.bouy:nth-child(5){
-	width: 15px;
-	height: 15px;
+.bouy:first-of-type, .bouy:last-of-type{
+	width: 16px;
+	height: 16px;	
+	margin-top: -8px;
+	margin-left: -8px;
 	text-indent: -99999px;
 	background: #94bced;
 } 

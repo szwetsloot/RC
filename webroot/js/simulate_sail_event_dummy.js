@@ -44,7 +44,7 @@ var screenUTMRange = {
 
 $(function () {
     console.log('-------');
-    //console.log(norm2Dist(bouys[0], bouys[1]))
+    console.log(norm2Dist(bouys[0], bouys[1]))
     // Create the bouys
     createBouys();
 
@@ -78,7 +78,7 @@ $(function () {
 function drawStartline(){
 	// TODO select bouys by startline type
 	var $bouy_1 = bouys[0];
-	var $bouy_2 = bouys[1];
+	var $bouy_2 = bouys[bouys.length - 1];
 
 	var $canvas = document.getElementById("canvas-start");
 	var ctx = $canvas.getContext("2d");
@@ -91,7 +91,6 @@ function drawStartline(){
 	ctx.lineTo($bouy_2.left,$bouy_2.top);
 
 	ctx.strokeStyle = 'rgba(220,30,30,0.6)';
-	ctx.setLineDash([5,5]);
 	ctx.lineWidth = 3;
 	
 	ctx.stroke();
@@ -101,7 +100,7 @@ function drawStartline(){
 function drawClearedStartline(){
 	// TODO select bouys by startline type
 	var $bouy_1 = bouys[0];
-	var $bouy_2 = bouys[1];
+	var $bouy_2 = bouys[bouys.length - 1];
 		
 	var $canvas = document.getElementById("canvas-start");
 	var ctx = $canvas.getContext("2d");
@@ -111,7 +110,7 @@ function drawClearedStartline(){
 	ctx.moveTo($bouy_1.left, $bouy_1.top);
 	ctx.lineTo($bouy_2.left,$bouy_2.top);
 	ctx.strokeStyle = 'rgba(225,225,225,0.6)';
-	
+	ctx.setLineDash([5,5]);
 	ctx.stroke();
 }
 
@@ -441,7 +440,7 @@ function createBoats() {
         boat.moveBoat();
 
         // create for each boat a canvas to draw the trail
-        createCanvas(i);
+        //createCanvas(i);
     }
 }
 ;

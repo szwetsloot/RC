@@ -2,13 +2,17 @@
  * big panel for start and finish 
  */
 #start-panel{
-	display: block;
+	display: none;
 }
 
+#finish-panel{
+	display: none;
+}
+/*
 #overlay{
 	display: block;
 }
-
+*/
 .panel{
 	position: absolute;
 	width: 80%;
@@ -95,8 +99,16 @@
 	float: right;
 	font-size: 18px;
 	color: #272727;
-	text-align: left;
 	width: 120px;
+	text-align: right;
+}
+
+#start-panel ul li .counter{	
+	text-align: left;
+}
+
+#finish-panel ul li .counter{	
+	padding-right: 20px;
 }
 
 .panel.info-list ul li:nth-child(1), #bouy-data.info-list ul li:nth-child(1){

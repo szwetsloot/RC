@@ -9,7 +9,7 @@ $(function(){
 	// TODO fire this function when the actual race starts
 	// vars = jquery element, tekst label
 	race_stopwatch = new Stopwatch('#race-time','race tijd');
-	Dashboard.showLiveStream();
+	//Dashboard.showLiveStream();
 	setTimeout(function(){
 		drawClearedStartline(); // clear the start 
 		$('#start-panel').fadeOut();
@@ -390,7 +390,7 @@ Dashboard.showPenalty = function(name){
 }
 
 Dashboard.showLiveStream = function(){		
-	$('#live-stream').fadeIn().delay(8000).fadeOut();	
+	//$('#live-stream').fadeIn().delay(8000).fadeOut();	
 }
 
 

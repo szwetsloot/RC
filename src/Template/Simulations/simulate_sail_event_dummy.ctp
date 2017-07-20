@@ -41,7 +41,6 @@
 
 <div id="boat-container">	
 <?php foreach ($crews as $i => $crew): ?>
-    <canvas id="canvas-<?= $crew->id ?>"></canvas>
     <div class="boat" id="boat-<?= $crew->id ?>">
         <div class="boat-stats">
             <div class="position"><?= ($i+1) ?></div>
@@ -66,7 +65,6 @@
        	</div>
     </div>
     <?php endforeach; ?>
-    <div id="start" class="restricted"></div>    
 </div>
 
 <div id="course"></div>
@@ -187,8 +185,7 @@
      		<?= $this->Html->image('sail_event_v2/otis-blauw.png',['class' => 'dev-logo']) ?>
      		<div class="info-bar"><span class="label">Eredivisie zeilen J/70</span></div>
         </div>
-       
-        
+              
         <div class="list-header">
         		<span>Start NR | </span>
              	<span class="name">Vereniging</span>
@@ -243,6 +240,76 @@
                 <div class="medal"></div>
                 <div class="skipper">Peter Bisshop</div>
                 <div class="counter">6 | 120 punten</div>
+            </li>
+        </ul>
+        
+    </div>
+    
+    <div id="finish-panel" class="panel info-list animated fadeInDown">
+     	<div class="panel-header">
+     		<?= $this->Html->image('sail_event_v2/logo-horizontaal.png',['class' => 'race-logo']) ?>
+     		<h1>finish</h1>
+     		<?= $this->Html->image('sail_event_v2/otis-blauw.png',['class' => 'dev-logo']) ?>
+     		<div class="info-bar"><span class="label">Eredivisie zeilen J/70</span></div>
+        </div>
+              
+        <div class="list-header">
+        		<span>Start NR | </span>
+             	<span class="name">Vereniging</span>
+             	<span>Tijd</span>
+             	<span class="ranking">Punten</span>
+        </div>
+        <ul>
+            <li class="animated fadeInLeft">
+            	<tr><td>
+                <div class="position start-1">1</div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?></div>
+                <div class="name">WV Neptunes</div>
+                <div class="medal medal-1"></div>
+                </td><td>
+                <div class="result">24:03</div>
+                <div class="counter">1</div>
+                
+            </li>
+            <li class="animated fadeInLeft">
+                <div class="position start-2">2</div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/12.Giesbeek.png') ?></div>
+                <div class="name">R.R. & Z.V. Maas en roer</div>
+                <div class="medal medal-2"></div>
+                <div class="resukt">24:06 | + 3s</div>
+                <div class="counter">2</div>
+            </li>
+            <li class="animated fadeInLeft">
+                <div class="position start-3">3</div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/18.Westeinder.png') ?></div>
+                <div class="name">KWV de Kaag</div>
+                <div class="medal medal-3"></div>
+                <div class="resukt">24:06 | + 3s</div>
+                <div class="counter">2</div>
+            </li>
+            <li class="animated fadeInLeft">
+                <div class="position start-4">4</div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?></div>
+                <div class="name">WV Neptunes</div>
+                <div class="medal"></div>
+                <div class="resukt">24:06 | + 3s</div>
+                <div class="counter">2</div>
+            </li>
+            <li class="animated fadeInLeft">
+                <div class="position start-5">5</div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/12.Giesbeek.png') ?></div>
+                <div class="name">R.R. & Z.V. Maas en roer</div>
+                <div class="medal"></div>
+                <div class="resukt">24:06 | + 3s</div>
+                <div class="counter">2</div>
+            </li>
+            <li class="animated fadeInLeft">
+                <div class="position start-6">6</div>
+                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/18.Westeinder.png') ?></div>
+                <div class="name">KWV de Kaag</div>
+                <div class="medal"></div>
+                <div class="resukt">24:06 | + 3s</div>
+                <div class="counter">2</div>
             </li>
         </ul>
         
