@@ -118,6 +118,30 @@ li{
 	background: #fe2d2d;
 }
 
+/* DRIEHOEKJES van boten */
+.start-1 .boat-icon:before{
+	border-left-color: #fff;	
+}
+
+.start-2 .boat-icon:before{
+	border-left-color: #1b7ebc;
+}
+
+.start-3 .boat-icon:before{
+	border-left-color: #383838;
+}
+
+.start-4 .boat-icon:before{
+	border-left-color: #13c54c;
+}
+
+.start-5 .boat-icon:before{
+	border-left-color:  #fec835;
+}
+
+.start-6 .boat-icon:before{
+	border-left-color: #fe2d2d;
+}
 /* BREADCRUMBS */
 .start-1.breadcrumb{
 	border-color: #fff;

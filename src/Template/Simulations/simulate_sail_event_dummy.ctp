@@ -37,11 +37,7 @@
 <div id="background-image"></div>
 <div id="height-line-container"></div>
 <div id="waves-container"></div>
-<div id="trail-container">
-	<!-- <div class="start-1 breadcrumb"></div>
-	<div class="start-2 breadcrumb"></div>
-	<div class="start-3 breadcrumb"></div> -->
-</div>
+<div id="trail-container"></div>
 
 <div id="boat-container">	
 <?php foreach ($crews as $i => $crew): ?>
@@ -59,6 +55,8 @@
 </div>
 
 <div id='bouy-container'>
+
+    <canvas id="canvas-start"></canvas>
     <?php foreach ($bouys as $bouy): ?>
     <div class="bouy" id='bouy-<?= $bouy->id ?>'>
         <?= $bouy->name; ?>
@@ -71,30 +69,11 @@
     <div id="start" class="restricted"></div>    
 </div>
 
-<div id="wedstrijdbaan"></div>
+<div id="course"></div>
 <div id="dashboard">
     <div id="bouy-info" class="info-list animated fadeInDown">
         <div class="info-bar"><span class="label">Eredivisie zeilen J/70</span><span class="counter">Boei 1</span></div>
-        <ul>
-            <li class="animated fadeInLeft">
-                <div class="position">1</div>
-                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?></div>
-                <div class="name">WV Neptunes</div>
-                <div class="counter">10:06,5</div>
-            </li>
-            <li class="animated fadeInLeft">
-                <div class="position">2</div>
-                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/12.Giesbeek.png') ?></div>
-                <div class="name">R.R. & Z.V. Maas en roer</div>
-                <div class="counter">+2.1 S</div>
-            </li>
-            <li class="animated fadeInLeft">
-                <div class="position">3</div>
-                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/18.Westeinder.png') ?></div>
-                <div class="name">KWV de Kaag</div>
-                <div class="counter">+13,5 S</div>
-            </li>
-        </ul>
+        <ul></ul>
     </div>
     
      <div id="boat-overview" class="info-list animated fadeInLeft">
@@ -102,15 +81,12 @@
         <ul>
         <?php foreach ($crews as $i => $crew): ?>
 		    <li id="info-boat-<?= $crew->id ?>" class="animated fadeInLeft">
-                <div class="position"><?= $crew->id ?></div>
+                <div class="position start-<?= $crew->start_nr ?>"><?= $crew->start_nr ?></div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/'.$crew->flag_image ) ?></div>
                 <div class="name"><?= $crew->shortname ?></div>
                 <div class="counter">14.6kN / 180&deg; / 82m</div>
             </li>
-		<?php endforeach; ?>
-        
-           
-            
+		<?php endforeach; ?>           
         </ul>
     </div>
     
@@ -141,7 +117,7 @@
             <li class="animated fadeInLeft">
                 <div class="position">S</div>
                 <div class="name">Stroming</div>
-                <div class="counter">+2.1 S</div>
+                <div class="counter">0.5 m/s</div>
             </li>
             <li class="animated fadeInLeft">
                 <div class="position">W</div>
@@ -245,7 +221,7 @@
                 <div class="counter">3 | 60 punten</div>
             </li>
             <li class="animated fadeInLeft">
-                <div class="position start-4">1</div>
+                <div class="position start-4">4</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?></div>
                 <div class="name">WV Neptunes</div>
                 <div class="medal"></div>
@@ -271,9 +247,10 @@
         </ul>
         
     </div>
-
+ 
+ 	<!--  filmpje looped standaard maar loopt soms vast als je naar een andere tab gaat -->
     <iframe id="live-stream" src="https://www.youtube.com/embed/z8jors5jY64?rel=0&vq=hd720&controls=0&showinfo=0&end=124&mute=1&autoplay=1&loop=1&playlist=z8jors5jY64" frameborder="0"></iframe>
-    
+
 	<?= $this->Html->image('sail_event_v2/otis.png',['class' => 'otis-logo']) ?>
 	
 	<div id="overlay"></div>

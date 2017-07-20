@@ -59,6 +59,7 @@ $(function () {
     setArrows();
     moveBouys();
     createBoats();
+    drawStartline();
 
     // Start listenening
     listen();
@@ -73,6 +74,46 @@ $(function () {
         moveBouys();
     });
 });
+
+function drawStartline(){
+	// TODO select bouys by startline type
+	var $bouy_1 = bouys[0];
+	var $bouy_2 = bouys[1];
+
+	var $canvas = document.getElementById("canvas-start");
+	var ctx = $canvas.getContext("2d");
+	
+	$('canvas').attr('width', $('html').width());
+	$('canvas').attr('height', $('html').height());
+	
+	ctx.beginPath();
+	ctx.moveTo($bouy_1.left, $bouy_1.top);
+	ctx.lineTo($bouy_2.left,$bouy_2.top);
+
+	ctx.strokeStyle = 'rgba(220,30,30,0.6)';
+	ctx.setLineDash([5,5]);
+	ctx.lineWidth = 3;
+	
+	ctx.stroke();
+}
+
+// Helaas kun je de 
+function drawClearedStartline(){
+	// TODO select bouys by startline type
+	var $bouy_1 = bouys[0];
+	var $bouy_2 = bouys[1];
+		
+	var $canvas = document.getElementById("canvas-start");
+	var ctx = $canvas.getContext("2d");
+	ctx.clearRect(0, 0, $canvas.width, $canvas.height);
+	
+	ctx.beginPath();
+	ctx.moveTo($bouy_1.left, $bouy_1.top);
+	ctx.lineTo($bouy_2.left,$bouy_2.top);
+	ctx.strokeStyle = 'rgba(225,225,225,0.6)';
+	
+	ctx.stroke();
+}
 
 function createBouys() {
     for (var i = 0; i < bouys.length; i++) {
@@ -467,7 +508,10 @@ function toDegrees(angle) {
     return angle * (180 / Math.PI);
 }
 
+// obj is the physical jquery object
+// obj_east is the value from the 
 function convertToPixels(obj, obj_east, obj_north) {
+
     // Get the screen size in pixel
     var screenWidth = $('html').width();
     var screenHeight = $('html').height();

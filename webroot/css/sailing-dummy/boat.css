@@ -128,33 +128,6 @@
 	float: right;
 }
 
-
-#boat-1 .position {
-	background-color: #fff;
-	color: #272727;
-}
-
-#boat-2 .position {
-	background-color: #fec835;
-}
-
-#boat-3 .position{
-	background-color: #13c54c;	
-}
-
-#boat-1 .boat-icon:before{
-	border-left-color: #fff;	
-}
-
-#boat-2 .boat-icon:before{
-	border-left-color: #d1bd6d;
-	border-left-color: #fec835;
-}
-
-#boat-3 .boat-icon:before{
-	border-left-color: #13c54c;	
-}
-
 .team-flag img{
 	height: 24px;
 	width: auto;

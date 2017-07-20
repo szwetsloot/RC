@@ -3,6 +3,8 @@ function Bouy() {
     this.id = 0;
     this.north = 0;
     this.east = 0;
+    this.left = null,
+    this.top = null,
     this.number = 0;
     this.order = null,
     this.type = 0;
@@ -13,11 +15,13 @@ function Bouy() {
 ;
 Bouy.prototype = {
     'move': function () {
-// This method will move the bouys to their  correct location on the screen
+    	// This method will move the bouys to their  correct location on the screen
         var ref = this;
         var target = convertToPixels(ref.element, this.east, this.north);
         ref.element.css('left', target.left + 'px');
         ref.element.css('top', target.top + 'px');
+        ref.top = target.top;
+        ref.left = target.left;
     },
     'boatEntered': function (boat) {
         // This method is called when a boat entered this bouy.

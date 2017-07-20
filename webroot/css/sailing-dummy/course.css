@@ -72,7 +72,7 @@
 }
 
 /* tijdelijke laag om parcour weer te laten zien */
-#wedstrijdbaan{
+#course{
 	display: none;
 	position: fixed;
 	background-image: url(../../img/sail_event_v2/parcour.png);

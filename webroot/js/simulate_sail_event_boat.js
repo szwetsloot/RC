@@ -86,9 +86,12 @@ Boat.prototype = {
     },
     'setTeam': function (i) {
         this.team = i;
-        var $boat = this.element;
+        var $boat = this.element;        
+        $boat.addClass('start-'+crews[i].start_nr);
+        var $position = $boat.find('.position');
         var $boat_name = $boat.find('.name');
         var $boat_flag = $boat.find('.team-flag img');
+        $position.text(crews[i].start_nr);
         $boat_name.text(crews[i].shortname);
         var src = $boat_flag.attr('src') + crews[i].flag_image;
         $boat_flag.attr('src', src);

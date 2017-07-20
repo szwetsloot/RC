@@ -9,9 +9,9 @@ $(function(){
 	// TODO fire this function when the actual race starts
 	// vars = jquery element, tekst label
 	race_stopwatch = new Stopwatch('#race-time','race tijd');
-	//Dashboard.showLiveStream();
+	Dashboard.showLiveStream();
 	setTimeout(function(){
-		$('#start').removeClass('restricted');
+		drawClearedStartline(); // clear the start 
 		$('#start-panel').fadeOut();
 		$('#overlay').fadeOut();
 	},6000);
@@ -79,7 +79,6 @@ Dashboard.bouyRounded = function(boat, bouy){
 
 // Het horizontale panel op de onderrand van het scherm
 Dashboard.showCrewInfo = function(crew_id){
-	console.log('showCrewInfo');
 	
 	this.athlete = 0;
 	
@@ -139,8 +138,11 @@ Dashboard.updateCrewInfo = function(crew_id){
 		$medal.hide();
 	}
 	
+	$position.removeClass();
+	$position.addClass('position').addClass('start-'+crew.start_nr);
+	
 	// update information
-	$position.text(position);
+	$position.text(crew.start_nr);
 	$speed.text('Snelheid: '+ boat_speed +'Kn');
 	$boat_roll.html('helling: '+roll_angle+'&deg;');
 	$boat_location.text( Math.round(tracker.east)+'m, '+Math.round(tracker.north)+'m' );
@@ -155,7 +157,6 @@ Dashboard.updateCrewInfo = function(crew_id){
 }
 
 Dashboard.hideCrewInfo = function(){
-	console.log('hideCrewInfo');
 	$('#boat-info').switchClass('fadeInUp','fadeOutDown');
 	$('#wave-bg').switchClass('fadeInUp','fadeOutDown');
 	clearTimeout(Dashboard.boatinfoTimeout);
@@ -202,17 +203,20 @@ Dashboard.activateBouy = function(boat, bouy){
 	$list.empty();	
 	$panel.switchClass('fadeOutUp','fadeInDown').show();
 	$data_panel.switchClass('fadeOutUp','fadeInDown').show();
+	$data_panel.find('.li').show();
 	
 	$('.bouy').removeClass('active');
-	 bouy_element.addClass('active');
+	bouy_element.addClass('active');
 	
 	// update dom information
 	$name.text(name);
 	$veld.text(race_veld); // global variable from main js file
+	$data_panel.find('.label').text(name);
 }
 
 Dashboard.deactivateBouy = function(){
 	$('#bouy-data').switchClass('fadeInDown','fadeOutUp');
+	$('#bouy-data').find('.li').hide();
 	$('#bouy-info').switchClass('fadeInDown','fadeOutUp');
 	$('#bouy-counter').hide();
 	$('.bouy').removeClass('active');
@@ -235,7 +239,7 @@ Dashboard.startBouyCounter = function(bouy_name){
 Dashboard.addBoatToBouy = function(boat_id, position){
 	
 	var crew = crews[boat_id - 1];	
-	
+	var start_nr = crew.start_nr;
 	var flag_image = image_base_url + crew.flag_image;
 	
 	if(position == 1){
@@ -245,7 +249,7 @@ Dashboard.addBoatToBouy = function(boat_id, position){
 	}
 	
 	var li = '<li class="animated fadeInLeft">';		
-	li += '<div class="position">'+position+'</div>';
+	li += '<div class="position start-'+start_nr+'">'+start_nr+'</div>';
 	li += '<div class="team-flag"><img src="'+ flag_image + '" /> </div>';
 	li += '<div class="name">'+crew.name+'</div>';
 	li += '<div class="counter">'+ counter +'</div>';		
@@ -348,7 +352,6 @@ Dashboard.resetZoom = function(){
 Dashboard.rotateAthletes = function() {
 	var ref = this;
 	this.animatingAthletes = true;
-
 	clearTimeout(Dashboard.athleteTimeout);
 	
     $athletes_list = $('#boat-info .team-members ul li');    
@@ -361,24 +364,18 @@ Dashboard.rotateAthletes = function() {
         	
         	// reset values
         	ref.athlete = 0;
-        	console.log('restart athlete:'+ref.athlete);
         	// als er nog teams in de wachtrij staan restart bouy info
         	if( ref.showBoats.length >= 1){
-        		
-        		/*setTimeout(function(){
-        				Dashboard.resetCrewInfo( ref.showBoats[0] );
-        			},4000);  */
         		Dashboard.resetCrewInfo( ref.showBoats[0] )
         	} else{ // klaar sluit alles af
-        		console.log('sluit af');
             	ref.animatingAthletes = false;
-        		setTimeout('Dashboard.hideCrewInfo()',4000) // hide panel when all athletes have been shown
+        		//setTimeout('Dashboard.hideCrewInfo()',4000) // hide panel when all athletes have been shown
+            	Dashboard.hideCrewInfo();
         	}        		
     	
     	} else{ // er zijn meer atheles dus run deze fuctie nog een keer	
     		
     		ref.athlete += 1;
-    		console.log('volgende athelete'+ref.athlete);
             //Dashboard.athleteTimeout = setTimeout('Dashboard.rotateAthletes()', 3000);
     		Dashboard.rotateAthletes();
     	}
