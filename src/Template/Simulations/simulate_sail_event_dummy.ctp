@@ -39,6 +39,19 @@
 <div id="waves-container"></div>
 <div id="trail-container"></div>
 
+<div id='bouy-container'>
+    <canvas id="canvas-start"></canvas>
+    <?php foreach ($bouys as $bouy): ?>
+    <div class="bouy" id='bouy-<?= $bouy->id ?>'>
+        <?= $bouy->name; ?>
+        <div class="tooltip animated fadeInUp">
+        	lat: <?= $bouy->Trackers['latitude'] ?> <br>
+        	lng: <?= $bouy->Trackers['longitude'] ?>
+       	</div>
+    </div>
+    <?php endforeach; ?>
+</div>
+
 <div id="boat-container">	
 <?php foreach ($crews as $i => $crew): ?>
     <div class="boat" id="boat-<?= $crew->id ?>">
@@ -53,21 +66,6 @@
 <?php endforeach; ?>
 </div>
 
-<div id='bouy-container'>
-
-    <canvas id="canvas-start"></canvas>
-    <?php foreach ($bouys as $bouy): ?>
-    <div class="bouy" id='bouy-<?= $bouy->id ?>'>
-        <?= $bouy->name; ?>
-        <div class="tooltip animated fadeInUp">
-        	lat: <?= $bouy->Trackers['latitude'] ?> <br>
-        	lng: <?= $bouy->Trackers['longitude'] ?>
-       	</div>
-    </div>
-    <?php endforeach; ?>
-</div>
-
-<div id="course"></div>
 <div id="dashboard">
     <div id="bouy-info" class="info-list animated fadeInDown">
         <div class="info-bar"><span class="label">Eredivisie zeilen J/70</span><span class="counter">Boei 1</span></div>

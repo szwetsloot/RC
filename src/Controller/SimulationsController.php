@@ -7,7 +7,7 @@ use Cake\Event\Event;
 
 define("SIMULATION", 1);
 define("TEST", "test 1");
-define("TEST_VELOCITY", 1);
+define("TEST_VELOCITY", 10);
 define("BOUY_DIST", 20);
 
 /**

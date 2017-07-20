@@ -72,6 +72,10 @@ $(function () {
         calculateScreenRange();
         // Draw the elements
         moveBouys();
+        
+        $('canvas').attr('width', $('html').width());
+    	$('canvas').attr('height', $('html').height());
+    	drawClearedStartline();
     });
 });
 
@@ -109,6 +113,7 @@ function drawClearedStartline(){
 	ctx.beginPath();
 	ctx.moveTo($bouy_1.left, $bouy_1.top);
 	ctx.lineTo($bouy_2.left,$bouy_2.top);
+	ctx.lineWidth = 3;
 	ctx.strokeStyle = 'rgba(225,225,225,0.6)';
 	ctx.setLineDash([5,5]);
 	ctx.stroke();
@@ -543,6 +548,7 @@ function drawTrail(x_target, y_target, num_boat) {
 	
 	if(num_boat != 0) return false;
 	
+	// drop breadcrumbs
 	var breadcrumb = document.createElement('div');
 	$(breadcrumb).addClass('start-'+num_boat)
 				.addClass('breadcrumb')
