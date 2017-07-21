@@ -5,25 +5,6 @@ var image_base_url = browser_location+'/img/sail_event_v2/teams/';
 var bouy_stopwatch; // stopwatch that runs when boat rounds a bouy
 var race_stopwatch; // stopwatch which starts when screen is finished loading
 
-$(function(){ 		
-	// TODO fire this function when the actual race starts
-	// vars = jquery element, tekst label
-	race_stopwatch = new Stopwatch('#race-time','race tijd');
-	Dashboard.showLiveStream();
-	setTimeout(function(){
-		drawClearedStartline(); // clear the start 
-		$('#start-panel').fadeOut();
-		$('#overlay').fadeOut();
-	},6000);
-	
-	setTimeout(function(){
-		$('#overlay').fadeIn();
-		$('#finish-panel').show();
-	},60000);
-	
-	$('#finish-panel .crew').on('click',Dashboard.showCrewResults);
-});
-
 var Dashboard = {
 	crew : null,
 	showBoats : [],
@@ -35,21 +16,41 @@ var Dashboard = {
 	numPassedBouys : 0,
 }
 
+Dashboard.startSimulation = function(){	
+	Dashboard.showLiveStream();
+	setTimeout(Dashboard.hideStartPanel,6000);
+	
+	// TODO fire this function when the actual race starts
+	setTimeout(Dashboard.startRace,10000);
+}
+
+Dashboard.startRace = function(){						
+	race_stopwatch = new Stopwatch('#race-time','race tijd'); // param = jquery element, tekst label
+	drawClearedStartline(); // clear the start
+	// show the fake/static results after 2 minutes
+	if( show_finish ) setTimeout(Dashboard.showFinishResults,2*60*1000);
+}
+
+Dashboard.hideStartPanel = function(){
+	$('#start-panel').fadeOut();
+	$('#overlay').fadeOut();	
+}
+
+Dashboard.showFinishResults = function(){
+	$('#overlay').fadeIn().delay(15000).fadeOut();
+	$('#finish-panel').show().delay(15000).fadeOut();	
+}
 
 // called by bouy rounded event
 // This function shows the right dashboard panels when a boat rounds a bouy
 Dashboard.bouyRounded = function(boat, bouy){
-
-	var bouy_name = bouy.name;
-	
 	// als de eerste boat klaar is start stopwatch
 	if( boat.position == 1 ){	
-		Dashboard.startBouyCounter(bouy.name);
+		Dashboard.startBouyCounter(bouy.name);		 
+		setTimeout(Dashboard.resetZoom, 7000); // zoom weer uit 
 		
 		setTimeout(function(){
-			Dashboard.resetZoom();
-			
-			//Dashboard.showPenalty(crews[boat.team].shortname);
+			// show random penalty
 			// geef random boat een penalty voor de leuk
 			var num = Math.floor((Math.random() * ( crews.length - 1 ) ) );
 			Dashboard.showPenalty(crews[num].shortname);
@@ -59,19 +60,16 @@ Dashboard.bouyRounded = function(boat, bouy){
 	// check of de volgende boten ook om dezelfde boei gaan
 	// bouyHistory checkt of de boten om evenveel boeien gaan
 	// voor als boten een boei achterlopen
-	if( this.showBouy == bouy_name && boat.bouyHistory.length == this.numPassedBouys ){		
+	if( this.showBouy == bouy.name && boat.bouyHistory.length == this.numPassedBouys ){		
 
 		Dashboard.addBoatToBouy(boat.id,boat.position);	
 		
 		// positie 1 wordt al eerder weergeven tijdens het activeren van de boei
-		if( boat.position != 1 ){
-			
+		if( boat.position != 1 ){			
 			// voeg boat id toe aan de animatie query
-			this.showBoats.push(boat.id);
-			
+			this.showBoats.push(boat.id);			
 			// if not animating initiate new rotation of athletes 
-			if( this.animatingAthletes == false ) Dashboard.showCrewInfo(boat.id);		
-			
+			if( this.animatingAthletes == false ) Dashboard.showCrewInfo(boat.id);					
 		}
 		
 		// last boat rounding this bouy deactivate the bouy after 4s
@@ -86,10 +84,10 @@ Dashboard.bouyRounded = function(boat, bouy){
 
 // Het horizontale panel op de onderrand van het scherm
 Dashboard.showCrewInfo = function(crew_id){
-	
+	// reset athlete rotator
 	this.athlete = 0;
 	
-	//start retrieving the data
+	//start retrieving the new data
 	Dashboard.updateCrewInfo(crew_id); // updates the info every 500ms 	
 	Dashboard.rotateAthletes(); // show de atheletes van de crew
 	
@@ -97,8 +95,7 @@ Dashboard.showCrewInfo = function(crew_id){
 	var $wave_bg = $('#wave-bg')
 	
 	$panel.switchClass('fadeOutDown','fadeInUp');
-	$wave_bg.switchClass('fadeOutDown','fadeInUp');
-	
+	$wave_bg.switchClass('fadeOutDown','fadeInUp');	
 	$panel.show();
 	$wave_bg.show();	
 }
@@ -135,11 +132,11 @@ Dashboard.updateCrewInfo = function(crew_id){
 	var ranking = crew.ranking == null ? 0 : crew.ranking;
 	var points = crew.points == null ? 0 : crew.points;
 	var target_bouy = boat.distance_bouy == null? 'unknown' : boat.distance_bouy+'m';
-	var position = boat.position; // positie race
+	var position = boat.position; // positie race --> positie en start nr wordt nu nog door elkaar gehaald
 	
-	if(position < 3){ // tijdelijk met position --> moet worden vervangen met ranking
+	if( ranking != 0 && ranking < 3 ){ 
 		$medal.removeClass();
-		$medal.addClass('medal-'+position); // tijdelijk met position --> moet worden vervangen met ranking
+		$medal.addClass('medal-'+ranking); 
 		$medal.show();
 	} else{
 		$medal.hide();
@@ -170,14 +167,11 @@ Dashboard.hideCrewInfo = function(){
 }
 
 Dashboard.resetCrewInfo = function(crew_id){
-
 	var crew_id = crew_id;	
 	Dashboard.hideCrewInfo();
-	
 	setTimeout(function(){
 		Dashboard.showCrewInfo(crew_id);
-	},5000);
-	
+	},5000);	
 }
 
 // called by bouy entered event
@@ -188,8 +182,7 @@ Dashboard.activateBouy = function(boat, bouy){
 	var boat_id = boat.id;
 	var bouy_name = bouy.order;
 	var bouy_element = bouy.element;
-	
-	
+		
 	// if this is the first boat restart the bouy info panel
 	if( boat.position == 1 ){	
 		$('#bouy-counter').hide();
@@ -268,10 +261,8 @@ Dashboard.addBoatToBouy = function(boat_id, position){
 	$('#bouy-info ul').append(li);
 }
 
-Dashboard.sortBoats = function(){
-	
-	$overview = $('#boat-overview');
-	
+Dashboard.sortBoats = function(){	
+	var $overview = $('#boat-overview');	
 	var positions = [];
 	
 	$.each(boats,function(i){
@@ -298,17 +289,6 @@ Dashboard.sortBoats = function(){
 		var top = margin_top+ ( height * i );
 		$boat_item.animate({top: top },100);
 	});
-}
-
-function getRotationDegrees(obj) {
-    var matrix = obj.css("transform");
-    if(matrix !== 'none') {
-        var values = matrix.split('(')[1].split(')')[0].split(',');
-        var a = values[0];
-        var b = values[1];
-        var angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
-    } else { var angle = 0; }
-    return (angle < 0) ? angle + 360 : angle;
 }
 
 // zoom towards the bouy - units in pixels
@@ -344,7 +324,6 @@ Dashboard.zoomBouy = function(bouy_element){
     $(translate_selector).css('transform', 'translate('+d_x+'px,'+d_y+'px) scale('+scale+')');
     $(zoom_selector).css('transform', 'scale('+scale+')');
     $waves.css('transform', 'scale('+ (scale*2) +') rotate('+rotation+'deg)');
-    
 }
 
 Dashboard.resetZoom = function(){
@@ -389,8 +368,7 @@ Dashboard.rotateAthletes = function() {
             //Dashboard.athleteTimeout = setTimeout('Dashboard.rotateAthletes()', 3000);
     		Dashboard.rotateAthletes();
     	}
-    })
-    	
+    });
 }
 
 Dashboard.showPenalty = function(name){
@@ -414,6 +392,17 @@ Dashboard.showCrewResults = function(){
 	}
 }
 
+// get the rotation degree from the css
+function getRotationDegrees(obj) {
+    var matrix = obj.css("transform");
+    if(matrix !== 'none') {
+        var values = matrix.split('(')[1].split(')')[0].split(',');
+        var a = values[0];
+        var b = values[1];
+        var angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
+    } else { var angle = 0; }
+    return (angle < 0) ? angle + 360 : angle;
+}
 
 // Stopwatch
 function Stopwatch(obj, name){
@@ -428,16 +417,14 @@ function Stopwatch(obj, name){
 		this.secs = null;
 		this.mins = null; 
 		this.gethours = null;
-		this.time = null;
-		
+		this.time = null;		
 		this.start();
 }
 
-
 // Stopwatch
 Stopwatch.prototype.start = function(){
-	// stop het bewegen van de bootjes na een tijd gedefineerd by end animation
-    if (this.minutes > end_animation) run = 0;
+	
+	$(this.obj).show();
 
     //check if seconds is equal to 60 and add a +1 to minutes, and set seconds to 0 	
     if (this.seconds === 60) {
@@ -468,7 +455,6 @@ Stopwatch.prototype.start = function(){
         
     // call the seconds counter after displaying the stop watch and increment seconds by +1 to keep it counting
     this.seconds++;
-
     var self = this;
     
     // call the setTimeout( ) to keep the stop watch alive! 

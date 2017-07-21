@@ -29,9 +29,11 @@ var refresh_time = 6000;
 
 var boats = [];
 var run = 1; // global variable for running the animation 1 = run & 0 = stop
-var end_animation = 1; // stop the animation after 2 minutes
 var race_veld = 'Eredivisie zeilen J/70'; // TODO get from backend 
-var show_livestream = true;
+var show_livestream = true; // het filmpje opd e achterrond
+var show_finish = true; // panel dat na 120 seconden wordt weergegeven
+var show_startline = true; // teken de start line tussen boei nummer 3 en 4
+var show_all_trails = false; // Als dit false staat wordt alleen het spoor van boot 1 weergegeven
 
 var screenUTMRange = {
     'centerEast': 1E9,
@@ -64,6 +66,12 @@ $(function () {
 
     // Start listenening
     listen();
+    
+    // 
+    Dashboard.startSimulation();
+		
+	// DOM EVENTS
+	$('#finish-panel .crew').on('click',Dashboard.showCrewResults);
 
     // Recalculate variables on screen resize
     $(window).on('resize', function () {
@@ -81,8 +89,10 @@ $(function () {
 });
 
 function drawStartline(){
+	if(show_startline == false) return false;
+	
 	// TODO select bouys by startline type
-	var $bouy_1 = bouys[0];
+	var $bouy_1 = bouys[bouys.length - 2];
 	var $bouy_2 = bouys[bouys.length - 1];
 
 	var $canvas = document.getElementById("canvas-start");
@@ -101,10 +111,12 @@ function drawStartline(){
 	ctx.stroke();
 }
 
-// Helaas kun je de 
+// Helaas kun je de oude lijn niet van kleur veranderen daarom moet je de canvas wissen en opnieuw tekenen
 function drawClearedStartline(){
+	if(show_startline == false) return false;
+	
 	// TODO select bouys by startline type
-	var $bouy_1 = bouys[0];
+	var $bouy_1 = bouys[bouys.length - 2];
 	var $bouy_2 = bouys[bouys.length - 1];
 		
 	var $canvas = document.getElementById("canvas-start");
@@ -452,7 +464,7 @@ function createBoats() {
 }
 ;
 
-
+// DEZE FUNCTIE WORDT NIET MEER GEBRUIKT
 // create canvas to draw the trail of the boats
 function createCanvas(i) {
     var x = $('#boat-' + crews[i].id).position();
@@ -548,7 +560,7 @@ function drawTrail(x_target, y_target, num_boat) {
 	var x = x_target;
 	var y = y_target;
 	
-	if(num_boat != 0) return false;
+	if(num_boat != 0 && show_all_trails == false ) return false;
 	
 	// drop breadcrumbs
 	var breadcrumb = document.createElement('div');

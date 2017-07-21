@@ -102,26 +102,6 @@
 	width: 100%;	
 }
 
-#start{
-	display: none;
-	height: 200px;
-    position: fixed;
-    left: 88.2%;
-    width: 4px;
-    top: calc( 50% - 41px );
-    background-image: linear-gradient(white 50%, rgba(255,255,255,0) 0%);
-    background-position: top right;
-    background-size: 4px 10px;
-    background-repeat: repeat-y;
-    opacity: 0.6;
-    z-index: 2;
-    transform-origin: top center;
-}
-
-#start.restricted{
-	background-image: linear-gradient(#dc1e1e 50%, rgba(255,255,255,0) 0%);
-}
-
 .bouy{
 	width: 20px;
 	height: 20px;
@@ -146,7 +126,7 @@
 	
 }
 
-#bouy-container .bouy:first-of-type, #bouy-container .bouy:last-of-type{
+#bouy-container .bouy:nth-child(4), #bouy-container .bouy:nth-child(5){
 	width: 16px;
 	height: 16px;	
 	margin-top: -8px;

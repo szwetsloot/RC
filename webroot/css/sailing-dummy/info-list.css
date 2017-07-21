@@ -38,6 +38,7 @@
 
 /* main race timer */
 #race-time{
+	display: none;
 	position: fixed;
 	top: 30px;
 	right: 30px;

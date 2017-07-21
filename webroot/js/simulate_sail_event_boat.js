@@ -137,7 +137,7 @@ Boat.prototype = {
         //drawTrail(ref.drawn.left, ref.drawn.top, boat.num); // draw the trail of the boat
         
         // zorg dat niet te veel breadcrumbs worden achtergelaten
-        var num = 30 / boat.speed;
+        var num = 15 / boat.speed;
         if( this.countMove < num ){
         	this.countMove += 1;
         } else{

@@ -196,7 +196,7 @@
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?></div>
                 <div class="name">WV Neptunes</div>
                 <div class="medal medal-1"></div>
-                <div class="skipper">Peter Bisshop</div>
+                <div class="skipper">Evert Jansen</div>
                 <div class="counter">1 | 20 punten</div>
             </li>
             <li class="animated fadeInLeft">
@@ -204,7 +204,7 @@
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/12.Giesbeek.png') ?></div>
                 <div class="name">R.R. & Z.V. Maas en roer</div>
                 <div class="medal medal-2"></div>
-                <div class="skipper">Peter Bisshop</div>
+                <div class="skipper">Max Visser</div>
                 <div class="counter">2 | 40 punten</div>
             </li>
             <li class="animated fadeInLeft">
@@ -220,7 +220,7 @@
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?></div>
                 <div class="name">WV Neptunes</div>
                 <div class="medal"></div>
-                <div class="skipper">Peter Bisshop</div>
+                <div class="skipper">Evert Jansen</div>
                 <div class="counter">4 | 80 punten</div>
             </li>
             <li class="animated fadeInLeft">
@@ -228,7 +228,7 @@
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/12.Giesbeek.png') ?></div>
                 <div class="name">R.R. & Z.V. Maas en roer</div>
                 <div class="medal"></div>
-                <div class="skipper">Peter Bisshop</div>
+                <div class="skipper">Max Visser</div>
                 <div class="counter">5 | 100 punten</div>
             </li>
             <li class="animated fadeInLeft">
@@ -266,7 +266,7 @@
                 <div class="medal medal-1"></div>
                 <div class="result">24:03</div>
                 <div class="difference"></div>
-                <div class="counter">1</div>
+                <div class="counter">2</div>
                 <div class="extra-information">
                 	<ul>
                 		<li><span class="checkpoint">Start</span><span class="time">00:02</span><span class="difference">+ 2 s</span><span class="position">2</span></li>
@@ -287,7 +287,7 @@
                 <div class="medal medal-2"></div>
                 <div class="result">24:06</div>
                 <div class="difference">+3s</div>
-                <div class="counter">2</div>
+                <div class="counter">4</div>
                 <div class="extra-information">
                 	<ul>
                 		<li><span class="checkpoint">Start</span><span class="time">00:02</span><span class="difference">+ 2 s</span><span class="position">2</span></li>
@@ -308,7 +308,7 @@
                 <div class="medal medal-3"></div>
                 <div class="result">24:06</div>
                 <div class="difference">+8s</div>
-                <div class="counter">2</div>
+                <div class="counter">6</div>
                 <div class="extra-information">
                 	<ul>
                 		<li><span class="checkpoint">Start</span><span class="time">00:02</span><span class="difference">+ 2 s</span><span class="position">2</span></li>
@@ -329,7 +329,7 @@
                 <div class="medal"></div>
                 <div class="result">24:06</div>
                 <div class="difference">+13s</div>
-                <div class="counter">2</div>
+                <div class="counter">8</div>
                 <div class="extra-information">
                 	<ul>
                 		<li><span class="checkpoint">Start</span><span class="time">00:02</span><span class="difference">+ 2 s</span><span class="position">2</span></li>
@@ -350,7 +350,7 @@
                 <div class="medal"></div>
                 <div class="result">24:06</div>
                 <div class="difference">+26s</div>
-                <div class="counter">2</div>
+                <div class="counter">10</div>
                 <div class="extra-information">
                 	<ul>
                 		<li><span class="checkpoint">Start</span><span class="time">00:02</span><span class="difference">+ 2 s</span><span class="position">2</span></li>
@@ -371,7 +371,7 @@
                 <div class="medal"></div>
                 <div class="result">24:06</div>
                 <div class="difference">+32s</div>
-                <div class="counter">2</div>
+                <div class="counter">12</div>
                 <div class="extra-information">
                 	<ul>
                 		<li><span class="checkpoint">Start</span><span class="time">00:02</span><span class="difference">+ 2 s</span><span class="position">2</span></li>
