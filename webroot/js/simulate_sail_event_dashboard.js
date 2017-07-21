@@ -9,12 +9,19 @@ $(function(){
 	// TODO fire this function when the actual race starts
 	// vars = jquery element, tekst label
 	race_stopwatch = new Stopwatch('#race-time','race tijd');
-	//Dashboard.showLiveStream();
+	Dashboard.showLiveStream();
 	setTimeout(function(){
 		drawClearedStartline(); // clear the start 
 		$('#start-panel').fadeOut();
 		$('#overlay').fadeOut();
 	},6000);
+	
+	setTimeout(function(){
+		$('#overlay').fadeIn();
+		$('#finish-panel').show();
+	},60000);
+	
+	$('#finish-panel .crew').on('click',Dashboard.showCrewResults);
 });
 
 var Dashboard = {
@@ -33,11 +40,11 @@ var Dashboard = {
 // This function shows the right dashboard panels when a boat rounds a bouy
 Dashboard.bouyRounded = function(boat, bouy){
 
-	var bouy_name = bouy.order;
+	var bouy_name = bouy.name;
 	
 	// als de eerste boat klaar is start stopwatch
 	if( boat.position == 1 ){	
-		Dashboard.startBouyCounter(bouy_name);
+		Dashboard.startBouyCounter(bouy.name);
 		
 		setTimeout(function(){
 			Dashboard.resetZoom();
@@ -177,7 +184,7 @@ Dashboard.resetCrewInfo = function(crew_id){
 Dashboard.activateBouy = function(boat, bouy){
 	
 	var bouy_element = bouy.element;
-	var name = 'boei ' + bouy.order;
+	var name = 'boei ' + bouy.name;
 	var boat_id = boat.id;
 	var bouy_name = bouy.order;
 	var bouy_element = bouy.element;
@@ -195,13 +202,15 @@ Dashboard.activateBouy = function(boat, bouy){
 	
 	// define dom elements
 	var $data_panel = $('#bouy-data');
-	var $panel = $('#bouy-info');
-	var $list = $panel.find('ul');
-	var $veld = $panel.find('.label');
-	var $name = $panel.find('.counter');
+	var $bouy_info = $('#bouy-info');
+	var $boat_overview = $('#boat-overview');
+	var $list = $bouy_info.find('ul');
+	var $veld = $bouy_info.find('.label');
+	var $name = $bouy_info.find('.counter');
 	
 	$list.empty();	
-	$panel.switchClass('fadeOutUp','fadeInDown').show();
+	$bouy_info.switchClass('fadeOutUp','fadeInDown').show();
+	$boat_overview.switchClass('fadeInLeft','fadeOutLeft').hide();
 	$data_panel.switchClass('fadeOutUp','fadeInDown').show();
 	$data_panel.find('.li').show();
 	
@@ -217,6 +226,7 @@ Dashboard.activateBouy = function(boat, bouy){
 Dashboard.deactivateBouy = function(){
 	$('#bouy-data').switchClass('fadeInDown','fadeOutUp');
 	$('#bouy-data').find('.li').hide();
+	$('#boat-overview').switchClass('fadeOutLeft','fadeInLeft').show();
 	$('#bouy-info').switchClass('fadeInDown','fadeOutUp');
 	$('#bouy-counter').hide();
 	$('.bouy').removeClass('active');
@@ -390,7 +400,18 @@ Dashboard.showPenalty = function(name){
 }
 
 Dashboard.showLiveStream = function(){		
-	//$('#live-stream').fadeIn().delay(8000).fadeOut();	
+	if(show_livestream == true) $('#live-stream').fadeIn().delay(8000).fadeOut();	
+}
+
+Dashboard.showCrewResults = function(){
+	if( !$(this).hasClass('active') ){
+		$(this).addClass('active');
+		$('#finish-panel .crew:not(".active")').hide();
+	} else{
+		$(this).hide();
+		$('#finish-panel .crew').removeClass('active');
+		$('#finish-panel .crew').show();
+	}
 }
 
 

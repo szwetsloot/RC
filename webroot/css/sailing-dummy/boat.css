@@ -26,6 +26,7 @@
 }
 
 .boat-icon {
+	position: relative;
 	width: 50px;
 	height: 17px;
 	background-image: url(../../img/sail_event_v2/boat-2.png);
@@ -33,7 +34,7 @@
 	background-repeat: no-repeat;
 	margin-top: -9px;
 	margin-left: -25px;
-	
+	z-index: 3;
 }
 
 .boat-icon:before{
@@ -47,6 +48,7 @@
 	border-style: solid;
 	border-width: 5px 0 4px 15px;
 	border-color: transparent;
+	z-index: -20;
 }
 
 .boat-icon:after{
@@ -68,6 +70,7 @@
  	-webkit-animation-duration: 12s;
     -webkit-animation-timing-function: linear;
     -webkit-animation-iteration-count: infinite;
+
 }
 
 @-webkit-keyframes move-sail {

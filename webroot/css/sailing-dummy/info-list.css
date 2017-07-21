@@ -3,7 +3,7 @@
 	display: none;
 	z-index: 6;
 	position: fixed;
-	top: 63%;
+	top: 30px;
 	left: 30px;
 	width: 300px;
 }

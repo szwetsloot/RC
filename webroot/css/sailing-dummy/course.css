@@ -123,11 +123,8 @@
 }
 
 .bouy{
-	position: absolute;
 	width: 20px;
 	height: 20px;
-	margin-top: -10px;
-	margin-left: -10px;
 	border-radius: 50%;
 	background-color: #ffc600;
 	color: #75652e;
@@ -135,14 +132,21 @@
     text-align: center;
     line-height: 19px;
     text-indent: 2px;
-    z-index: 2;
 
 	-webkit-box-shadow: inset 5px -5px 10px 0px rgba(0,0,0,0.4);
 	-moz-box-shadow: inset 5px -5px 10px 0px rgba(0,0,0,0.2);
 	box-shadow: inset 5px -5px 5px 0px rgba(0,0,0,0.4);
 }
 
-.bouy:first-of-type, .bouy:last-of-type{
+#bouy-container .bouy{
+	position: absolute;
+	margin-top: -10px;
+	margin-left: -10px;
+    z-index: 2;
+	
+}
+
+#bouy-container .bouy:first-of-type, #bouy-container .bouy:last-of-type{
 	width: 16px;
 	height: 16px;	
 	margin-top: -8px;

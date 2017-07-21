@@ -246,68 +246,143 @@
     <div id="finish-panel" class="panel info-list animated fadeInDown">
      	<div class="panel-header">
      		<?= $this->Html->image('sail_event_v2/logo-horizontaal.png',['class' => 'race-logo']) ?>
-     		<h1>finish</h1>
+     		<h1>Uitslag race 1</h1>
      		<?= $this->Html->image('sail_event_v2/otis-blauw.png',['class' => 'dev-logo']) ?>
      		<div class="info-bar"><span class="label">Eredivisie zeilen J/70</span></div>
         </div>
-              
-        <div class="list-header">
-        		<span>Start NR | </span>
+                      
+        <div class="list-header animated fadeInLeft">
+        		<span class="boat-nr">NR</span>
              	<span class="name">Vereniging</span>
-             	<span>Tijd</span>
+             	<span class="result">Tijd</span>
              	<span class="ranking">Punten</span>
         </div>
         <ul>
-            <li class="animated fadeInLeft">
-            	<tr><td>
+            <li class="crew animated fadeInLeft">         	
+                <div class="ranking">1</div>
                 <div class="position start-1">1</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?></div>
                 <div class="name">WV Neptunes</div>
                 <div class="medal medal-1"></div>
-                </td><td>
                 <div class="result">24:03</div>
+                <div class="difference"></div>
                 <div class="counter">1</div>
-                
+                <div class="extra-information">
+                	<ul>
+                		<li><span class="checkpoint">Start</span><span class="time">00:02</span><span class="difference">+ 2 s</span><span class="position">2</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">05:42</span><span class="difference"></span><span class="position">1</span></li>
+                		<li><span class="checkpoint"><span class="bouy">2A</span></span><span class="time">09:13</span><span class="difference">+ 22 s</span><span class="position">4</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">13:33</span><span class="difference">+ 14 s</span><span class="position">3</span></li>
+                		<li><span class="checkpoint"><span class="bouy">2A</span></span><span class="time">18:22</span><span class="difference"></span><span class="position">1</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">21:34</span><span class="difference">+ 8 s</span><span class="position">2</span></li>
+                		<li><span class="checkpoint">Finish</span><span class="time">24:03</span><span class="difference"></span><span class="position">1</span></li>
+                	</ul>
+                </div>  
             </li>
-            <li class="animated fadeInLeft">
+            <li class="crew animated fadeInLeft">         	
+                <div class="ranking">2</div>
                 <div class="position start-2">2</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/12.Giesbeek.png') ?></div>
                 <div class="name">R.R. & Z.V. Maas en roer</div>
                 <div class="medal medal-2"></div>
-                <div class="resukt">24:06 | + 3s</div>
+                <div class="result">24:06</div>
+                <div class="difference">+3s</div>
                 <div class="counter">2</div>
+                <div class="extra-information">
+                	<ul>
+                		<li><span class="checkpoint">Start</span><span class="time">00:02</span><span class="difference">+ 2 s</span><span class="position">2</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">05:42</span><span class="difference"></span><span class="position">1</span></li>
+                		<li><span class="checkpoint"><span class="bouy">2A</span></span><span class="time">09:13</span><span class="difference">+ 22 s</span><span class="position">4</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">13:33</span><span class="difference">+ 14 s</span><span class="position">3</span></li>
+                		<li><span class="checkpoint"><span class="bouy">2A</span></span><span class="time">18:22</span><span class="difference"></span><span class="position">1</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">21:34</span><span class="difference">+ 8 s</span><span class="position">2</span></li>
+                		<li><span class="checkpoint">Finish</span><span class="time">24:03</span><span class="difference"></span><span class="position">1</span></li>
+                	</ul>
+                </div>  
             </li>
-            <li class="animated fadeInLeft">
+            <li class="crew animated fadeInLeft">      	
+                <div class="ranking">3</div>
                 <div class="position start-3">3</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/18.Westeinder.png') ?></div>
                 <div class="name">KWV de Kaag</div>
                 <div class="medal medal-3"></div>
-                <div class="resukt">24:06 | + 3s</div>
+                <div class="result">24:06</div>
+                <div class="difference">+8s</div>
                 <div class="counter">2</div>
+                <div class="extra-information">
+                	<ul>
+                		<li><span class="checkpoint">Start</span><span class="time">00:02</span><span class="difference">+ 2 s</span><span class="position">2</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">05:42</span><span class="difference"></span><span class="position">1</span></li>
+                		<li><span class="checkpoint"><span class="bouy">2A</span></span><span class="time">09:13</span><span class="difference">+ 22 s</span><span class="position">4</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">13:33</span><span class="difference">+ 14 s</span><span class="position">3</span></li>
+                		<li><span class="checkpoint"><span class="bouy">2A</span></span><span class="time">18:22</span><span class="difference"></span><span class="position">1</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">21:34</span><span class="difference">+ 8 s</span><span class="position">2</span></li>
+                		<li><span class="checkpoint">Finish</span><span class="time">24:03</span><span class="difference"></span><span class="position">1</span></li>
+                	</ul>
+                </div>  
             </li>
-            <li class="animated fadeInLeft">
+            <li class="crew animated fadeInLeft">      	
+                <div class="ranking">4</div>
                 <div class="position start-4">4</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/17.DenBosch.png') ?></div>
                 <div class="name">WV Neptunes</div>
                 <div class="medal"></div>
-                <div class="resukt">24:06 | + 3s</div>
+                <div class="result">24:06</div>
+                <div class="difference">+13s</div>
                 <div class="counter">2</div>
+                <div class="extra-information">
+                	<ul>
+                		<li><span class="checkpoint">Start</span><span class="time">00:02</span><span class="difference">+ 2 s</span><span class="position">2</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">05:42</span><span class="difference"></span><span class="position">1</span></li>
+                		<li><span class="checkpoint"><span class="bouy">2A</span></span><span class="time">09:13</span><span class="difference">+ 22 s</span><span class="position">4</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">13:33</span><span class="difference">+ 14 s</span><span class="position">3</span></li>
+                		<li><span class="checkpoint"><span class="bouy">2A</span></span><span class="time">18:22</span><span class="difference"></span><span class="position">1</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">21:34</span><span class="difference">+ 8 s</span><span class="position">2</span></li>
+                		<li><span class="checkpoint">Finish</span><span class="time">24:03</span><span class="difference"></span><span class="position">1</span></li>
+                	</ul>
+                </div>  
             </li>
-            <li class="animated fadeInLeft">
+            <li class="crew animated fadeInLeft">      	
+                <div class="ranking">5</div>
                 <div class="position start-5">5</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/12.Giesbeek.png') ?></div>
                 <div class="name">R.R. & Z.V. Maas en roer</div>
                 <div class="medal"></div>
-                <div class="resukt">24:06 | + 3s</div>
+                <div class="result">24:06</div>
+                <div class="difference">+26s</div>
                 <div class="counter">2</div>
+                <div class="extra-information">
+                	<ul>
+                		<li><span class="checkpoint">Start</span><span class="time">00:02</span><span class="difference">+ 2 s</span><span class="position">2</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">05:42</span><span class="difference"></span><span class="position">1</span></li>
+                		<li><span class="checkpoint"><span class="bouy">2A</span></span><span class="time">09:13</span><span class="difference">+ 22 s</span><span class="position">4</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">13:33</span><span class="difference">+ 14 s</span><span class="position">3</span></li>
+                		<li><span class="checkpoint"><span class="bouy">2A</span></span><span class="time">18:22</span><span class="difference"></span><span class="position">1</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">21:34</span><span class="difference">+ 8 s</span><span class="position">2</span></li>
+                		<li><span class="checkpoint">Finish</span><span class="time">24:03</span><span class="difference"></span><span class="position">1</span></li>
+                	</ul>
+                </div>  
             </li>
-            <li class="animated fadeInLeft">
+            <li class="crew animated fadeInLeft">      	
+                <div class="ranking">6</div>
                 <div class="position start-6">6</div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/18.Westeinder.png') ?></div>
                 <div class="name">KWV de Kaag</div>
                 <div class="medal"></div>
-                <div class="resukt">24:06 | + 3s</div>
+                <div class="result">24:06</div>
+                <div class="difference">+32s</div>
                 <div class="counter">2</div>
+                <div class="extra-information">
+                	<ul>
+                		<li><span class="checkpoint">Start</span><span class="time">00:02</span><span class="difference">+ 2 s</span><span class="position">2</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">05:42</span><span class="difference"></span><span class="position">1</span></li>
+                		<li><span class="checkpoint"><span class="bouy">2A</span></span><span class="time">09:13</span><span class="difference">+ 22 s</span><span class="position">4</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">13:33</span><span class="difference">+ 14 s</span><span class="position">3</span></li>
+                		<li><span class="checkpoint"><span class="bouy">2A</span></span><span class="time">18:22</span><span class="difference"></span><span class="position">1</span></li>
+                		<li><span class="checkpoint"><span class="bouy">1</span></span><span class="time">21:34</span><span class="difference">+ 8 s</span><span class="position">2</span></li>
+                		<li><span class="checkpoint">Finish</span><span class="time">24:03</span><span class="difference"></span><span class="position">1</span></li>
+                	</ul>
+                </div>  
             </li>
         </ul>
         

@@ -31,6 +31,7 @@ var boats = [];
 var run = 1; // global variable for running the animation 1 = run & 0 = stop
 var end_animation = 1; // stop the animation after 2 minutes
 var race_veld = 'Eredivisie zeilen J/70'; // TODO get from backend 
+var show_livestream = true;
 
 var screenUTMRange = {
     'centerEast': 1E9,
@@ -44,7 +45,7 @@ var screenUTMRange = {
 
 $(function () {
     console.log('-------');
-    console.log(norm2Dist(bouys[0], bouys[1]))
+   // console.log(norm2Dist(bouys[0], bouys[1]))
     // Create the bouys
     createBouys();
 
@@ -127,6 +128,7 @@ function createBouys() {
         bouys[i].north = bouy.north;
         bouys[i].east = bouy.east;
         bouys[i].number = bouy.id;
+        bouys[i].name = bouy.name;
         bouys[i].type = bouy.type;
         bouys[i].prev = bouy.prev;
         bouys[i].order = bouy.order;
