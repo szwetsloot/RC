@@ -70,32 +70,44 @@ class ApiController extends AppController{
 		die('Success');
 	}
 	
-	public function process() {
-		$message = $this->Messages->get(1833);
-		$string  = $message->text;
-		$data = unserialize(base64_decode($string));
+	public function process($id=0) {
+		$messages = $this->Messages->find()
+                        ->where(['id => ' => 5000])
+                        ->all();
+                foreach ($messages as $message) {
+                    $string  = $message->text;
+                    $data = unserialize(base64_decode($string));
+                    die($this->print_rr($data));
+                }
 		$data = $data->getData();
-		$data = array_shift($data);
+		$data = $data['B'];
+		
 		$str = "";
 		for ($i = 0; $i < strlen($data) - 1; $i+= 2) {
 			$arr[$i] = chr(hexdec(substr($data, $i, 2)));
 		}
+		array_shift($arr);
 		$data = implode($arr);
+		for ($i = 0; $i <= count($arr)-21; $i+=22 ){
+			// Get the variables
+			$state    = unpack('C', substr($data, $i + 1, 1))[1];
+			$time     = unpack('f', substr($data, $i + 2, 4))[1];
+		 	$lat	    = unpack('f', substr($data, $i + 6, 4))[1];
+		 	$long 	  = unpack('f', substr($data, $i + 10, 4))[1];
+		 	$velocity = unpack('f', substr($data, $i + 14, 4))[1];
+		 	$heading  = unpack('f', substr($data, $i + 18, 4))[1];
+		 	
+		 	echo "State = ".$state."<br />";
+		 	echo "Time = ".$time."<br />";
+		 	echo "Lat = ".$lat."<br />";
+		 	echo "Long = ".$long."<br />";
+		 	echo "Heading = ".$heading."<br />";
+		 	echo "Velocity = ".$velocity."<br />";
+		 	echo "<hr />";
+		}
 		
-		// Get the variables
-		$state    = unpack('C', substr($data, 0, 1))[1];
-		$time     = unpack('f', substr($data, 1, 4))[1];
-	 	$lat	    = unpack('f', substr($data, 5, 4))[1];
-	 	$long 	  = unpack('f', substr($data, 9, 4))[1];
-	 	$velocity = unpack('f', substr($data, 13, 4))[1];
-	 	$heading = unpack('f', substr($data, 17, 4))[1];
-	 	
-	 	echo "State = ".$state."<br />";
-	 	echo "Time = ".$time."<br />";
-	 	echo "Lat = ".$lat."<br />";
-	 	echo "Long = ".$long."<br />";
-	 	echo "Heading = ".$heading."<br />";
-	 	echo "Velocity = ".$velocity."<br />";
+		
+		
 	 	die();
 	}
 	
