@@ -1,0 +1,168 @@
+
+*{
+	font-family: 'bebas_neue';
+	letter-spacing: 2px;
+	color: #272727;
+	padding: 0; 
+	margin: 0;
+} 
+
+html, body {
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	background-color: #06002b;
+	overflow: hidden;
+	background-image: url(../../img/sail_event_v2/water.jpg);
+	background-size: cover;
+	opacity: 1;
+} 
+
+canvas{
+	position: fixed;
+	left: 0;
+	top: 0;	
+	z-index; 2;
+}
+
+li{
+	list-style: none;
+}
+
+.ease-transform{
+    transition: transform 4s ease-in-out;
+}
+
+.position{
+	border-radius: 50%;
+	background-color: #1b7ebc;
+	color: #fff;
+	text-align: center;
+	padding: 6px;
+	margin-top: 1px;
+	line-height: 10px;
+	height: 10px;
+	width: 10px;
+	text-indent: 1;
+}
+ 
+#overlay{
+	display: none;
+	background: rgba(0,0,0,0.5);
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0; 
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 7;
+} 
+
+.medal{
+	position: relative;
+	float: left;
+	height: 25px;
+	width: 18px;
+	margin-top: 2px;
+	margin-right: 10px;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.medal-1{
+	background-image: url(../../img/sail_event_v2/medals-01.png);
+}
+
+.medal-2{
+	background-image: url(../../img/sail_event_v2/medals-02.png);
+}
+
+.medal-3{
+	background-image: url(../../img/sail_event_v2/medals-03.png);
+}
+
+/*
+* zwart		: #383838;
+* wit		: #fff;
+* blauw 	: #1b7ebc;
+* geel 		: #d1bd6d;
+* geel 		: #fec835; mooie kleur geel maar niet realistisch
+* groen		: #13c54c;
+* rood		: #fe2d2d;
+*/
+
+.start-1 .position, .start-1.position{
+	background: #fff;
+	color: #272727;
+}
+
+.start-2 .position, .start-2.position{
+	background: #1b7ebc;
+}
+
+.start-3 .position, .start-3.position{
+	background: #383838;
+}
+
+.start-4 .position, .start-4.position{
+	background: #13c54c;
+}
+
+.start-5 .position, .start-5.position{
+	background: #fec835;
+}
+
+.start-6 .position, .start-6.position{
+	background: #fe2d2d;
+}
+
+/* DRIEHOEKJES van boten */
+.start-1 .boat-icon:before{
+	border-left-color: #fff;	
+}
+
+.start-2 .boat-icon:before{
+	border-left-color: #1b7ebc;
+}
+
+.start-3 .boat-icon:before{
+	border-left-color: #383838;
+}
+
+.start-4 .boat-icon:before{
+	border-left-color: #13c54c;
+}
+
+.start-5 .boat-icon:before{
+	border-left-color:  #fec835;
+}
+
+.start-6 .boat-icon:before{
+	border-left-color: #fe2d2d;
+}
+/* BREADCRUMBS */
+.start-1.breadcrumb{
+	border-color: #fff;
+}
+
+.start-2.breadcrumb{
+	border-color: #1b7ebc;
+}
+
+.start-3.breadcrumb{
+	border-color: #383838;
+}
+
+.start-4.breadcrumb{
+	border-color: #13c54c;
+}
+
+.start-5.breadcrumb{
+	border-color: #fec835;
+}
+
+.start-6.breadcrumb{
+	border-color: #fe2d2d;
+}

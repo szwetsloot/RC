@@ -7,8 +7,8 @@ use Cake\Event\Event;
 
 define("SIMULATION", 1);
 define("TEST", "test 1");
-define("TEST_VELOCITY", 30);
-define("BOUY_DIST", 30);
+define("TEST_VELOCITY", 5);
+define("BOUY_DIST", 10);
 
 /**
  * Simulations Controller
@@ -74,6 +74,8 @@ class SimulationsController extends AppController {
             $bouy['north'] = $this->GPoint->N();
             $bouy['east'] = $this->GPoint->E();
         }
+        
+       
 
         // If the simulatiion is running, reset the location of the boats to the locations of the bouys
         if (SIMULATION) {
@@ -163,7 +165,7 @@ class SimulationsController extends AppController {
         if (SIMULATION) {
             die(json_encode($this->simulationListener($type, $startTime)));
         } else {
-// TODO - Here the data from the database should be loaded
+		// TODO - Here the data from the database should be loaded
         }
     }
 
@@ -181,6 +183,8 @@ class SimulationsController extends AppController {
     }
 
     private function simulationListenerGetBoats($startTime) {
+    	
+    	
         // Get the bouys
         $bouys = $this->Bouys->find()
                 ->contain(['trackers'])
@@ -192,8 +196,8 @@ class SimulationsController extends AppController {
             $this->GPoint->convertLLtoTM(0);
             $bouy['north'] = $this->GPoint->N();
             $bouy['east'] = $this->GPoint->E();
-        }
-
+        } 
+        
         // Retrieve the crews from the database
         $crews = $this->SaillingCrews->find()
                 ->contain(['Trackers'])
@@ -215,7 +219,7 @@ class SimulationsController extends AppController {
         });
         $secondBouy = array_shift($secondBouy);
         $angle = atan2($secondBouy['north'] - $startBouy['north'], $secondBouy['east'] - $startBouy['east']);
-
+                
         $start = array(
             'north' => $startBouy['north'] - (BOUY_DIST * sin($angle)),
             'east' => $startBouy['east'] + (BOUY_DIST * cos($angle))
@@ -224,44 +228,50 @@ class SimulationsController extends AppController {
             'north' => $secondBouy['north'] + (BOUY_DIST * sin($angle)),
             'east' => $secondBouy['east'] - (BOUY_DIST * cos($angle))
         );
+        
+        // IK heb nieuwe coordinaten van de boein in de database gezet en dit levert een nieuwe normaal afstand voor de boeien
+        // $afstand_boeien = 160.67; // oude value
+        //$afstand_boeien = 160.78027067537357;
+        $afstand_boeien = sqrt( pow( $start['east'] - $end['east'] , 2 ) + pow( $start['north'] - $end['north'] , 2 ) );
+
         if (TEST == "test 1") {
             $mils = round(microtime(true) * 1000);
             foreach ($crews as $i => &$crew) {
-                $velocity = TEST_VELOCITY * (1 - 0.2 * $i);
+                $velocity = TEST_VELOCITY * (1 - 0.05 * $i);
                 // Go straight till above the first bouy
                 $sElapsed = ($mils - $startTime) / 1000;
-                $diff = ((160.67 * 2 + BOUY_DIST * pi() * 2) / $velocity);
+                $diff = (($afstand_boeien * 2 + BOUY_DIST * pi() * 2) / $velocity);
                 while ($sElapsed > $diff) $sElapsed -= $diff;
                 $crew['tracker']['time'] = $sElapsed;
-                if ($sElapsed <= (160.67 / $velocity)) {
+                if ($sElapsed <= ($afstand_boeien / $velocity)) {
                     $crew['tracker']['north'] = $start['north'] + ($sElapsed * $velocity) * sin($angle);
                     $crew['tracker']['east'] = $start['east'] + ($sElapsed * $velocity) * cos($angle);
                     $crew['tracker']['heading'] = ($angle) * 180 / pi();
                     $crew['tracker']['velocity'] = $velocity;
                 } else if (
-                        $sElapsed > (160.67 / $velocity) &&
-                        $sElapsed <= ((160.67 + BOUY_DIST * pi()) / $velocity)
-                ) {
-                    $anglePerc = ($sElapsed - (160.67 / $velocity)) / (BOUY_DIST * pi()) * $velocity;
+                        $sElapsed > ($afstand_boeien / $velocity) &&
+                        $sElapsed <= (($afstand_boeien + BOUY_DIST * pi()) / $velocity)
+                ) {                	
+                    $anglePerc = ($sElapsed - ($afstand_boeien / $velocity)) / (BOUY_DIST * pi()) * $velocity;
                     $crew['tracker']['test'] = $anglePerc;
                     $crew['tracker']['north'] = $secondBouy['north'] + BOUY_DIST * sin($angle - pi() * $anglePerc + pi() / 2);
-                    $crew['tracker']['east'] = $secondBouy['east'] + BOUY_DIST * cos($angle - pi() * $anglePerc + pi() / 2);
+                    $crew['tracker']['east'] = $secondBouy['east'] + BOUY_DIST  * cos($angle - pi() * $anglePerc + pi() / 2);
                     $crew['tracker']['heading'] = ($angle - $anglePerc * pi()) * 180 / pi();
                     $crew['tracker']['velocity'] = $velocity;
                 } elseif (
-                        $sElapsed > ((160.67 + BOUY_DIST * pi()) / $velocity) && 
-                        $sElapsed <= ((160.67 * 2 + BOUY_DIST * pi()) / $velocity)
+                        $sElapsed > (($afstand_boeien + BOUY_DIST * pi()) / $velocity) && 
+                        $sElapsed <= (($afstand_boeien * 2 + BOUY_DIST * pi()) / $velocity)
                 ) {
-                    $sElapsed -= ((160.67 + BOUY_DIST * pi()) / $velocity);
+                    $sElapsed -= (($afstand_boeien + BOUY_DIST * pi()) / $velocity);
                     $crew['tracker']['north'] = $end['north'] - ($sElapsed * $velocity) * sin($angle);
                     $crew['tracker']['east'] = $end['east'] - ($sElapsed * $velocity) * cos($angle);
                     $crew['tracker']['heading'] = $angle * 180 / pi() + 180;
                     $crew['tracker']['velocity'] = $velocity;
                 } elseif (
-                        $sElapsed > ((160.67 * 2 + BOUY_DIST * pi()) / $velocity) && 
-                        $sElapsed <= ((160.67 * 2 + BOUY_DIST * pi() * 2) / $velocity)
+                        $sElapsed > (($afstand_boeien * 2 + BOUY_DIST * pi()) / $velocity) && 
+                        $sElapsed <= (($afstand_boeien * 2 + BOUY_DIST * pi() * 2) / $velocity)
                         ) {
-                    $sElapsed -= ((160.67 * 2 + BOUY_DIST * pi()) / $velocity);
+                    $sElapsed -= (($afstand_boeien * 2 + BOUY_DIST * pi()) / $velocity);
                     $anglePerc = $crew['tracker']['north'] = $sElapsed / (BOUY_DIST * pi()) * $velocity;
                     $crew['tracker']['test'] = $anglePerc;
                     $crew['tracker']['north'] = $startBouy['north'] + BOUY_DIST * sin($angle - pi() * $anglePerc - pi() / 2);

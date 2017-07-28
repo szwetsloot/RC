@@ -29,8 +29,11 @@ var refresh_time = 6000;
 
 var boats = [];
 var run = 1; // global variable for running the animation 1 = run & 0 = stop
-var end_animation = 1; // stop the animation after 2 minutes
 var race_veld = 'Eredivisie zeilen J/70'; // TODO get from backend 
+var show_livestream = true; // het filmpje opd e achterrond
+var show_finish = true; // panel dat na 120 seconden wordt weergegeven
+var show_startline = true; // teken de start line tussen boei nummer 3 en 4
+var show_all_trails = false; // Als dit false staat wordt alleen het spoor van boot 1 weergegeven
 
 var screenUTMRange = {
     'centerEast': 1E9,
@@ -44,7 +47,7 @@ var screenUTMRange = {
 
 $(function () {
     console.log('-------');
-
+   // console.log(norm2Dist(bouys[0], bouys[1]))
     // Create the bouys
     createBouys();
 
@@ -59,9 +62,16 @@ $(function () {
     setArrows();
     moveBouys();
     createBoats();
+    drawStartline();
 
     // Start listenening
     listen();
+    
+    // 
+    Dashboard.startSimulation();
+		
+	// DOM EVENTS
+	$('#finish-panel .crew').on('click',Dashboard.showCrewResults);
 
     // Recalculate variables on screen resize
     $(window).on('resize', function () {
@@ -71,8 +81,56 @@ $(function () {
         calculateScreenRange();
         // Draw the elements
         moveBouys();
+        
+        $('canvas').attr('width', $('html').width());
+    	$('canvas').attr('height', $('html').height());
+    	drawClearedStartline();
     });
 });
+
+function drawStartline(){
+	if(show_startline == false) return false;
+	
+	// TODO select bouys by startline type
+	var $bouy_1 = bouys[bouys.length - 2];
+	var $bouy_2 = bouys[bouys.length - 1];
+
+	var $canvas = document.getElementById("canvas-start");
+	var ctx = $canvas.getContext("2d");
+	
+	$('canvas').attr('width', $('html').width());
+	$('canvas').attr('height', $('html').height());
+	
+	ctx.beginPath();
+	ctx.moveTo($bouy_1.left, $bouy_1.top);
+	ctx.lineTo($bouy_2.left,$bouy_2.top);
+
+	ctx.strokeStyle = 'rgba(220,30,30,0.6)';
+	ctx.lineWidth = 3;
+	
+	ctx.stroke();
+}
+
+// Helaas kun je de oude lijn niet van kleur veranderen daarom moet je de canvas wissen en opnieuw tekenen
+function drawClearedStartline(){
+	if(show_startline == false) return false;
+	
+	// TODO select bouys by startline type
+	var $bouy_1 = bouys[bouys.length - 2];
+	var $bouy_2 = bouys[bouys.length - 1];
+		
+	var $canvas = document.getElementById("canvas-start");
+	var ctx = $canvas.getContext("2d");
+	ctx.clearRect(0, 0, $canvas.width, $canvas.height);
+	
+	ctx.beginPath();
+	ctx.moveTo($bouy_1.left, $bouy_1.top);
+	ctx.lineTo($bouy_2.left,$bouy_2.top);
+	ctx.lineWidth = 3;
+	ctx.strokeStyle = 'rgba(225,225,225,0.6)';
+	ctx.setLineDash([5,5]);
+	ctx.stroke();
+}
 
 function createBouys() {
     for (var i = 0; i < bouys.length; i++) {
@@ -82,6 +140,7 @@ function createBouys() {
         bouys[i].north = bouy.north;
         bouys[i].east = bouy.east;
         bouys[i].number = bouy.id;
+        bouys[i].name = bouy.name;
         bouys[i].type = bouy.type;
         bouys[i].prev = bouy.prev;
         bouys[i].order = bouy.order;
@@ -99,6 +158,8 @@ function moveBouys() {
 //This function will calculate the longest distance between two bouys.
 //This distance will be used as the horizontal line on the screen
 function calculateLongestDistanceBouys() {
+	console.log(bouys);
+	
     var i, j;
     dist = 0;
     var bouy1, bouy2;
@@ -131,7 +192,9 @@ function calculateLongestDistanceBouys() {
                     if (bouys[k].order == bouyB.order)
                         break;
                 }
-                
+                console.log(k);
+                console.log(bouys.length);
+                console.log(bouys[k]);
                 // Get the centre of the pair
                 bouyB.north = (bouyB.north + bouys[k].north) / 2;
                 bouyB.east = (bouyB.east + bouys[k].east) / 2;
@@ -206,7 +269,7 @@ function calculateScreenRange() {
             verMax = Math.abs(bouyNorth);
     }
 
-    var factor = 1.8;
+    var factor = 1.6;
     screenUTMRange.centerEast = screenEast;
     screenUTMRange.centerNorth = screenNorth;
 
@@ -337,6 +400,14 @@ function listen() {
                         break;
                     }
                 }
+                
+                // calc the progress between the previous and next bouy
+                boat.calcPositionBoat();
+                
+                boat.calcDistanceBouy();
+
+            	Dashboard.sortBoats();
+            	boat.calcPositionBoat();
                 // Set the variables
                 boat.updateData(
                         crew.tracker.north,
@@ -344,6 +415,7 @@ function listen() {
                         crew.tracker.velocity,
                         crew.tracker.heading
                         );
+                
             }
         },
         complete: function (e, data) {
@@ -364,7 +436,6 @@ function createBoats() {
         var crew = crews[i];
         var boat = boats[i] = new Boat(millis());
         var boatElement = $('.boat#boat-' + crew.id);
-
         var x = boatElement.position();
 
         boat.top = x.top;
@@ -388,12 +459,12 @@ function createBoats() {
         boat.moveBoat();
 
         // create for each boat a canvas to draw the trail
-        createCanvas(i);
+        //createCanvas(i);
     }
 }
 ;
 
-
+// DEZE FUNCTIE WORDT NIET MEER GEBRUIKT
 // create canvas to draw the trail of the boats
 function createCanvas(i) {
     var x = $('#boat-' + crews[i].id).position();
@@ -406,10 +477,38 @@ function createCanvas(i) {
     $('#canvas-' + crews[i].id).attr('width', $('html').width());
     $('#canvas-' + crews[i].id).attr('height', $('html').height());
 
+    ctx.setLineDash([2,15]);
     ctx.lineWidth = 1;
-    ctx.strokeStyle = 'white';
+    
+    var color;
+    
+    var boat_num = i + 1;
+    
+    switch(boat_num ) {
+	    case 1:
+	    	color = '#fff'; // wit
+	        break;
+	    case 2:
+	        color = '#1b7ebc'; // blauw
+	        break;
+	    case 3:
+	        color = '#383838';  // zwart
+	        break;
+	    case 4:
+	    	color = '#13c54c'; // groen
+	        break;
+	    case 5:
+	        color = '#fec835'; // geel
+	        break;
+	    case 6:
+	        color = '#fe2d2d'; // rood
+	        break;
+	    default:
+	    	color = '#fff';
+	} 
+    
+    ctx.strokeStyle = color;
 
-    ctx.moveTo(x.left, x.top);
 }
 
 
@@ -427,7 +526,10 @@ function toDegrees(angle) {
     return angle * (180 / Math.PI);
 }
 
+// obj is the physical jquery object
+// obj_east is the value from the 
 function convertToPixels(obj, obj_east, obj_north) {
+
     // Get the screen size in pixel
     var screenWidth = $('html').width();
     var screenHeight = $('html').height();
@@ -454,53 +556,30 @@ function convertToPixels(obj, obj_east, obj_north) {
     return target;
 }
 
-function calcTrail(x_target, y_target, boat) {
+function drawTrail(x_target, y_target, num_boat) {
+	var x = x_target;
+	var y = y_target;
+	
+	if(num_boat != 0 && show_all_trails == false ) return false;
+	
+	// drop breadcrumbs
+	var breadcrumb = document.createElement('div');
+	$(breadcrumb).addClass('start-'+num_boat)
+				.addClass('breadcrumb')
+				.css({'top':y,'left':x})
+				.appendTo('#trail-container');
+	setTimeout(function(){
+		$(breadcrumb).fadeOut(3000);		
+	},22000);
+	setTimeout(function(){
+		$(breadcrumb).remove();		
+	},25000);
 
-    var steps = 12;
-    var d_t = refresh_time / steps;
-    var waypoints = [];
+    //var $canvas = document.querySelector('#canvas-' + boats[num_boat].id);
+    //var ctx = $canvas.getContext('2d');
 
-    // get old coordinates
-    var y_cur = boats[boat].top;
-    var x_cur = boats[boat].left;
-
-    var d_x = (x_target - x_cur) / steps;
-    var d_y = (y_target - y_cur) / steps;
-
-    for (var i = 0; i < steps; i++) {
-
-        var x_step = x_cur + (d_x * i);
-        var y_step = y_cur + (d_y * i);
-
-        waypoints.push({
-            x: x_step,
-            y: y_step
-        });
-    }
-
-    drawTrail(waypoints, d_t, boat);
-
-}
-
-function drawTrail(waypoints, t, boat) {
-
-    if (waypoints.length === 0)
-        return false;
-
-    var x = waypoints[0].x;
-    var y = waypoints[0].y;
-
-    var $canvas = document.querySelector('#canvas-' + boats[boat].id);
-    var ctx = $canvas.getContext('2d');
-
-    ctx.lineTo(waypoints[0].x, waypoints[0].y);
-    ctx.stroke();
-
-    waypoints.shift();  // remove first item of array
-
-    setTimeout(function () {
-        drawTrail(waypoints, t, boat);
-    }, t);
+    //ctx.lineTo(x,y);
+    //ctx.stroke();
 }
 
 

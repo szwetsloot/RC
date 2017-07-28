@@ -6,9 +6,11 @@ function Boat(currentTime) {
     this.speed = 0;
     this.direction = 170;
     this.element = '';
+    this.bouyHistory = [],
     this.lastMessage = currentTime;
     this.lastUpdate = currentTime;
     this.lastDraw = currentTime;
+    this.num = null;
     this.boatIcon = '';
     this.drawn = {
         'north': 0,
@@ -35,7 +37,7 @@ Boat.prototype = {
         var drawnEast = ref.drawn.east;
         ref.drawn.north += Math.sin(boat.direction / 180 * Math.PI) * boat.speed * (millis() - boat.lastUpdate) / 1000;
         ref.drawn.east += Math.cos(boat.direction / 180 * Math.PI) * boat.speed * (millis() - boat.lastUpdate) / 1000;
-        console.log();
+        //console.log();
         // Correct for changes
         var factor = 0.7;
         ref.drawn.north = ref.drawn.north * factor + expectedNorth * (1 - factor);
@@ -54,17 +56,27 @@ Boat.prototype = {
             ref.animateMarker();
         }, 100);
     },
+    // THIS SHOULD BE THE ONLY FUNCTION THAT UPDATES ALL THE TEXT IN THE DOM ELEMENTS!!
     'updateData': function (north, east, speed, direction) {
+    	
+    	$overview = $('#boat-overview');
+    	$boat = $overview.find('#info-boat-'+this.id);
+    	$info = $boat.find('.counter');
+    	
         this.north = north;
         this.east = east;
         this.speed = speed;
         this.direction = Math.round(direction);
         this.lastMessage = millis();
-        var knots = Math.round(convertSpeedtoKN(speed) * 10) / 10;
-
-        var corrected_direction = (this.direction + 90) % 360;
-
-        this.element.find('.extra p').html(knots + 'kN  ' + corrected_direction + '&deg;');
+        distance_bouy = ( this.distance_bouy == null )? 0 : this.distance_bouy ;
+        // de Math random laat te snelheid max. 1.2 knopen verspringen
+        var knots = Math.round(convertSpeedtoKN(speed) * 10 + ( Math.random() * 12 ) ) / 10;
+        
+        var corrected_direction = ( this.direction + 90 ) % 360;
+        
+       // this.element.find('.extra p').html(knots + 'kN  ' + corrected_direction + '&deg;');
+        this.element.find('.extra p').html(knots + 'kN ');
+        $info.html(knots+'kN / '+corrected_direction+'&deg; / '+distance_bouy+'m');
     },
     'updatePosition': function (position) {
         this.position = position;
@@ -74,9 +86,12 @@ Boat.prototype = {
     },
     'setTeam': function (i) {
         this.team = i;
-        var $boat = this.element;
+        var $boat = this.element;        
+        $boat.addClass('start-'+crews[i].start_nr);
+        var $position = $boat.find('.position');
         var $boat_name = $boat.find('.name');
         var $boat_flag = $boat.find('.team-flag img');
+        $position.text(crews[i].start_nr);
         $boat_name.text(crews[i].shortname);
         var src = $boat_flag.attr('src') + crews[i].flag_image;
         $boat_flag.attr('src', src);
@@ -93,7 +108,7 @@ Boat.prototype = {
         var startRotation = getRotationDegrees($boat_icon);
         $boat.animate({
             left: ref.drawn.left,
-            top: ref.drawn.top
+            top: ref.drawn.top 
         }, {
             done: function () {
                 ref.moveBoat();
@@ -118,13 +133,23 @@ Boat.prototype = {
                     }
                 }
         );
-
-        //calcTrail(target_x, target_y, boat.num); // draw the trail of the boat
-
-        // in de functie calcTrail wordt de huidge positie gebruikt
-        // update de positie pas na de calcTrail
+        
+        //drawTrail(ref.drawn.left, ref.drawn.top, boat.num); // draw the trail of the boat
+        
+        // zorg dat niet te veel breadcrumbs worden achtergelaten
+        var num = 15 / boat.speed;
+        if( this.countMove < num ){
+        	this.countMove += 1;
+        } else{
+        	this.countMove = 0;
+        	drawTrail(ref.drawn.left, ref.drawn.top, boat.num); // draw the trail of the boat
+        }
+        
+        
         boat.top = ref.drawn.top;
         boat.left = ref.drawn.left;
+
+      
     },
     'checkBouys': function () {
         var ref = this;
@@ -132,12 +157,16 @@ Boat.prototype = {
             ref.checkBouys();
         }, 100);
         
+        
         // This method will check the status on the current bouy and keep track of rounding it
+       
         for (var i = 0; i < bouys.length; i++) {
+
             if (bouys[i].order == this.nextBouy) {
                 var bouyUpdate = bouys[i].calculateBoatStatus(this);
                 if (bouyUpdate == undefined)
                     return;
+                
                 //console.log("Update = "+bouyUpdate);
                 if (this.bouyStatus == 3) {
                     if (bouyUpdate == 4) {
@@ -148,15 +177,16 @@ Boat.prototype = {
                 } else if (this.bouyStatus == 4) {
                     if (bouyUpdate == 3) {
                         this.bouyStatus = 3;
-                    } else if (bouyUpdate == 0) {
+                    } else if (bouyUpdate == 2) {
                         // Done rounding, send a message to the bouy
                         bouys[i].rounded(ref);
-                        ref.bouyStatus = 0;
+                        ref.bouyStatus = 0; // done rounding so set back to 0
                         // Find the bouy which is next
                         for (var j = 0; j < bouys.length; j++) {
                             if (bouys[j].prev == bouys[i].id) {
                                 ref.nextBouy = bouys[j].order;
-                                console.log("next Bouy = " + ref.nextBouy);
+                                //if(ref.id == 1)
+                                //	console.log("next Bouy = "+ref.nextBouy);
                                 break;
                             }
                         }
@@ -179,42 +209,66 @@ Boat.prototype = {
     }
 };
 //calc distance between boat and next bouy
-Boat.prototype.calcDistanceBouy = function (step = 0) {
-    // laat de functie
-    var steps = 12;
-    var d_t = refresh_time / 12;
-    var self = this
-
-    // data komt één keer in de 6 seconden
-    // bereken zelf de tussen stappen
-    var bouy_id = 0;
+Boat.prototype.calcDistanceBouy = function () {   
+    var bouy_id = this.nextBouy - 1;
     var boat_id = this.id;
-    var distance = this.speed * d_t * step;
-    // select next bouy
-    var $bouy = $('#bouy-1');
-    var target_bouy = convertToPixels($bouy, bouys[bouy_id].east, bouys[bouy_id].north);
-    var bouy_x = target_bouy.left;
-    var bouy_y = target_bouy.top;
-    var $boat = this.element;
-    var boat_pos = convertToPixels($boat, crews[boat_id - 1].tracker['east'], crews[boat_id - 1].tracker['north']);
-    var boat_x = boat_pos.top;
-    var boat_y = boat_pos.left;
-    var d_x = Math.abs(boat_x - bouy_x);
-    var d_y = Math.abs(boat_y - bouy_y);
-    // pythagoras a2 +b2 = c2 
-    this.distance_bouy = Math.round(Math.sqrt((Math.pow(d_x, 2) + Math.pow(d_y, 2)) + distance));
-    //this.distance_bouy = norm2Dist(bouys[bouy_id], crews[boat_id - 1].tracker);
 
-    //$boat.find('.name').text(this.distance_bouy+'m');
-
-    if (step < steps)
-        setTimeout(function () {
-            self.calcDistanceBouy(step + 1);
-        }, d_t);
+    var boat_dx = Math.abs( this.drawn.east - bouys[bouy_id].east );
+	var boat_dy = Math.abs( this.drawn.north - bouys[bouy_id].north );
+	
+	var distance_bouy = Math.sqrt( ( Math.pow(boat_dx, 2) + Math.pow(boat_dy, 2) ) );	
+	
+	this.distance_bouy = Math.round( distance_bouy );
 }
 
-Boat.prototype.calcPositionBoat = function () {
+// berekent normaal positie van de boat 
+// eenheid is in meters
+Boat.prototype.calcPositionBoat = function () { 	
+	var ref = this;
+	var prev;
+	var num_next;
+	var num_prev;
+	
+	// get the array number of the next bouy
+	for (var i = 0; i < bouys.length; i++) {
+        if (bouys[i].order == this.nextBouy) {
+        	prev = bouys[i].prev; // prev is id of next bouy
+        	num_next = i;
+        	break;
+        }
+	}
+	// get the array number of the previous bouy
+	for (var i = 0; i < bouys.length; i++) {
+        if (bouys[i].id == prev) {
+        	num_prev = i;
+        	break;
+        }
+	}
 
+	// console.log('prev bouy['+num_prev+']:id'+prev+' next_bouy['+num_next+']: id'+this.nextBouy);	
+	// bouy[1].(id = 3) left .......  bouy[0] = right
+
+	var prev_bouy = bouys[num_prev];
+	var next_bouy = bouys[num_next];
+	
+	var bouys_dx = prev_bouy.east - next_bouy.east;
+	var bouys_dy = prev_bouy.north - next_bouy.north;
+	
+	var boat_dx = ref.east - next_bouy.east;
+	var boat_dy = ref.north - next_bouy.north;
+
+	var ab = ( bouys_dx * boat_dx ) + ( bouys_dy * boat_dy ); 
+	var afstand_boeien = Math.sqrt( ( Math.pow(bouys_dx, 2) + Math.pow(bouys_dy, 2) ) );
+
+	var afstand_tot_boei = ab / Math.pow(afstand_boeien, 2);
+	
+	
+	var rounded_bouys = this.bouyHistory.length;
+	
+	if( afstand_tot_boei < 0 ) afstand_tot_boei = 0;
+	
+	// tel elke geronde boei meer als 1
+	this.location = rounded_bouys + ( 1 - afstand_tot_boei ); 	
 };
 
 function getRotationDegrees(obj) {

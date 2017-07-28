@@ -3,7 +3,10 @@ function Bouy() {
     this.id = 0;
     this.north = 0;
     this.east = 0;
+    this.left = null,
+    this.top = null,
     this.number = 0;
+    this.order = null,
     this.type = 0;
     this.prev = 0;
     this.element = '';
@@ -12,32 +15,34 @@ function Bouy() {
 ;
 Bouy.prototype = {
     'move': function () {
-// This method will move the bouys to their  correct location on the screen
+    	// This method will move the bouys to their  correct location on the screen
         var ref = this;
         var target = convertToPixels(ref.element, this.east, this.north);
         ref.element.css('left', target.left + 'px');
         ref.element.css('top', target.top + 'px');
+        ref.top = target.top;
+        ref.left = target.left;
     },
     'boatEntered': function (boat) {
         // This method is called when a boat entered this bouy.
-        // If this is the firstboat to do this it should send a message to the dashboard
-        // TODO - send message to the dashboard
-        console.log("Entered!!!");
+
+        // First boat activates the next bouy
+    	if(boat.position == 1){
+    		Dashboard.activateBouy(boat,this);
+    	}
     },
-    'rounded': function (boat) {
-        // This method is called when a boat left this bouy.
-        // The rounded time should be saved. This is done in the dashboard.
-        // Send a message to the dashboard
-        console.log('rounded!!!!');
-        Dashboard.bouyRounded(boat, this.number);
+    'rounded': function(boat) {
+      // This method is called when a boat left this bouy.
+      // Talk to dashboard 
+      boat.bouyHistory.push(this.order);
+      Dashboard.bouyRounded(boat,this);    
     },
     'calculateBoatStatus': function (boat) {
         // This method will check if there are boats within range of this bouy   
 
         var bouy = this;
 
-        if (boat.id != 1)
-            return;
+       // if (boat.id != 1) return;
 
         if (bouy.type == 1) { // Start bouy
             // This bouy consist of either 2 bouys or a bouy and a ship.
