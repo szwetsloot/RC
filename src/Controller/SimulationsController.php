@@ -27,6 +27,7 @@ class SimulationsController extends AppController {
         $this->loadModel('SaillingCrews');
         $this->loadModel('SaillingAthletes');
         $this->loadModel('Trackers');
+        $this->loadModel('Packets');
 
 // Set the default layout
         $this->viewBuilder()->setLayout('ajax');
@@ -39,7 +40,63 @@ class SimulationsController extends AppController {
     public function simulateSailEventBram($id) {
         
     }
-
+    
+    public function zvdtResults() {
+        $this->GPoint = $this->loadComponent('GPoint');
+        
+        $crews = $this->SaillingCrews->find()
+                ->where([
+                    'OR' => [
+                        ['id' => 12],
+                        ['id' => 7],
+                        ['id' => 9],
+                        ['id' => 8]
+                        ]
+                ])
+                ->all();
+        
+        $bouys = $this->Bouys->find()
+                ->contain(['trackers'])
+                ->all()
+                ->toArray();
+        
+        foreach ($bouys as &$bouy) {
+            $this->GPoint->setLongLat($bouy->Trackers['longitude'], $bouy->Trackers['latitude']);
+            $this->GPoint->convertLLtoTM(0);
+            $bouy['north'] = $this->GPoint->N();
+            $bouy['east'] = $this->GPoint->E();
+        }
+        
+        
+        $packets = $this->Packets->find()
+                ->where([
+                    'datetime >=' => '2017-07-30',
+                    'datetime <' => '2017-07-31',
+                    'time >=' => '82800',
+                    'time <' => '85300'
+                    ])
+                ->all()
+                ->toArray();
+        
+        $units = [];
+        $lastTime = [];
+        foreach ($packets as $packet) {
+            $this->GPoint->setLongLat($packet->longitude, $packet->latitude);
+            $this->GPoint->convertLLtoTM(0);
+            $units[$packet->tracker][] = (object)[
+                'time' => $packet->time,
+                'heading' => $packet->heading,
+                'velocity' => $packet->velocity,
+                'north' => $this->GPoint->N(),
+                'east' => $this->GPoint->E()
+            ];
+            $lastTime[$packet->tracker] = $packet->time;
+        }
+        
+        
+        $this->set(compact('units', 'crews', 'bouys'));
+    }
+            
     public function simulateSailEventDummy() {
 // Retrieve the crews from the database
         $crews = $this->SaillingCrews->find()
