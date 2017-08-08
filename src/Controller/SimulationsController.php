@@ -83,18 +83,52 @@ class SimulationsController extends AppController {
         foreach ($packets as $packet) {
             $this->GPoint->setLongLat($packet->longitude, $packet->latitude);
             $this->GPoint->convertLLtoTM(0);
+            $timeH = floor($packet->time / 10000) + 2;
+            $timeM = floor($packet->time / 100) % 100;
+            $timeS = floor($packet->time) % 100;
+            $timeMS = $packet->time - floor($packet->time);
+            $time = round(((($timeH * 60) + $timeM) * 60 + $timeS + $timeMS) * 1000);
             $units[$packet->tracker][] = (object)[
-                'time' => $packet->time,
+                'id' => $packet->id,
+                'time' => $time,
                 'heading' => $packet->heading,
                 'velocity' => $packet->velocity,
+                'lat' => $packet->latitude,
+                'long' => $packet->longitude,
                 'north' => $this->GPoint->N(),
                 'east' => $this->GPoint->E()
             ];
             $lastTime[$packet->tracker] = $packet->time;
         }
         
+        // Find the minimum time within the trackers
+        $startTime = min(array_map(function ($q) {
+            return min(array_map(function($r) {
+                return $r->time;
+            }, $q));
+        }, $units));
         
-        $this->set(compact('units', 'crews', 'bouys'));
+        // Filter the wrong packets
+        foreach ($units as $unit) {
+            $oldPacket = null;
+            foreach ($unit as $packet) {
+                if (is_null($oldPacket)) {
+                    $oldPacket = $packet;
+                    continue;
+                }
+                if ($packet->north - $oldPacket->north > 2000) {
+                    $this->print_rr($packet);
+                    $this->print_rr($oldPacket);
+                }
+                if ($packet->east - $oldPacket->east > 2000) {
+                    $this->print_rr($packet);
+                    $this->print_rr($oldPacket);
+                }
+                $oldPacket = $packet;
+            }
+        }
+        
+        $this->set(compact('units', 'crews', 'bouys', 'startTime'));
     }
             
     public function simulateSailEventDummy() {
