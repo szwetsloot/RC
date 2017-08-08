@@ -81,7 +81,7 @@ Boat.prototype = {
     'updatePosition': function (position) {
         this.position = position;
         var $boat = this.element;
-        var $boat_position = $boat.find('.boat-stats .position')
+        var $boat_position = $boat.find('.boat-stats .position');
         $boat_position.text(position);
     },
     'setTeam': function (i) {

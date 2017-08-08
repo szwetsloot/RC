@@ -126,7 +126,7 @@
 	
 }
 
-#bouy-container .bouy:nth-child(4), #bouy-container .bouy:nth-child(5){
+#bouy-container .bouy:nth-of-type(1), #bouy-container .bouy:nth-of-type(2){
 	width: 16px;
 	height: 16px;	
 	margin-top: -8px;

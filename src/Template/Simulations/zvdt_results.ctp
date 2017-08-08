@@ -230,9 +230,10 @@
                 <div class="skipper">Evert Jansen</div>
                 <div class="counter">5 | 77 punten</div>
             </li>
+            <!-- 
             <li class="animated fadeInLeft">
                 <div class="position start-5">5</div>
-                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/5.Kaag_.png') ?></div>
+                <div class="team-flag"><?php // $this->Html->image('sail_event_v2/teams/5.Kaag_.png') ?></div>
                 <div class="name">Kaag</div>
                 <div class="medal"></div>
                 <div class="skipper">Max Visser</div>
@@ -240,12 +241,13 @@
             </li>
             <li class="animated fadeInLeft">
                 <div class="position start-6">6</div>
-                <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/14.Wolphaarts.png') ?></div>
+                <div class="team-flag"><?php // $this->Html->image('sail_event_v2/teams/14.Wolphaarts.png') ?></div>
                 <div class="name">Wolphaarts</div>
                 <div class="medal"></div>
                 <div class="skipper">Peter Bisshop</div>
                 <div class="counter">18 | 143 punten</div>
             </li>
+            -->
         </ul>
         
     </div>

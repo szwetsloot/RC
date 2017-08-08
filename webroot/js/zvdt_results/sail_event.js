@@ -31,9 +31,9 @@ var boats = [];
 var run = 1; // global variable for running the animation 1 = run & 0 = stop
 var race_veld = 'Eredivisie zeilen J/70'; // TODO get from backend 
 var show_livestream = true; // het filmpje opd e achterrond
-var show_finish = true; // panel dat na 120 seconden wordt weergegeven
+var show_finish = false; // panel dat na 120 seconden wordt weergegeven
 var show_startline = true; // teken de start line tussen boei nummer 3 en 4
-var show_all_trails = false; // Als dit false staat wordt alleen het spoor van boot 1 weergegeven
+var show_all_trails = true; // Als dit false staat wordt alleen het spoor van boot 1 weergegeven
 
 var screenUTMRange = {
     'centerEast': 1E9,
@@ -124,8 +124,15 @@ function drawClearedStartline(){
 	if(show_startline == false) return false;
 	
 	// TODO select bouys by startline type
-	var $bouy_1 = bouys[bouys.length - 2];
-	var $bouy_2 = bouys[bouys.length - 1];
+    var j = 0, i = 0;
+    var $bouy_1, $bouy_2;
+    for (i = 0; i < bouys.length; i++) {
+        if (bouys[i].type == 1) {
+            if (!j) $bouy_1 = bouys[i];
+            if (j)  $bouy_2 = bouys[i];
+            j++
+        }
+    }
 		
 	var $canvas = document.getElementById("canvas-start");
 	var ctx = $canvas.getContext("2d");
@@ -406,7 +413,6 @@ function listen() {
                         break;
                     }
                 }
-                
                 // calc the progress between the previous and next bouy
                 boat.calcPositionBoat();
                 
@@ -434,7 +440,7 @@ function listen() {
         }
     });
 }
-;
+
 
 function createBoats() {
     // Check which bouy is first

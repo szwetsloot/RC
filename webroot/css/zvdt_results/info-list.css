@@ -28,12 +28,17 @@
 	position: fixed;
 	top: 30px;
 	left: 30px;
-	width: 300px;	
+	width: 350px;	
 }
 
 #boat-overview ul li{
 	position: absolute;
 	top: 30px;
+}
+
+#boat-overview ul li .name{
+	max-width: 120px;
+	overflow-x:hidden;
 }
 
 /* main race timer */
