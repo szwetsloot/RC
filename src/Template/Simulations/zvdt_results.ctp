@@ -29,17 +29,17 @@
 </script>
 
 <?= $this->Html->css('animate') ?>
-<?= $this->Html->css('simulate_sail_event_dummy') ?>
+<?= $this->Html->css('zvdt_results/sail_event') ?>
 
 <?= $this->Html->script('http://code.jquery.com/jquery.min.js') ?>
 <?= $this->Html->script('https://code.jquery.com/ui/1.12.1/jquery-ui.min.js') ?>
 
 <?= $this->Html->script('node_modules/proj4/dist/proj4') ?>
 
-<?= $this->Html->script('simulate_sail_event_results') ?>
-<?= $this->Html->script('simulate_sail_event_dashboard') ?>
-<?= $this->Html->script('simulate_sail_event_boat') ?>
-<?= $this->Html->script('simulate_sail_event_bouy') ?>
+<?= $this->Html->script('zvdt_results/sail_event') ?>
+<?= $this->Html->script('zvdt_results/sail_event_dashboard') ?>
+<?= $this->Html->script('zvdt_results/sail_event_boat') ?>
+<?= $this->Html->script('zvdt_results/sail_event_bouy') ?>
 
 <div id="background-image"></div>
 <div id="height-line-container"></div>
