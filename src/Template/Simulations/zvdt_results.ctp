@@ -10,10 +10,11 @@
     var crews = <?= json_encode($crews) ?>;
     var bouys = <?= json_encode($bouys) ?>;
     var packets = <?= json_encode($units) ?>;
+    var startTime = <?= json_encode($startTime) ?>;
 
     // Initialize the wind and wave direction
-    var wave_direction = 45 + 90; // The +90 is to correct for the image
-    var wind_direction = 225 + 180; // The + 180 is to correct for the different 0-direciton
+    var wave_direction = 45; // The +90 is to correct for the image
+    var wind_direction = 227 - 90; // The + 180 is to correct for the different 0-direciton
     
     // Set the units for the boat
     var boat_packets = [];
@@ -24,6 +25,7 @@
     
     for (var i = 0; i < crews.length; i++) {
         crews[i].tracker = packets[boat_packets[crews[i].id]][0];
+        crews[i].packetCount = 1;
     }
     
 </script>
