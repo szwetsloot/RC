@@ -144,29 +144,54 @@ li{
 }
 
 /* course progress */
-#course-track .position.start-1:before{
+#course-track .position.start-1.right:before{
 	border-right-color: fff;
 }
 
-#course-track .position.start-2:before{
+#course-track .position.start-2.right:before{
 	border-right-color: #1b7ebc;
 }
 
-#course-track .position.start-3:before{
+#course-track .position.start-3.right:before{
 	border-right-color: #383838;
 }
 
-#course-track .position.start-4:before{
+#course-track .position.start-4.right:before{
 	border-right-color: #13c54c;
 }
 
-#course-track .position.start-5:before{
+#course-track .position.start-5.right:before{
 	border-right-color: #fec835;
 }
 
-#course-track .position.start-6:before{
+#course-track .position.start-6.right:before{
 	border-right-color: #fe2d2d;
 }
+
+#course-track .position.start-1.left:before{
+	border-left-color: fff;
+}
+
+#course-track .position.start-2.left:before{
+	border-left-color: #1b7ebc;
+}
+
+#course-track .position.start-3.left:before{
+	border-left-color: #383838;
+}
+
+#course-track .position.start-4.left:before{
+	border-left-color: #13c54c;
+}
+
+#course-track .position.start-5.left:before{
+	border-left-color: #fec835;
+}
+
+#course-track .position.start-6.left:before{
+	border-left-color: #fe2d2d;
+}
+
 
 /* BREADCRUMBS */
 .start-1.breadcrumb{

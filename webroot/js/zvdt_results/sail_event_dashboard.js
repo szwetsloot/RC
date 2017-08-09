@@ -22,6 +22,8 @@ Dashboard.startSimulation = function(){
 	
 	// TODO fire this function when the actual race starts
 	setTimeout(Dashboard.startRace,10000);
+
+	Dashboard.sortBoats();
 }
 
 Dashboard.startRace = function(){						

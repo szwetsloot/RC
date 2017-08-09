@@ -66,7 +66,7 @@ Boat.prototype = {
         ref.drawn.east = ref.drawn.east * factor + expectedEast * (1 - factor);
         var direction = (-Math.atan2(ref.drawn.north - drawnNorth, ref.drawn.east - drawnEast) * 180 / Math.PI + 360) % 360;
 
-        // TODO - slow down the boat         // TODO - slow down the boat if the last packet is a long time agoif the last packet is a long time ago
+        // TODO - slow down the boat if the last packet is a long time ago
 
         // Send the location to the element
         target = convertToPixels(ref.boatIcon, ref.drawn.east, ref.drawn.north);
@@ -160,6 +160,23 @@ Boat.prototype = {
         ref.actual.east = ref.currentPacket.east * timePerc + ref.nextPacket.east * (1 - timePerc);
         ref.actual.time = millis();
 
+        
+        // UPDATE THE SIMULATION
+        // calc the progress between the previous and next bouy
+        ref.calcPositionBoat();
+        
+        ref.calcDistanceBouy();
+
+    	Dashboard.sortBoats();
+    	ref.calcPositionBoat();
+        // Set the variables
+        ref.updateData(
+        		ref.actual.north,
+        		ref.actual.east,
+                ref.speed,
+                ref.direction
+                );
+        
         return;
 
 
@@ -239,6 +256,8 @@ Boat.prototype = {
         boat.top = ref.drawn.top;
         boat.left = ref.drawn.left;
 
+        
+        
 
     },
     // THIS SHOULD BE THE ONLY FUNCTION THAT UPDATES ALL THE TEXT IN THE DOM ELEMENTS!!
@@ -254,8 +273,7 @@ Boat.prototype = {
         this.direction = Math.round(direction);
         this.lastMessage = millis();
         distance_bouy = (this.distance_bouy == null) ? 0 : this.distance_bouy;
-        // de Math random laat te snelheid max. 1.2 knopen verspringen
-        var knots = Math.round(convertSpeedtoKN(speed) * 10 + (Math.random() * 12)) / 10;
+        var knots = Math.round(convertSpeedtoKN(speed) * 10 ) / 10;
 
         var corrected_direction = (this.direction + 90) % 360;
 
@@ -355,17 +373,22 @@ Boat.prototype = {
         return Math.atan2(y,x) * 180 / Math.PI;
     }
 };
+
 //calc distance between boat and next bouy
 Boat.prototype.calcDistanceBouy = function () {
-    var bouy_id = this.nextBouy - 1;
-    var boat_id = this.id;
+	    
+	 var bouy;
+	 
+	 // nextbouy refers to the name of the next bouy
+	 for (var i = 0; i < bouys.length; i++) {
+	    	if( bouys[i].name == this.nextBouy ) bouy = bouys[i];
+	 }
+	    
+	 var boat_dx = Math.abs(this.drawn.east - bouy.east);
+	 var boat_dy = Math.abs(this.drawn.north - bouy.north);
 
-    var boat_dx = Math.abs(this.drawn.east - bouys[bouy_id].east);
-    var boat_dy = Math.abs(this.drawn.north - bouys[bouy_id].north);
-
-    var distance_bouy = Math.sqrt((Math.pow(boat_dx, 2) + Math.pow(boat_dy, 2)));
-
-    this.distance_bouy = Math.round(distance_bouy);
+	 var distance_bouy = Math.sqrt(  (Math.pow(boat_dx, 2) + Math.pow(boat_dy, 2))  );
+	 this.distance_bouy = Math.round(distance_bouy);
 }
 
 // berekent normaal positie van de boat 

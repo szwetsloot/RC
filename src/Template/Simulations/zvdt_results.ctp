@@ -189,11 +189,10 @@
     	<div id="course-track">
     		<div id="bouy-1" class="bouy">S</div>    		
     		<div id="bouy-2" class="bouy">2</div> 		
-    		<div id="bouy-3" class="bouy">3</div>
     		
-    		<div id="boat-1" class="position start-1 right">1</div>
+    		<div id="boat-1" class="position start-1 left">1</div>
     		<div id="boat-2" class="position start-2 right">2</div>
-    		<div id="boat-3" class="position start-3 right">3</div>
+    		<div id="boat-3" class="position start-3 left">3</div>
     		<div id="boat-4" class="position start-4 right">4</div>
     		
     	</div>

@@ -25,6 +25,10 @@
 	top: 50%;	
 }
 
+.boat:hover{
+	cursor: pointer;
+}
+
 .boat-icon {
 	position: relative;
 	width: 50px;
