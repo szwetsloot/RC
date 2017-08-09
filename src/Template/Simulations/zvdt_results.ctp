@@ -77,12 +77,12 @@
 
 <div id="dashboard">
     <div id="bouy-info" class="info-list animated fadeInDown">
-        <div class="info-bar"><span class="label">Eredivisie zeilen J/70</span><span class="counter">Boei 1</span></div>
+        <div class="info-bar"><span class="label">Zeilregatta Scheveningen J/70</span><span class="counter">Boei 1</span></div>
         <ul></ul>
     </div>
     
      <div id="boat-overview" class="info-list animated fadeInLeft">
-        <div class="info-bar"><span class="label">Eredivisie zeilen J/70</span></div>
+        <div class="info-bar"><span class="label">Zeilregatta Scheveningen J/70</span></div>
         <ul>
         <?php foreach ($crews as $i => $crew): ?>
 		    <li id="info-boat-<?= $crew->id ?>" class="animated fadeInLeft">
@@ -104,7 +104,7 @@
             <div class="arrow-text">Noord</div>
         </div>
         <div id="wind-arrow" class="arrow">
-            
+            6
 			<?= $this->Html->image('sail_event_v2/arrow.png',['class'=>'arrow-img']) ?>
             <div class="arrow-text">Windkracht<br>19Kn, NW</div>
         </div>
@@ -187,10 +187,10 @@
     
      <div id="start-panel" class="panel info-list animated fadeInDown">
      	<div class="panel-header">
-     		<?= $this->Html->image('sail_event_v2/logo-horizontaal.png',['class' => 'race-logo']) ?>
+     		<?= $this->Html->image('sail_event_v2/nep-wedstrijd-logo.png',['class' => 'race-logo']) ?>
      		<h1>Start</h1>
      		<?= $this->Html->image('sail_event_v2/otis-blauw.png',['class' => 'dev-logo']) ?>
-     		<div class="info-bar"><span class="label">Eredivisie zeilen J/70</span></div>
+     		<div class="info-bar"><span class="label">Zeilregatta Scheveningen J/70</span></div>
         </div>
               
         <div class="list-header">
@@ -256,10 +256,10 @@
     
     <div id="finish-panel" class="panel info-list animated fadeInDown">
      	<div class="panel-header">
-     		<?= $this->Html->image('sail_event_v2/logo-horizontaal.png',['class' => 'race-logo']) ?>
+     		<?= $this->Html->image('sail_event_v2/nep-wedstrijd-logo.png',['class' => 'race-logo']) ?>
      		<h1>Uitslag race 1</h1>
      		<?= $this->Html->image('sail_event_v2/otis-blauw.png',['class' => 'dev-logo']) ?>
-     		<div class="info-bar"><span class="label">Eredivisie zeilen J/70</span></div>
+     		<div class="info-bar"><span class="label">Zeilregatta Scheveningen J/70</span></div>
         </div>
                       
         <div class="list-header animated fadeInLeft">
