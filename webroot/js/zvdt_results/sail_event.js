@@ -29,7 +29,7 @@ var debug = 1;
 
 /* Simulation variables */
 var simulation = 1; // TODO - Set this to 0 when done building
-var simulation_speed = 3;
+var simulation_speed = 1;
 
 /* Others */
 var utm = "+proj=utm +zone=31";

@@ -88,7 +88,7 @@ Boat.prototype = {
         var ref = this;
         setTimeout(function () {
             ref.rotateMarker();
-        }, 1000);
+        }, 300);
         // Rotate the marker
         var $boat_icon = ref.element.find('.boat-icon');
         var startRotation = ref.iconRotation;
@@ -96,6 +96,9 @@ Boat.prototype = {
         
         startRotation = (startRotation + 360) % 360;
         direction = (direction + 360) % 360;
+        /*if (Math.abs(direction - startRotation) > 30) {
+            direction = startRotation + 30 * Math.sign(direction - startRotation);
+        }*/
         
         ref.iconRotation = direction;
         $boat_icon.animate(
@@ -104,7 +107,7 @@ Boat.prototype = {
                 },
                 {
                     'easing': 'linear',
-                    duration: 1000,
+                    duration: 300,
                     step: function (now) {
                         $(this).css('-ms-transform', 'rotate(' + now + 'deg)');
                         $(this).css('-webkit-transform', 'rotate(' + now + 'deg)');
