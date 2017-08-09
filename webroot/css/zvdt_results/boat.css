@@ -4,23 +4,23 @@
 	display: none;
 }
 
-.boat{
+#boat-container .boat{
 	display: block;
 	position: relative;
 	z-index: 3;
 }
 
-#boat-1{
+#boat-container #boat-1{
 	left: 80%;
 	top: 45%;	
 }
 
-#boat-2{
+#boat-container #boat-2{
 	left: 60%;
 	top: 25%;	
 }
 
-#boat-3{
+#boat-container #boat-3{
 	left: 25%;
 	top: 50%;	
 }

@@ -1,0 +1,72 @@
+#course-progress{
+	position: fixed;
+	right: 0;
+	top: 0;
+	width: 200px;
+	height: 100%;
+	background: rgba(0,0,0,0.3);
+}
+
+#course-track{
+	width:14px;
+	height: 100%;
+	background: rgba(0,0,0,0.3);
+	margin-left: 90px;
+}
+
+#course-track .bouy{
+	position: absolute;
+	margin-left: -3px;
+	color: #fff;
+	font-size: 18px;
+}
+
+/* bouy */
+#course-track #bouy-1{
+	top: 90%;
+}
+
+#course-track #bouy-2{
+	top: 50%;
+}
+
+#course-track #bouy-3{
+	top: 20%;
+}
+
+/* boat */
+#course-track #boat-1{
+	top: 40%;
+}
+
+#course-track #boat-2{
+	top: 43%;
+}
+
+#course-track #boat-3{
+	top: 46%;
+}
+
+#course-track #boat-4{
+	top: 47%;
+}
+
+#course-track .position{
+	position: absolute;
+	margin-left: 20px;
+}
+
+/* colors are defined in base.css */
+#course-track .position:before{
+	content: '';
+	display: block;
+	position: absolute;
+	margin-top: -4px;
+	margin-left: -10px;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 10px 10px 10px 0px;
+	border-color: transparent;
+
+}

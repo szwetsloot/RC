@@ -6,12 +6,16 @@
 	left: calc( 50% - 450px );
 }
 
+#start-panel{
+	display: none;
+}
+
 #finish-panel{
 	display: none;
 }
 
 #overlay{
-	display: block;
+	display: none;
 }
 
 .panel{

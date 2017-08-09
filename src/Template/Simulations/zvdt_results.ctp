@@ -185,6 +185,24 @@
 
     <div id="bouy-counter" class="info-bar animated fadeInUp"><span class="label">Boei 1</span><span class="counter">+00,0</span></div>
     
+    <div id="course-progress">
+    	<div id="course-track">
+    		<div id="bouy-1" class="bouy">S</div>    		
+    		<div id="bouy-2" class="bouy">2</div> 		
+    		<div id="bouy-3" class="bouy">3</div>
+    		
+    		<div id="boat-1" class="position start-1 right">1</div>
+    		<div id="boat-2" class="position start-2 right">2</div>
+    		<div id="boat-3" class="position start-3 right">3</div>
+    		<div id="boat-4" class="position start-4 right">4</div>
+    		
+    	</div>
+    </div>
+    
+    <div id="leaderboard"></div>
+    
+    <div id="timeline"></div>
+    
      <div id="start-panel" class="panel info-list animated fadeInDown">
      	<div class="panel-header">
      		<?= $this->Html->image('sail_event_v2/nep-wedstrijd-logo.png',['class' => 'race-logo']) ?>

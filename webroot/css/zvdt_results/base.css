@@ -142,6 +142,32 @@ li{
 .start-6 .boat-icon:before{
 	border-left-color: #fe2d2d;
 }
+
+/* course progress */
+#course-track .position.start-1:before{
+	border-right-color: fff;
+}
+
+#course-track .position.start-2:before{
+	border-right-color: #1b7ebc;
+}
+
+#course-track .position.start-3:before{
+	border-right-color: #383838;
+}
+
+#course-track .position.start-4:before{
+	border-right-color: #13c54c;
+}
+
+#course-track .position.start-5:before{
+	border-right-color: #fec835;
+}
+
+#course-track .position.start-6:before{
+	border-right-color: #fe2d2d;
+}
+
 /* BREADCRUMBS */
 .start-1.breadcrumb{
 	border-color: #fff;

@@ -27,6 +27,7 @@
 @import url("./info-list.css"); /* bouy-list, bouy-data, boat-overview */
 @import url("./boat-info.css"); /* horizontal bar bottom screen */
 @import url("./panel.css"); /* big panel for start and finish */
+@import url("./course-progress.css"); /* progress of boats on the total course */
 
 @font-face {
     font-family: 'bebas_neue';
