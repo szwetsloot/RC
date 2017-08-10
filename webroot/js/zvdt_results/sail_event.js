@@ -472,8 +472,6 @@ function listen() {
 function createBoats() {
     // Check which bouy is first
     for (var i = 0; i < crews.length; i++) {
-        
-        //if (i != 2) continue;
         var crew = crews[i];
         var boat = boats[i] = new Boat(millis());
         var boatElement = $('.boat#boat-' + crew.id);

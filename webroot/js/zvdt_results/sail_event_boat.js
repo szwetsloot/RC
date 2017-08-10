@@ -16,6 +16,7 @@ function Boat(currentTime) {
     this.lastDraw = currentTime;
     this.num = null;
     this.iconRotation = 0;
+    this.currentRotation = 0;
     this.boatIcon = '';
     this.actual = {
         'time': 0,
@@ -85,21 +86,26 @@ Boat.prototype = {
         ref.lastUpdate = millis();
     },
     'rotateMarker': function() {
+        //if(this.team != 0) return;
         var ref = this;
         setTimeout(function () {
             ref.rotateMarker();
-        }, 300);
+        }, 50);
+        
         // Rotate the marker
         var $boat_icon = ref.element.find('.boat-icon');
-        var startRotation = ref.iconRotation;
+        var startRotation = ref.iconRotation
+        
         var direction = this.averageRotation() - north_direction;
         
         startRotation = (startRotation + 360) % 360;
         direction = (direction + 360) % 360;
-        /*if (Math.abs(direction - startRotation) > 30) {
-            direction = startRotation + 30 * Math.sign(direction - startRotation);
-        }*/
         
+        var difRotation = direction - startRotation;
+        while (difRotation > 180) difRotation -= 360;
+        while (difRotation < -180) difRotation += 360;
+        
+        direction = startRotation + Math.min(Math.abs(difRotation), 1 * simulation_speed) * Math.sign(difRotation);
         ref.iconRotation = direction;
         $boat_icon.animate(
                 {
@@ -107,7 +113,7 @@ Boat.prototype = {
                 },
                 {
                     'easing': 'linear',
-                    duration: 300,
+                    duration: 50,
                     step: function (now) {
                         $(this).css('-ms-transform', 'rotate(' + now + 'deg)');
                         $(this).css('-webkit-transform', 'rotate(' + now + 'deg)');
