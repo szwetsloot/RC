@@ -207,7 +207,7 @@ Dashboard.activateBouy = function(boat, bouy){
 		$('#bouy-counter').hide();
 		this.showBouy = bouy_name;
 		this.numPassedBouys = boat.bouyHistory.length + 1; // + 1 want history wordt pas geupdate met bouy rounded event		
-		//Dashboard.zoomBouy(bouy_element);
+		Dashboard.zoomBouy(bouy_element);
 		//this.showBoats.push(boat.id);
 		//if( this.animatingAthletes == false ) Dashboard.showCrewInfo(boat.id);
 	}

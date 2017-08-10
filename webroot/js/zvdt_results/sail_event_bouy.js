@@ -32,6 +32,7 @@ Bouy.prototype = {
     'rounded': function(boat) {
       // This method is called when a boat left this bouy.
       // Talk to dashboard 
+    	console.log(rounded);
       boat.bouyHistory.push(this.order);
       Dashboard.bouyRounded(boat,this);    
     },

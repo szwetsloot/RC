@@ -147,7 +147,7 @@ Boat.prototype = {
 
         // Check whether we need a next packet
         var currentTime = startTime + (millis() - jsTime);
-        if( packets[packet_id] == null ) return; // check if the packet exists
+        if( packets[packet_id][crews[i].packetCount].time == null ) return; // check if the packet exists
         while (packets[packet_id][crews[i].packetCount].time < currentTime) {
             crews[i].packetCount++;
         }
@@ -313,7 +313,6 @@ Boat.prototype = {
             ref.checkBouys();
         }, 100);
 
-
         // This method will check the status on the current bouy and keep track of rounding it
         
         for (var i = 0; i < bouys.length; i++) {
@@ -326,17 +325,17 @@ Boat.prototype = {
                 //console.log("Update = "+bouyUpdate);
                 if (this.bouyStatus == 3) {
                     if (bouyUpdate == 4) {
-                        this.bouyStatus = 4;
+                        this.bouyStatus = 4; 
                     } else if (bouyUpdate != 0) {
                         this.bouyStatus = bouyUpdate;
                     }
                 } else if (this.bouyStatus == 4) {
                     if (bouyUpdate == 3) {
-                        this.bouyStatus = 3;
+                        this.bouyStatus = 3; 
                     } else if (bouyUpdate == 2) {
                         // Done rounding, send a message to the bouy
                         bouys[i].rounded(ref);
-                        ref.bouyStatus = 0; // done rounding so set back to 0
+                        ref.bouyStatus = 0; console.log('status = 0'); // done rounding so set back to 0
                         // Find the bouy which is next
                         for (var j = 0; j < bouys.length; j++) {
                             if (bouys[j].prev == bouys[i].id) {
@@ -349,10 +348,10 @@ Boat.prototype = {
                     }
                 } else if (this.bouyStatus == 1) {
                     if (bouyUpdate == 3)
-                        this.bouyStatus = 3;
+                        this.bouyStatus = 3; 
                 } else if (this.bouyStatus == 2) {
                     if (bouyUpdate == 1)
-                        this.bouyStatus = 1;
+                        this.bouyStatus = 1; 
                 } else if (this.bouyStatus == 0) {
                     // Started rounding, send a message to the bouy
                     if (bouyUpdate != 0) {
