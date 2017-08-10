@@ -29,7 +29,7 @@ var debug = 1;
 
 /* Simulation variables */
 var simulation = 1; // TODO - Set this to 0 when done building
-var simulation_speed = 1;
+var simulation_speed = 5;
 
 /* Others */
 var utm = "+proj=utm +zone=31";
@@ -42,7 +42,7 @@ var race_veld = 'Zeilregatta Scheveningen'; // TODO get from backend
 var show_livestream = true; // het filmpje opd e achterrond
 var show_finish = false; // panel dat na 120 seconden wordt weergegeven
 var show_startline = true; // teken de start line tussen boei nummer 3 en 4
-var show_all_trails = false; // Als dit false staat wordt alleen het spoor van boot 1 weergegeven
+var show_all_trails = true; // Als dit false staat wordt alleen het spoor van boot 1 weergegeven
 
 var screenUTMRange = {
     'centerEast': 1E9,

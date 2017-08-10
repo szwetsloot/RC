@@ -78,7 +78,7 @@ class SimulationsController extends AppController
                 ->where([
                     'datetime >=' => '2017-07-30',
                     'datetime <' => '2017-07-31',
-                    'time >=' => '82800',
+                    'time >=' => '83650', // 82800
                     'time <' => '85300'
                 ])
                 ->all()

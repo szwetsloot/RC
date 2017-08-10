@@ -297,7 +297,7 @@ Dashboard.sortBoats = function(){
 	// boats with higest location in front
 	positions.reverse();
 	
-	if( positions[0].location == positions[1].location == positions[2].location ) positions.reverse();
+	//if( positions[0].location == positions[1].location == positions[2].location ) positions.reverse();
 	
 	// sort dom elements
 	$.each(positions,function(i){
