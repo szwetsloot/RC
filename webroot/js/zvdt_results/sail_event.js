@@ -29,7 +29,7 @@ var debug = 1;
 
 /* Simulation variables */
 var simulation = 1; // TODO - Set this to 0 when done building
-var simulation_speed = 1;
+var simulation_speed = 5;
 
 /* Others */
 var utm = "+proj=utm +zone=31";
@@ -472,8 +472,6 @@ function listen() {
 function createBoats() {
     // Check which bouy is first
     for (var i = 0; i < crews.length; i++) {
-        
-        //if (i != 2) continue;
         var crew = crews[i];
         var boat = boats[i] = new Boat(millis());
         var boatElement = $('.boat#boat-' + crew.id);
