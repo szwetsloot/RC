@@ -1,4 +1,4 @@
-var browser_location = $(location).attr('href').replace('simulations/simulate-sail-event-dummy/7','');
+var browser_location = $(location).attr('href').replace('simulations/zvdt-results/10','');
 var image_base_url = browser_location+'/img/sail_event_v2/teams/';
 
 // define the global variables
@@ -108,11 +108,18 @@ Dashboard.updateCrewInfo = function(crew_id){
 	// stop ophalen van data van vorige boot
 	clearTimeout(Dashboard.boatinfoTimeout);
 	
+	var crew;
+	var boat;
 	// select team
-	// TODO crew id moet worden opgezocht in de array
-	var crew = crews[crew_id - 1];
+	for( i = 0; i < crews.length; i++ ){
+		if(crews[i].id == crew_id ) crew = crews[i];
+	}	
+	
+	for( i = 0; i < boats.length; i++ ){
+		if(boats[i].id == crew_id ) boat = boats[i];
+	}	
+	
 	var tracker = crew.tracker;
-	var boat = boats[crew_id - 1];
 	var boat_speed = Math.round(convertSpeedtoKN(boat.speed) * 10 + ( Math.random() * 12 ) ) / 10;
 	
 	// define dom elements
@@ -157,7 +164,7 @@ Dashboard.updateCrewInfo = function(crew_id){
 	
 	$club_name.text(crew.name);
 	$club_flag.attr('src', image_base_url+crew.flag_image)
-	
+
 	// repeat function every 500 ms
 	this.boatinfoTimeout = setTimeout(function(){ Dashboard.updateCrewInfo(crew_id); },500);
 }
@@ -176,6 +183,16 @@ Dashboard.resetCrewInfo = function(crew_id){
 	},5000);	
 }
 
+Dashboard.toggleBouyData = function(){
+	var bouy_nr = $(this).clone().children().remove().end().text().trim();
+	var name = 'boei '+bouy_nr;
+	var $data_panel = $('#bouy-data');
+	$data_panel.find('.label').text(name);
+	$data_panel.switchClass('fadeOutUp','fadeInDown').toggle();
+	$data_panel.find('.li').show();
+	
+}
+
 // called by bouy entered event
 Dashboard.activateBouy = function(boat, bouy){
 	
@@ -190,9 +207,9 @@ Dashboard.activateBouy = function(boat, bouy){
 		$('#bouy-counter').hide();
 		this.showBouy = bouy_name;
 		this.numPassedBouys = boat.bouyHistory.length + 1; // + 1 want history wordt pas geupdate met bouy rounded event		
-		Dashboard.zoomBouy(bouy_element);
-		this.showBoats.push(boat.id);
-		if( this.animatingAthletes == false ) Dashboard.showCrewInfo(boat.id);
+		//Dashboard.zoomBouy(bouy_element);
+		//this.showBoats.push(boat.id);
+		//if( this.animatingAthletes == false ) Dashboard.showCrewInfo(boat.id);
 	}
 	
 	// define dom elements

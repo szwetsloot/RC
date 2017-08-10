@@ -38,7 +38,7 @@ var refresh_time = 6000;
 
 var boats = [];
 var run = 1; // global variable for running the animation 1 = run & 0 = stop
-var race_veld = 'Eredivisie zeilen J/70'; // TODO get from backend 
+var race_veld = 'Zeilregatta Scheveningen'; // TODO get from backend 
 var show_livestream = true; // het filmpje opd e achterrond
 var show_finish = false; // panel dat na 120 seconden wordt weergegeven
 var show_startline = true; // teken de start line tussen boei nummer 3 en 4
@@ -71,16 +71,27 @@ $(function () {
     moveBouys();
     createBoats();
     drawStartline();
+    Progress.moveBoats();
 
     // Start listenening
     //listen();
     
-    // 
+    // fades in the right panels
     Dashboard.startSimulation();
 		
     // DOM EVENTS
     $('#finish-panel .crew').on('click',Dashboard.showCrewResults);
 
+    $('#bouy-container').on('click','.bouy',Dashboard.toggleBouyData);
+    
+    $('#boat-container .boat').on('click',function(){
+    	var boat_id = $(this).closest('.boat').attr('id').replace('boat-','');
+    	Dashboard.showBoats.push(boat_id);			
+		// if not animating initiate new rotation of athletes 
+		if( Dashboard.animatingAthletes == false ) Dashboard.showCrewInfo(boat_id);		
+    });
+    
+    
     // Recalculate variables on screen resize
     $(window).on('resize', function () {
         // Calculate the longest distance between two bouys to determine the horizontal location
@@ -488,7 +499,7 @@ function createBoats() {
         
         boat.animateMarker();
         boat.rotateMarker();
-        boat.moveBoat(i);
+        boat.moveBoat(i); // runs every 100 ms
 
         // create for each boat a canvas to draw the trail
         //createCanvas(i);

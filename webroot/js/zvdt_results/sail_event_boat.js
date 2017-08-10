@@ -141,6 +141,7 @@ Boat.prototype = {
 
         // Check whether we need a next packet
         var currentTime = startTime + (millis() - jsTime);
+        if( packets[packet_id] == null ) return; // check if the packet exists
         while (packets[packet_id][crews[i].packetCount].time < currentTime) {
             crews[i].packetCount++;
         }
@@ -177,6 +178,7 @@ Boat.prototype = {
                 ref.direction
                 );
         
+        drawTrail(ref.drawn.left, ref.drawn.top, ref.num);
         return;
 
 
@@ -307,7 +309,7 @@ Boat.prototype = {
 
 
         // This method will check the status on the current bouy and keep track of rounding it
-
+        
         for (var i = 0; i < bouys.length; i++) {
 
             if (bouys[i].order == this.nextBouy) {

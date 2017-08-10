@@ -25,11 +25,9 @@ Bouy.prototype = {
     },
     'boatEntered': function (boat) {
         // This method is called when a boat entered this bouy.
-
+    	console.log('boat entered');
         // First boat activates the next bouy
-    	if(boat.position == 1){
-    		Dashboard.activateBouy(boat,this);
-    	}
+    	// if(boat.position == 1) Dashboard.activateBouy(boat,this);    	
     },
     'rounded': function(boat) {
       // This method is called when a boat left this bouy.
@@ -54,6 +52,7 @@ Bouy.prototype = {
                     bouyB = deepcopy(bouys[i]);
                 }
             }
+
             if (bouy.id > bouyB.id)
                 return;
 
@@ -74,7 +73,7 @@ Bouy.prototype = {
                 if (bouys[i].id == bouy.prev)
                     prevBouy = bouys[i];
             }
-
+            
             // Calculate the angles and the bissect
             var prevAngle = getAngle(prevBouy, bouy) * 180 / Math.PI;
             var nextAngle = getAngle(nextBouy, bouy) * 180 / Math.PI;

@@ -95,7 +95,6 @@
 
 #boat-container{
 	z-index: 2;
-	position: absolute;
 	top: 0;
 	left: 0;
 	height: 100%;
@@ -116,6 +115,10 @@
 	-webkit-box-shadow: inset 5px -5px 10px 0px rgba(0,0,0,0.4);
 	-moz-box-shadow: inset 5px -5px 10px 0px rgba(0,0,0,0.2);
 	box-shadow: inset 5px -5px 5px 0px rgba(0,0,0,0.4);
+}
+
+.bouy:hover{
+	cursor: pointer;
 }
 
 #bouy-container .bouy{
@@ -186,7 +189,7 @@
     font-size: 10px;
     line-height: 12px;
     font-family: 'bebas_neue_book';
-    z-index: 1; /* buttons zijn 100 */
+    z-index: 150;
     top: -8px;
     left: 35px;
     opacity:0.9;
