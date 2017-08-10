@@ -106,7 +106,6 @@ Boat.prototype = {
         while (difRotation < -180) difRotation += 360;
         
         direction = startRotation + Math.min(Math.abs(difRotation), 1 * simulation_speed) * Math.sign(difRotation);
-        console.log(direction - startRotation);
         ref.iconRotation = direction;
         $boat_icon.animate(
                 {
