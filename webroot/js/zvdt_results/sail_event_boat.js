@@ -147,7 +147,7 @@ Boat.prototype = {
 
         // Check whether we need a next packet
         var currentTime = startTime + (millis() - jsTime);
-        if( packets[packet_id][crews[i].packetCount].time == null ) return; // check if the packet exists
+
         while (packets[packet_id][crews[i].packetCount].time < currentTime) {
             crews[i].packetCount++;
         }
@@ -335,13 +335,13 @@ Boat.prototype = {
                     } else if (bouyUpdate == 2) {
                         // Done rounding, send a message to the bouy
                         bouys[i].rounded(ref);
-                        ref.bouyStatus = 0; console.log('status = 0'); // done rounding so set back to 0
+                        ref.bouyStatus = 0;  // done rounding so set back to 0
                         // Find the bouy which is next
                         for (var j = 0; j < bouys.length; j++) {
                             if (bouys[j].prev == bouys[i].id) {
                                 ref.nextBouy = bouys[j].order;
                                 //if(ref.id == 1)
-                                //	console.log("next Bouy = "+ref.nextBouy);
+                                console.log("next Bouy = "+ref.nextBouy);
                                 break;
                             }
                         }
@@ -388,7 +388,7 @@ Boat.prototype.calcDistanceBouy = function () {
 	 
 	 // nextbouy refers to the name of the next bouy
 	 for (var i = 0; i < bouys.length; i++) {
-	    	if( bouys[i].name == this.nextBouy ) bouy = bouys[i];
+	    	if( bouys[i].order == this.nextBouy ) bouy = bouys[i];
 	 }
 	    
 	 var boat_dx = Math.abs(this.drawn.east - bouy.east);
