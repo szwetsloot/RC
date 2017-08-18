@@ -17,8 +17,6 @@
 	margin-left: 80px;
 	height: 300%;
 	transform: translateY(-70%);
-	height: 100%;
-	transform: none;
 }
 
 #course-track .bouy{
@@ -43,25 +41,6 @@
     line-height: 1px;
 }
 
-#course-track .bouy:nth-of-type(1){
-	top: 100%;
-}
-
-#course-track .bouy:nth-of-type(2){
-	top: 73.7%;
-}
-
-#course-track .bouy:nth-of-type(3){
-	top: 50%;
-}
-
-#course-track .bouy:nth-of-type(4){
-	top: 26.3%;
-}
-
-#course-track .bouy:nth-of-type(5){
-	top: 0%;
-}
 
 #course-track .position{
 	top: 100%;

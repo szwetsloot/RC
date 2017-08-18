@@ -25,14 +25,14 @@ Bouy.prototype = {
     },
     'boatEntered': function (boat) {
         // This method is called when a boat entered this bouy.
-    	console.log('bouy entered')
+    	console.log('boat'+boat.id+' entered bouy '+this.name)
         // First boat activates the next bouy
     	// if(boat.position == 1) Dashboard.activateBouy(boat,this);    	
     },
     'rounded': function(boat) {
       // This method is called when a boat left this bouy.
       // Talk to dashboard 
-    	console.log('rounded')
+    	console.log('rounded bouy '+this.name)
       boat.bouyHistory.push(this.order);
       Dashboard.bouyRounded(boat,this);    
     },
@@ -108,7 +108,7 @@ Bouy.prototype = {
 
         } else if (bouy.type == 2) { // Normal bouy
         	//if(boat.id == 8) console.log(norm2Dist(boat, this));
-            if (norm2Dist(boat, this) > 50)
+            if (norm2Dist(boat, this) > 100)
                 return 0;
             // Find the previous and the next  bouy
             var prevBouy, nextBouy;
@@ -138,11 +138,12 @@ Bouy.prototype = {
             if (cAngle < -90 && cAngle >= -180)
                 return 4;
         } else if (bouy.type == 3) { // Finish bouy
+        	console.log('bouy type 3');
 
         }
-    },
+    }, //calculate boat status
 }
-;
+
 function normalComponent(vectorA, vectorB) {
     var vB = deepcopy(vectorB);
     var vA = deepcopy(vectorA);

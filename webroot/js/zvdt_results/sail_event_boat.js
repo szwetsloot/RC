@@ -1,3 +1,20 @@
+/*
+ * BOAT METHODS
+ * animateMarker
+ * rotateMarker
+ * moveBoat
+ * moveToPoint
+ * updateData
+ * updatePosition
+ * setTeam
+ * checkBouys
+ * averageRotation
+ * calcDistanceBouy
+ * calcPositionBoat
+ * getRotationDegrees
+ * 
+ */
+
 // Global variables
 var boat_packets;
 var packets;
@@ -7,14 +24,14 @@ function Boat(currentTime) {
     this.team = 0;
     this.north = 0;
     this.east = 0;
-    this.speed = 0;
+    this.speed = 6;
     this.direction = 170;
     this.element = '';
     this.bouyHistory = [],
-            this.lastMessage = currentTime;
+    this.lastMessage = currentTime;
     this.lastUpdate = currentTime;
     this.lastDraw = currentTime;
-    this.num = null;
+    this.num = null; // start nr
     this.iconRotation = 0;
     this.currentRotation = 0;
     this.boatIcon = '';
@@ -40,6 +57,8 @@ function Boat(currentTime) {
     // These variables are used to readout known packets
     this.currentPacket;
     this.nextPacket;
+    // these variables are used to navigate the dummy data
+    this.currentDummyPacket = null;
 }
 ;
 // extend the boat object
@@ -147,7 +166,7 @@ Boat.prototype = {
 
         // Check whether we need a next packet
         var currentTime = startTime + (millis() - jsTime);
-
+        
         while (packets[packet_id][crews[i].packetCount].time < currentTime) {
             crews[i].packetCount++;
         }
@@ -260,13 +279,80 @@ Boat.prototype = {
             drawTrail(ref.drawn.left, ref.drawn.top, boat.num); // draw the trail of the boat
         }
 
-
         boat.top = ref.drawn.top;
         boat.left = ref.drawn.left;
 
         
         
 
+    },
+    'moveToPoint' : function(){
+    	var boat = this;
+    	var $boat = this.element;
+        var $boat_icon = $boat.find('.boat-icon');
+    	
+    	// if this is the first time the function is ran
+    	if( this.currentDummyPacket == null){
+    		var data = tracker_data[0];
+    		$boat.css({'top':data.top, 'left':data.left});
+    		this.currentDummyPacket = 0;
+    	} 
+    	// check if there is any data left
+    	if( this.currentDummyPacket == tracker_data.length - 1 ) this.currentDummyPacket = 0 //return false;
+    	   
+    	var data_cur = tracker_data[ this.currentDummyPacket ];
+    	var data_target = tracker_data[ this.currentDummyPacket + 1 ];
+    	
+    	// calc distance current bouy to next
+    	var dist = norm2Dist( data_cur, data_target );
+
+    	var duration = ( ( dist / boat.speed ) * 1000 ) / simulation_speed; 
+
+    	// rotate boat icon   	
+    	var direction = 180 - toDegrees(getAngle(data_cur, data_target) ) - toDegrees(screenUTMRange.rotation) ;
+    	$boat_icon.css('transform', 'rotate(' + direction + 'deg)')
+    	
+    	$boat.animate({
+            left: data_target.left,
+            top: data_target.top
+        }, duration, 'linear', function() {
+        	boat.currentDummyPacket += 1;
+        	boat.top =  data_target.top;
+            boat.left =  data_target.left;
+            // run after the animation this function again for the next bouy
+        	boat.moveToPoint();
+        });   
+    	
+    	// UPDATE THE SIMULATION
+        // calc the progress between the previous and next bouy
+        boat.calcPositionBoat();
+        
+        boat.calcDistanceBouy();
+
+    	Dashboard.sortBoats();
+    	boat.calcPositionBoat();
+
+        
+        
+        
+    	
+    },
+    'syncObjectData' : function(){
+    	var data_cur = tracker_data[ this.currentDummyPacket ];
+    	var data_target = tracker_data[ this.currentDummyPacket + 1 ];
+    	// calc distance current bouy to next
+    	var dist = norm2Dist( data_cur, data_target );
+    	var angle = toDegrees(getAngle(data_cur, data_target) );
+    	var speed = 6; // m/s fixed value
+    	
+    	// Calculate where the drawn boat is
+        var drawnNorth = this.drawn.north;
+        var drawnEast = this.drawn.east;
+        this.drawn.north += Math.sin(boat.direction / 180 * Math.PI) * boat.speed * (millis() - boat.lastUpdate) / 1000;
+        this.drawn.east += Math.cos(boat.direction / 180 * Math.PI) * boat.speed * (millis() - boat.lastUpdate) / 1000;
+        
+        this.updateData();
+    	
     },
     // THIS SHOULD BE THE ONLY FUNCTION THAT UPDATES ALL THE TEXT IN THE DOM ELEMENTS!!
     'updateData': function (north, east, speed, direction) {
@@ -281,7 +367,7 @@ Boat.prototype = {
         this.direction = Math.round(direction);
         this.lastMessage = millis();
         distance_bouy = (this.distance_bouy == null) ? 0 : this.distance_bouy;
-        var knots = Math.round(convertSpeedtoKN(speed) * 10 ) / 10;
+        var knots = Math.round(convertSpeedtoKN(speed) * 10 + Math.random(1) * 1.2 ) / 10;
 
         var corrected_direction = (this.direction + 90) % 360;
 
@@ -321,8 +407,9 @@ Boat.prototype = {
                 var bouyUpdate = bouys[i].calculateBoatStatus(this);
                 if (bouyUpdate == undefined)
                     return;
+               
 
-                //console.log("Update = "+bouyUpdate);
+               // if(this.id == "8" ) console.log("Update = "+bouyUpdate);
                 if (this.bouyStatus == 3) {
                     if (bouyUpdate == 4) {
                         this.bouyStatus = 4; 
@@ -344,6 +431,7 @@ Boat.prototype = {
                                 console.log("next Bouy = "+ref.nextBouy);
                                 break;
                             }
+                            break;
                         }
                     }
                 } else if (this.bouyStatus == 1) {

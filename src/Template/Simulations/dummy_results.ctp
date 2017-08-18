@@ -15,6 +15,7 @@
     // Initialize the wind and wave direction
     var wave_direction = 45; // The +90 is to correct for the image
     var wind_direction = 227 - 90; // The + 180 is to correct for the different 0-direciton
+    var wind_direction = 100;
     
     // Set the units for the boat
     var boat_packets = [];
@@ -31,7 +32,7 @@
 </script>
 
 <?= $this->Html->css('animate') ?>
-<?= $this->Html->css('zvdt_results/sail_event') ?>
+<?= $this->Html->css('dummy_results/sail_event') ?>
 
 <?= $this->Html->script('http://code.jquery.com/jquery.min.js') ?>
 <?= $this->Html->script('https://code.jquery.com/ui/1.12.1/jquery-ui.min.js') ?>
@@ -40,13 +41,14 @@
 
 
 
-<?= $this->Html->script('zvdt_results/sail_event_data') ?>
-<?= $this->Html->script('zvdt_results/sail_event') ?>
-<?= $this->Html->script('zvdt_results/sail_event_dashboard') ?>
-<?= $this->Html->script('zvdt_results/sail_event_boat') ?>
-<?= $this->Html->script('zvdt_results/sail_event_bouy') ?>
-<?= $this->Html->script('zvdt_results/sail_event_progress') ?>
-<?= $this->Html->script('zvdt_results/sail_event_timeline') ?>
+<?= $this->Html->script('dummy_results/sail_event_data') ?>
+<?php //  $this->Html->script('dummy_results/generated_data') ?>
+<?= $this->Html->script('dummy_results/sail_event') ?>
+<?= $this->Html->script('dummy_results/sail_event_dashboard') ?>
+<?= $this->Html->script('dummy_results/sail_event_boat') ?>
+<?= $this->Html->script('dummy_results/sail_event_bouy') ?>
+<?= $this->Html->script('dummy_results/sail_event_progress') ?>
+<?= $this->Html->script('dummy_results/sail_event_timeline') ?>
 
 <div id="simulator">
 	<div id="height-line-container"></div>
@@ -68,16 +70,17 @@
 	
 	<div id="boat-container">	
 	<?php foreach ($crews as $i => $crew): ?>
-	    <div class="boat" id="boat-<?= $crew->id ?>">
+	    <div class="boat  start-<?= $crew->start_nr ?>" id="boat-<?= $crew->id ?>">
 	        <div class="boat-stats">
-	            <div class="position"><?= ($i+1) ?></div>
-	            <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/') ?></div>
+	            <div class="position"><?= $crew->start_nr ?></div>
+	            <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/'.$crew->flag_image) ?></div>
 	            <div class="name"><?= $crew->shortname ?></div>
 	            <div class="extra"><p>0Kn 0&deg;</p></div>
 	        </div>
 	        <div class="boat-icon"></div>
 	    </div> 
 	<?php endforeach; ?>
+	 <div id="check" style="background: red; height: 15px; width: 15px; z-index: 99999; position: absolute; left: -100px;"></div>
 	</div>
 </div> <!-- #simulator -->
 
@@ -95,7 +98,7 @@
                 <div class="position start-<?= $crew->start_nr ?>"><?= $crew->start_nr ?></div>
                 <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/'.$crew->flag_image ) ?></div>
                 <div class="name"><?= $crew->shortname ?></div>
-                <div class="counter">14.6kN / 180&deg; / 82m</div>
+                <div class="counter">0kN / 0&deg; / 0m</div>
             </li>
 		<?php endforeach; ?>           
         </ul>
@@ -191,15 +194,17 @@
     <div id="bouy-counter" class="info-bar animated fadeInUp"><span class="label">Boei 1</span><span class="counter">+00,0</span></div>
     
     <div id="course-progress">
-    	<div id="course-track">
+    	<div id="course-track" class="ease-transform-fast">
     		<div id="bouy-1" class="bouy lijn">Start</div>    		
     		<div id="bouy-3" class="bouy">2</div>
     		<div id="bouy-4" class="bouy">3</div>    		
-    		<div id="bouy-5" class="bouy">2</div> 	
-    		<div id="bouy-6" class="bouy lijn">Finish</div>    	 		
+    		<div id="bouy-6" class="bouy">2</div> 	
+    		<div id="bouy-7" class="bouy lijn">Finish</div>    	 
     		
-    		<div id="boat-8" class="position start-3 left">3</div>
-    		<div id="boat-9" class="position start-4 right">4</div>    		
+    		<?php foreach ($crews as $i => $crew): ?>
+    			<?php $css = ( ( $i % 2 ) == 0)? 'right' : 'left' ; ?>
+				<div id="boat-<?= $crew->id ?>" class="position start-<?= $crew->start_nr; ?> ease-transform-fast <?= $css ?>"><?= $crew->start_nr ?></div>
+			<?php endforeach; ?>		  		
     	</div>
     </div>
     
@@ -211,16 +216,22 @@
 <div id="timeline">
 		<div class="toggle-timeline"></div>
     	<div class="time-slots">
-    		<div class="node"><span class="label">8:00</span></div>
+    		<div class="node"><span class="label">8:30</span></div>
+    		<div class="node"><span class="label">8:35</span></div>
+    		<div class="node"><span class="label">8:40</span></div>
+    		<div class="node"><span class="label">8:45</span></div>
+    		<div class="node"><span class="label">8:50</span></div>
+    		<div class="node"><span class="label">8:55</span></div>
     		<div class="node"><span class="label">9:00</span></div>
-    		<div class="node"><span class="label">10:00</span></div>
-    		<div class="node"><span class="label">11:00</span></div>
-    		<div class="node"><span class="label">12:00</span></div>
-    		<div class="node"><span class="label">13:00</span></div>
+    		<div class="node"><span class="label">9:05</span></div>
+    		<div class="node"><span class="label">9:10</span></div>
     	</div>
-    	<div id="draggable" class="track draggable ui-widget-content">    	
-    		<div class="bouy">S</div>
-    		<div class="bouy">2</div>
+    	<div id="draggable" class="track draggable ui-widget-content">     		
+    		<div id="bouy-1" class="bouy lijn">S</div>    		
+    		<div id="bouy-3" class="bouy">2</div>
+    		<div id="bouy-4" class="bouy">3</div>    		
+    		<div id="bouy-6" class="bouy">2</div> 	
+    		<div id="bouy-7" class="bouy lijn">F</div>  
     		<div class="current"></div>
     	</div>
 </div>
@@ -272,24 +283,7 @@
                 <div class="skipper">Evert Jansen</div>
                 <div class="counter">5 | 77 punten</div>
             </li>
-            <!-- 
-            <li class="animated fadeInLeft">
-                <div class="position start-5">5</div>
-                <div class="team-flag"><?php // $this->Html->image('sail_event_v2/teams/5.Kaag_.png') ?></div>
-                <div class="name">Kaag</div>
-                <div class="medal"></div>
-                <div class="skipper">Max Visser</div>
-                <div class="counter">14 | 123 punten</div>
-            </li>
-            <li class="animated fadeInLeft">
-                <div class="position start-6">6</div>
-                <div class="team-flag"><?php // $this->Html->image('sail_event_v2/teams/14.Wolphaarts.png') ?></div>
-                <div class="name">Wolphaarts</div>
-                <div class="medal"></div>
-                <div class="skipper">Peter Bisshop</div>
-                <div class="counter">18 | 143 punten</div>
-            </li>
-            -->
+           
         </ul>
         
     </div>
@@ -438,6 +432,7 @@
         </ul>
         
     </div>
+   
 	<?= $this->Html->image('sail_event_v2/otis.png',['class' => 'otis-logo']) ?>
 	
 	<div id="overlay"></div>

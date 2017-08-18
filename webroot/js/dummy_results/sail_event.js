@@ -1,17 +1,3 @@
-/*
- * Author B. Bronswijk
- * 
- * lat = north
- * lng = east
- * 
- * 
- * lat -> north ( UTM ) -> left (px)
- * 
- * degrees = Math.atan2(x,y) * ( 180/Math.PI)
- * 
- */
-
-
 // Reference the global variables
 var bouys;
 var crews;
@@ -30,6 +16,7 @@ var debug = false;
 /* Simulation variables */
 var simulation = 1; // TODO - Set this to 0 when done building
 var simulation_speed = 5;
+var simulation_running = false; // global variable for running the animation 1 = run & 0 = stop
 
 /* Others */
 var utm = "+proj=utm +zone=31";
@@ -37,12 +24,16 @@ var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 var refresh_time = 6000;
 
 var boats = [];
-var run = 1; // global variable for running the animation 1 = run & 0 = stop
 var race_veld = 'Zeilregatta Scheveningen'; // TODO get from backend 
-var show_livestream = true; // het filmpje opd e achterrond
 var show_finish = false; // panel dat na 120 seconden wordt weergegeven
 var show_startline = true; // teken de start line tussen boei nummer 3 en 4
-var show_all_trails = true; // Als dit false staat wordt alleen het spoor van boot 1 weergegeven
+
+var options = {
+		bouy_radius : 50 ,// distance to enter bouy (meters) 
+		boat_speed : 6,
+		run_once : true, // restart simulation at the end of the data?
+		show_all_trails: true, // Als dit false staat wordt alleen het spoor van boot 1 weergegeven
+}
 
 var screenUTMRange = {
     'centerEast': 1E9,
@@ -54,8 +45,11 @@ var screenUTMRange = {
     'bouy2': 0
 };
 
+var simulationDataDistance = 0;
+
 $(function () {
     console.log('-------');
+
     // Create the bouys
     createBouys();
 
@@ -73,11 +67,10 @@ $(function () {
     moveBouys();
     createBoats();
     drawStartline();
-    Progress.moveBoats();
-
-    // Start listenening
-    //listen();
+    Progress.drawCourse();
     
+    Timeline.draw();
+
     // fades in the right panels
     Dashboard.startSimulation();
 		
@@ -106,6 +99,8 @@ $(function () {
         $('canvas').attr('width', $('html').width());
     	$('canvas').attr('height', $('html').height());
     	drawClearedStartline();
+
+        prepareDummyData();
     });
 });
 
@@ -117,6 +112,10 @@ function prepareDummyData(){
 		target = convertToPixels($element,tracker_data[i].east, tracker_data[i].north);
 		tracker_data[i].left = target.left;
 		tracker_data[i].top = target.top;
+		
+		if(i > 0 ) simulationDataDistance += norm2Dist(tracker_data[i - 1],tracker_data[i]);
+
+		
 	}
     
 }
@@ -360,8 +359,7 @@ function drawWaves() {
 
     for (var i = 0; i < 20; i++) {
         var wave = document.createElement('div');
-        $(wave).addClass('wave')
-                .appendTo($waves_container);
+        $(wave).addClass('wave').appendTo($waves_container);
     }
 }
 
@@ -421,65 +419,13 @@ function setArrows() {
     $north.css('-webkit-transform', 'rotate(' + north_direction + 'deg)');
     $north.css('transform', 'rotate(' + north_direction + 'deg)');
 
-
     $wind.css('-ms-transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
     $wind.css('-webkit-transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
     $wind.css('transform', 'rotate(' + (wind_direction + north_direction) + 'deg)');
 
-    console.log("Wind = " + wind_direction);
-    console.log("Wave = " + wave_direction);
-
     $waves.css('-ms-transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
     $waves.css('-webkit-transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
     $waves.css('transform', 'rotate(' + (wave_direction + north_direction) + 'deg)');
-}
-
-// This function continually gets data from the server
-var listenTimer; // This variable is used to make sure we don't listen too quick in simulations
-function listen() {
-    listenTimer = millis();
-    $.ajax({
-        type: 'POST',
-        url: listenerUrl + "/1/" + startTime,
-        success: function (data) {
-            crews = $.parseJSON(data);
-            // Update the crews with the new data
-            var boat;
-            for (var i = 0; i < crews.length; i++) {
-                var crew = crews[i];
-                // Find the boat we need
-                for (var j = 0; j < boats.length; j++) {
-                    if (boats[i].id == crew.id) { // Found it
-                        boat = boats[i];
-                        break;
-                    }
-                }
-                // calc the progress between the previous and next bouy
-                boat.calcPositionBoat();
-                
-                boat.calcDistanceBouy();
-
-            	Dashboard.sortBoats();
-            	boat.calcPositionBoat();
-                // Set the variables
-                boat.updateData(
-                        crew.tracker.north,
-                        crew.tracker.east,
-                        crew.tracker.velocity,
-                        crew.tracker.heading
-                        );
-                
-            }
-        },
-        complete: function (e, data) {
-            if (millis() - listenTimer < 500 && simulation) {
-                // Slow down for the simulation data
-                setTimeout(listen, listenTimer + 500 - millis());
-            } else {
-                listen();
-            }
-        }
-    });
 }
 
 
@@ -497,24 +443,19 @@ function createBoats() {
         boat.boatIcon = boatElement.find('.boat-icon');
         boat.id = crew.id;
         boat.num = i;
-        boat.north = crew.tracker.north;
-        boat.east = crew.tracker.east;
-        boat.direction = crew.tracker.heading;
-        boat.speed = crew.tracker.velocity;
+        boat.speed = 3 + ( 2 * Math.random() );
         boat.nextBouy = 2;
-        boat.bouyStatus = 0;
+        boat.numNextBouy = 2;
+        boat.start_nr = crew.start_nr
+        boat.numPrevBouy = 0;
+        boat.bouyStatus = null;
         boat.drawn.north = boat.north;
         boat.drawn.east = boat.east;
-        boat.updatePosition(i + 1);
-        boat.checkBouys();
-        boat.setTeam(i);
+        boat.raceDuration = simulationDataDistance / boat.speed;
         
-        boat.moveToPoint(); // nieuwe functie voor de dummy data
+        boat.moveToPoint(); // loop door dummy data
+        boat.syncObjectData(); // runs every 500 ms
         
-        //boat.animateMarker();
-        //boat.rotateMarker();
-        //boat.moveBoat(i); // runs every 100 ms
-
         // create for each boat a canvas to draw the trail
         //createCanvas(i);
     }
@@ -590,6 +531,9 @@ function convertToPixels(obj, obj_east, obj_north) {
     var screenWidth = $('html').width();
     var screenHeight = $('html').height();
 
+    var screenWidth = $('#simulator').width();
+    var screenHeight = $('#simulator').height();
+
     rot = screenUTMRange.rotation;
     cEast = screenUTMRange.centerEast;
     cNorth = screenUTMRange.centerNorth;
@@ -611,31 +555,6 @@ function convertToPixels(obj, obj_east, obj_north) {
     return target;
 }
 
-function drawTrail(x_target, y_target, num_boat) {
-	var x = x_target;
-	var y = y_target;
-	
-	if(num_boat != 0 && show_all_trails == false ) return false;
-	
-	// drop breadcrumbs
-	var breadcrumb = document.createElement('div');
-	$(breadcrumb).addClass('start-'+num_boat)
-				.addClass('breadcrumb')
-				.css({'top':y,'left':x})
-				.appendTo('#trail-container');
-	setTimeout(function(){
-		$(breadcrumb).fadeOut(3000);		
-	},22000);
-	setTimeout(function(){
-		$(breadcrumb).remove();		
-	},25000);
-
-    //var $canvas = document.querySelector('#canvas-' + boats[num_boat].id);
-    //var ctx = $canvas.getContext('2d');
-
-    //ctx.lineTo(x,y);
-    //ctx.stroke();
-}
 
 
 function convertSpeedtoKN(speed) {

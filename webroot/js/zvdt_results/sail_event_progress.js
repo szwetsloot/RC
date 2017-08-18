@@ -29,6 +29,10 @@ Progress.moveBoats = function(){
 		var bouys_rounded = boat.bouyHistory.length; 
 		var distance_boat = 0;
 		
+		// boat.location  // 0 / 0.5 / 1.5
+		var progress_cur_bouy = boat.location % 1;
+		if( progress_cur_bouy == 0 ) progress_cur_bouy = boat.location;
+		
 		// tel de afstand van de al gevaren rakken op bij de totale afstand 
 		if(bouys_rounded > 0){
 			for( i = 0; i < bouys_rounded; i++){
@@ -37,7 +41,7 @@ Progress.moveBoats = function(){
 		}
 		
 		// bereken afstand huidige rak
-		distance_boat += Progress.course[bouys_rounded] * boat.location; 
+		distance_boat += Progress.course[bouys_rounded] *  progress_cur_bouy; 
 		var perc_course = (( 3420 - distance_boat ) / 3420 ) * 100; 
 
 		$track.find('#boat-'+boat.id).animate({'top':perc_course+'%'},500);

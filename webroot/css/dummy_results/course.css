@@ -144,19 +144,27 @@
 .bouy.active:before{
 	content: '';
     position: absolute;
-    height: 200px;
-    width: 200px;
+    height: 150px;
+    width: 150px;
     border: 3px dashed #fec835;
     border-radius: 50%;
-    top: -93px;
-    left: -93px;
-    animation-name: spin;
-    animation-duration: 120s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
+    top: -68px;
+    left: -68px;
+    animation-name: scaleUp, spin ;
+    animation-delay: 0ms, 1s;
+    animation-duration: 1s, 90s;
+    animation-iteration-count: unset, infinite;
+    animation-timing-function: ease-in-out, linear;
     opacity: 0.6;
+    transform-origin: 50% 50%;
 
 }
+
+@keyframes scaleUp {
+    from {transform:scale(0);}
+    to {transform:scale(1);}
+}
+
 
 @keyframes spin {
     from {transform:rotate(360deg);}
@@ -211,24 +219,9 @@
     border-left: solid 5px transparent;
 }
 
-.start-1.breadcrumb{
-	top: 30%;
-	left: 40%;
-}
-
-.start-2.breadcrumb{
-	top: 35%;
-	left: 45%;
-}
-
-.start-3.breadcrumb{
-	top: 25%;
-	left: 45%;
-}
-
 .breadcrumb{
 	position: absolute;
-	opacity: 0.6;
+	opacity: 0.8;
 	margin-top: -4px;
 	margin-left: -4px;
 	height: 8px;

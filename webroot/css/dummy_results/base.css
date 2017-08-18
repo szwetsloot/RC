@@ -20,6 +20,12 @@ html, body {
 	opacity: 1;
 } 
 
+#simulator{
+	position: relative;
+	height: calc( 100% - 120px );
+	width: calc( 100% - 180px );
+}
+
 canvas{
 	position: fixed;
 	left: 0;
@@ -33,6 +39,11 @@ li{
 
 .ease-transform{
     transition: transform 4s ease-in-out;
+}
+
+
+.ease-transform-fast{
+    transition:  0.5s linear;
 }
 
 .position{
@@ -201,6 +212,8 @@ li{
 
 .start-2.breadcrumb{
 	border-color: #1b7ebc;
+	border-color: #00bcd4;
+	border-color: #03a9f4;
 }
 
 .start-3.breadcrumb{

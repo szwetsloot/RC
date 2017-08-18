@@ -44,6 +44,97 @@ class SimulationsController extends AppController
     {
         
     }
+    
+    public function dummyResults()
+    {
+    	$this->GPoint = $this->loadComponent('GPoint');
+    
+    	$crews = $this->SaillingCrews->find()
+    	->where([
+    			'OR' => [
+    					['id' => 12],
+    					['id' => 7],
+    					//['id' => 9],
+    					//['id' => 8]
+    			]
+    	])
+    	->all();
+    
+    	$bouys = $this->Bouys->find()
+    	->contain(['trackers'])
+    	->all()
+    	->toArray();
+    
+    	foreach ($bouys as &$bouy)
+    	{
+    		$this->GPoint->setLongLat($bouy->Trackers['longitude'], $bouy->Trackers['latitude']);
+    		$this->GPoint->convertLLtoTM(0);
+    		$bouy['north'] = $this->GPoint->N();
+    		$bouy['east'] = $this->GPoint->E();
+    	}
+    
+    
+    	$packets = $this->Packets->find()
+    	->where([
+    			'datetime >=' => '2017-07-30',
+    			'datetime <' => '2017-07-31',
+    			'time >=' => '83590', // 82800
+    			'time <' => '85300'
+    	])
+    	->all()
+    	->toArray();
+    
+    	$units = [];
+    	$lastTime = [];
+    	foreach ($packets as $packet)
+    	{
+    		$this->GPoint->setLongLat($packet->longitude, $packet->latitude);
+    		$this->GPoint->convertLLtoTM(0);
+    		$timeH = floor($packet->time / 10000) + 2;
+    		$timeM = floor($packet->time / 100) % 100;
+    		$timeS = floor($packet->time) % 100;
+    		$timeMS = $packet->time - floor($packet->time);
+    		$time = round(((($timeH * 60) + $timeM) * 60 + $timeS + $timeMS) * 1000);
+    		$units[$packet->tracker][] = (object) [
+    				'id' => $packet->id,
+    				'time' => $time,
+    				'heading' => $packet->heading,
+    				'velocity' => $packet->velocity,
+    				'lat' => $packet->latitude,
+    				'long' => $packet->longitude,
+    				'north' => $this->GPoint->N(),
+    				'east' => $this->GPoint->E()
+    		];
+    		$lastTime[$packet->tracker] = $packet->time;
+    	}
+    
+    	// Find the minimum time within the trackers
+    	$startTime = min(array_map(function ($q)
+    	{
+    		return min(array_map(function($r)
+    		{
+    			return $r->time;
+    		}, $q));
+    	}, $units));
+    
+    	// Apply a moving average filter over the points
+    	foreach ($units as $unit) {
+    		$northing = array_map(function (\stdClass $p) {
+    			return $p->north;
+    		}, $unit);
+    			$easting = array_map(function (\stdClass $p) {
+    				return $p->east;
+    			}, $unit);
+    				$northing = $this->movingAverage($northing, 30);
+    				$easting = $this->movingAverage($easting, 30);
+    				foreach ($unit as $i => $packet) {
+    					$packet->north = $northing[$i];
+    					$packet->east = $easting[$i];
+    				}
+    	}
+    
+    	$this->set(compact('units', 'crews', 'bouys', 'startTime'));
+    }
 
     public function zvdtResults()
     {
@@ -52,8 +143,8 @@ class SimulationsController extends AppController
         $crews = $this->SaillingCrews->find()
                 ->where([
                     'OR' => [
-                        ['id' => 12],
-                        ['id' => 7],
+                        //['id' => 12],
+                      	//  ['id' => 7],
                         ['id' => 9],
                         ['id' => 8]
                     ]

@@ -18,6 +18,11 @@
 	width: 160px;
 }
 
+#bouy-data .info-bar{
+	float: right;
+}
+
+
 #bouy-data .position{
 	margin-right: 10px;
 }
@@ -46,7 +51,7 @@
 	display: none;
 	position: fixed;
 	top: 30px;
-	right: 230px;
+	right: 200px;
 	z-index: 5;
 }
 
@@ -188,10 +193,6 @@
 /* align everything to the right */
 .right-list .info-bar .label{
 	padding: 5px 10px 5px 40px;
-}
-
-.right-list ul li{
-	margin-left: -53px;
 }
 
 .right-list .info-bar .label:after{
