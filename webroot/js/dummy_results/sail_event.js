@@ -30,7 +30,7 @@ var show_finish = false; // panel dat na 120 seconden wordt weergegeven
 var show_startline = true; // teken de start line tussen boei nummer 3 en 4
 
 var options = {
-		simulation_speed 	: 5,
+		simulation_speed 	: 1,
 		lengthTrail 		: 250, 			// length of trail in meters
 		bouy_radius 		: 50,			// distance to enter bouy (meters) 
 		boat_speed 			: 6,
@@ -63,7 +63,6 @@ $(function () {
     calculateLongestDistanceBouys();
     // Calculate the range of the screen based on the positions of the bouys
     calculateScreenRange();
-
     prepareDummyData();
     
     // Draw the elements

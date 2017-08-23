@@ -5,11 +5,12 @@ $( function() {
 		 stop: function() {
 	            var position = $(this).position().left - $(this).parent().position().left;
 	            var percentage = position / $(this).parent().width();
-		        console.log('position:'+percentage);
-		        var to_time = Math.abs( Math.round(tracker_data.length * percentage )); 
+		 
+		        generated_data.sort(function(a, b){ return b.length - a.length; });
+		        var to_time = Math.abs( Math.round(generated_data[0].length * percentage )); 
 		        $.each(boats,function(i){
 		        	boats[i].element.stop();
-		        	boats[i].moveToPoint(to_time);
+		        	boats[i].move(to_time);
 		        });
 		      }
 	 });
@@ -19,6 +20,7 @@ $( function() {
 	 });
 	 
  });
+
 
 var Timeline =  {
 		

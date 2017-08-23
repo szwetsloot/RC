@@ -19,7 +19,7 @@ var Dashboard = {
 Dashboard.synchDashboard = function(){
 	setTimeout(function(){ 
 		if( simulation_running ) Dashboard.synchDashboard();
-	}, 1000);    
+	}, 500);    
 
     Dashboard.sortBoats();
     Progress.moveBoats();       

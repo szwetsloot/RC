@@ -51,6 +51,7 @@ var start_A = [{
 	lng : 4.253491, 
 	east : 585846.80,
 	north : 5773625.22,
+	status : 'started'
 }];
 
 
@@ -58,21 +59,32 @@ var start_B = [{
 	lat: 52.106399, 
 	lng : 4.253471,
 	east : 585845.63,
-	north : 5773613.41
+	north : 5773613.41,
+	status : 'started'
 }];
 
 var start_C = [{
 	lat: 52.106596, 
 	lng : 4.253471,
 	east : 585845.25,
-	north : 5773635.32
+	north : 5773635.32,
+	status : 'started'
 }];
 
 var start_D = [{
 	lat: 52.106277, 
 	lng : 4.253471,
 	east : 585845.86,
-	north : 5773599.84
+	north : 5773599.84,
+	status : 'started'
+}];
+
+var finish_D = [{
+	lat: 52.106277, 
+	lng : 4.253471,
+	east : 585845.86,
+	north : 5773599.84,
+	status : 'finished'
 }];
 
 var rak_1A = [{
@@ -393,10 +405,10 @@ var round_bouy3A = [{
 // spoor 3 = boot nr 3
 // spoor 4 = boot nr 1
 
-var tracker_data_1 = pre_start.concat(start_A, rak_1C, round_bouy2, rak_2A, round_bouy3A, rak_3A, round_bouy2, rak_4A, start_D, after_finish);
-var tracker_data_2 = pre_start.concat(start_B, rak_1A, round_bouy2, rak_2B, round_bouy3B, rak_3B, round_bouy2, rak_4B, start_D, after_finish);
-var tracker_data_3 = pre_start.concat(start_C, rak_1B, round_bouy2, rak_2C, round_bouy3A, rak_3C, round_bouy2, rak_4C, start_D, after_finish);
-var tracker_data_4 = pre_start.concat(start_D, rak_1D, round_bouy2, rak_2D, round_bouy3B, rak_3D, round_bouy2, rak_4D, start_D, after_finish);
+var tracker_data_1 = pre_start.concat(start_A, rak_1C, round_bouy2, rak_2A, round_bouy3A, rak_3A, round_bouy2, rak_4A, finish_D, after_finish);
+var tracker_data_2 = pre_start.concat(start_B, rak_1A, round_bouy2, rak_2B, round_bouy3B, rak_3B, round_bouy2, rak_4B, finish_D, after_finish);
+var tracker_data_3 = pre_start.concat(start_C, rak_1B, round_bouy2, rak_2C, round_bouy3A, rak_3C, round_bouy2, rak_4C, finish_D, after_finish);
+var tracker_data_4 = pre_start.concat(start_D, rak_1D, round_bouy2, rak_2D, round_bouy3B, rak_3D, round_bouy2, rak_4D, finish_D, after_finish);
 
 var tracker_data_list = [];
 tracker_data_list.push( tracker_data_1 );

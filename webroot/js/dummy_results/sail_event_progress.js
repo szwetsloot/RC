@@ -62,9 +62,8 @@ Progress.moveBoats = function(){
 		var bouys_rounded = ( boat.location != null )? boat.location - ( boat.location % 1 ) : 0;
 		var distance_boat = 0;
 		
-    	if( boat.running == false){ 
+    	if( boat.running == false || boat.finished ){ 
     		ref.$track.find('#boat-'+boat.id).css('top',0);
-    		return false;
     	}		
 		
 		// boat.location  // 0 / 0.5 / 1.5

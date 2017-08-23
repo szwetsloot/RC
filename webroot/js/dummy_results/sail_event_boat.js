@@ -25,6 +25,8 @@ function Boat(currentTime) {
     this.num = null; // nr array
     this.boatIcon = '';
     this.running = true;
+    this.started = false;
+    this.finished = false;
     this.target = {
         'north': 0,
         'east': 0,
@@ -143,12 +145,15 @@ Boat.prototype = {
     	} 
     	if( reset != null ){
     		// TODO reset course progress sidebar
+    		$boat.removeClass('ease-transform-fast');
+    		$boat.stop(); // stop running animations
     		console.log('reset to '+reset);
     		var data = tracker_data[reset];
     		this.currentDummyPacket = reset;
     		$('#trail-container').empty();
     		$boat.css({'top':data.top, 'left':data.left});
     		simulation_running = true;
+    		boat.finished = false; // just in case
     	}
     	
     	// check if there is any data left
@@ -185,6 +190,8 @@ Boat.prototype = {
             top: data_target.top
         });
     	
+    	
+    	
     	boat.north = data_cur.north;
     	boat.east = data_cur.east;    
     	boat.distance_bouy = Math.round( norm2Dist( boat, bouys[boat.numNextBouy] ) );
@@ -196,6 +203,8 @@ Boat.prototype = {
     	}  	
     	
     	setTimeout(function(){
+    		if( reset != null ) $boat.addClass('ease-transform-fast');
+    		
         	boat.currentDummyPacket += 1;
         	boat.north = data_target.north;
         	boat.east = data_target.east;
@@ -218,7 +227,15 @@ Boat.prototype = {
         distance_bouy = (this.distance_bouy == null) ? 0 : this.distance_bouy;
         var knots = Math.round( ( convertSpeedtoKN(this.speed) + Math.random() * 1.2  ) * 10 ) / 10;
         this.element.find('.extra p').html(knots + 'kN ');
-        $info.html(knots + 'kN / ' + Math.round(this.direction) + '&deg; / ' + distance_bouy + 'm');
+        if( this.started == false ){
+        	$info.html('not started');
+        } else if( this.finished == false ){
+        	$info.html(knots + 'kN / ' + Math.round(this.direction) + '&deg; / ' + distance_bouy + 'm');
+        } else{
+        	$info.html('finished');
+        }
+        
+        
     },
     /* 
      * By : Boat.move();
@@ -233,6 +250,14 @@ Boat.prototype = {
             // status 1 entered
             if( boat.bouyStatus == 1){ 
             	bouys[i].boatEntered(this); 
+            }
+            
+            if( boat.bouyStatus == 'finished'){
+            	boat.finished = true;
+            }
+            
+            if( boat.bouyStatus == 'started'){
+            	boat.started = true;
             }
                                         
             // status 2 rounded
