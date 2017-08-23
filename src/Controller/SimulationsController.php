@@ -54,8 +54,8 @@ class SimulationsController extends AppController
     			'OR' => [
     					['id' => 12],
     					['id' => 7],
-    					//['id' => 9],
-    					//['id' => 8]
+    					['id' => 9],
+    					['id' => 8]
     			]
     	])
     	->all();

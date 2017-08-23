@@ -5,6 +5,7 @@
   */
 ?>
 
+
 <script type='text/javascript'>
     // Initialize the crews
     var crews = <?= json_encode($crews) ?>;
@@ -31,6 +32,7 @@
     
 </script>
 
+
 <?= $this->Html->css('animate') ?>
 <?= $this->Html->css('dummy_results/sail_event') ?>
 
@@ -39,10 +41,7 @@
 
 <?= $this->Html->script('node_modules/proj4/dist/proj4') ?>
 
-
-
 <?= $this->Html->script('dummy_results/sail_event_data') ?>
-<?php //  $this->Html->script('dummy_results/generated_data') ?>
 <?= $this->Html->script('dummy_results/sail_event') ?>
 <?= $this->Html->script('dummy_results/sail_event_dashboard') ?>
 <?= $this->Html->script('dummy_results/sail_event_boat') ?>
@@ -50,7 +49,11 @@
 <?= $this->Html->script('dummy_results/sail_event_progress') ?>
 <?= $this->Html->script('dummy_results/sail_event_timeline') ?>
 
-<div id="simulator">
+<div id="loading-screen">
+	<?= $this->Html->image('sail_event_v2/otis-blauw.png',['class' => 'animated slideInDown']) ?>
+</div>
+
+<div id="simulator" class="ease-transform">
 	<div id="height-line-container"></div>
 	<div id="waves-container"></div>
 	<div id="trail-container"></div>
@@ -70,14 +73,14 @@
 	
 	<div id="boat-container">	
 	<?php foreach ($crews as $i => $crew): ?>
-	    <div class="boat  start-<?= $crew->start_nr ?>" id="boat-<?= $crew->id ?>">
+	    <div class="boat ease-transform-fast start-<?= $crew->start_nr ?>" id="boat-<?= $crew->id ?>">
 	        <div class="boat-stats">
 	            <div class="position"><?= $crew->start_nr ?></div>
 	            <div class="team-flag"><?= $this->Html->image('sail_event_v2/teams/'.$crew->flag_image) ?></div>
 	            <div class="name"><?= $crew->shortname ?></div>
 	            <div class="extra"><p>0Kn 0&deg;</p></div>
 	        </div>
-	        <div class="boat-icon"></div>
+	        <div class="boat-icon ease-transform-fast"></div>
 	    </div> 
 	<?php endforeach; ?>
 	 <div id="check" style="background: red; height: 15px; width: 15px; z-index: 99999; position: absolute; left: -100px;"></div>
@@ -436,3 +439,5 @@
 	<?= $this->Html->image('sail_event_v2/otis.png',['class' => 'otis-logo']) ?>
 	
 	<div id="overlay"></div>
+	
+	

@@ -24,20 +24,27 @@ Bouy.prototype = {
         ref.left = target.left;
     },
     'boatEntered': function (boat) {
-    	//console.log('bouy entered');
-        // This method is called when a boat entered this bouy.
-        // First boat activates the next bouy
-    	// if(boat.position == 1) Dashboard.activateBouy(boat,this);    	
-    },
-    'rounded': function(boat) {
     	var ref = this;
-    	// This method is called when a boat left this bouy.
-    	// Talk to dashboard       
-    	Dashboard.bouyRounded(boat,this);    
-    	if( boat.position == 0 ){
-    		ref.targetNextBouy(); 
+        // First boat activates the next bouy
+    	if( boat.firstBoat ){    		
+    		Dashboard.zoomBouy(ref.element);  
+    		Dashboard.activateBouy(boat, ref); 
+    	}	
+    },
+    'rounded': function(boat) { // This method is called when a boat left this bouy.
+    	var ref = this;
+
+    	if( boat.firstBoat ){
+    		Dashboard.startBouyCounter(ref.name);	// start the counter for this bouy	
+    		
+    		setTimeout(function(){
+    			Dashboard.resetZoom(); // zoom out
+    			ref.targetNextBouy(); // set alleen de css class + dashed yellow border
+    		},5000);    	
     	}
     	
+    	// Talk to dashboard         
+    	Dashboard.bouyRounded(boat,this); 
     }, 
     'targetNextBouy' : function(){
     	var ref = this;

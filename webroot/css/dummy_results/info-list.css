@@ -5,7 +5,7 @@
 	position: fixed;
 	top: 30px;
 	left: 30px;
-	width: 300px;
+	width: 330px;
 }
 
 /* wind speed individual bouy */
@@ -119,6 +119,7 @@
 	background: #fff;	
 	z-index: -2;
 }
+
 
 .info-bar .penalty.counter{
 	padding-right: 30px;

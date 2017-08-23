@@ -24,15 +24,21 @@ var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 var refresh_time = 6000;
 
 var boats = [];
+var generated_data = [];
 var race_veld = 'Zeilregatta Scheveningen'; // TODO get from backend 
 var show_finish = false; // panel dat na 120 seconden wordt weergegeven
 var show_startline = true; // teken de start line tussen boei nummer 3 en 4
 
 var options = {
-		bouy_radius : 50 ,// distance to enter bouy (meters) 
-		boat_speed : 6,
-		run_once : true, // restart simulation at the end of the data?
-		show_all_trails: true, // Als dit false staat wordt alleen het spoor van boot 1 weergegeven
+		simulation_speed 	: 5,
+		lengthTrail 		: 250, 			// length of trail in meters
+		bouy_radius 		: 50,			// distance to enter bouy (meters) 
+		boat_speed 			: 6,
+		run_once 			: true, 		// restart simulation at the end of the data?
+		show_all_trails		: true, 		// Als dit false staat wordt alleen het spoor van boot 1 weergegeven
+		generated_data 		: true,			// true als dit de data uit de log is
+		testboat 			: 9, 			// id van testboat
+		noise_rotation 		: 5, 			// degrees
 }
 
 var screenUTMRange = {
@@ -59,18 +65,26 @@ $(function () {
     calculateScreenRange();
 
     prepareDummyData();
-   
+    
     // Draw the elements
     drawHeightLines();
     drawWaves();
     setArrows();
     moveBouys();
     createBoats();
+    
+    generateData(); // after create boats
+    
     drawStartline();
     Progress.drawCourse();
     
     Timeline.draw();
 
+    // TODO put in start simulation oid
+    $.each(boats,function(i){
+    	boats[i].move(); // runs every 500ms    	
+    });
+    
     // fades in the right panels
     Dashboard.startSimulation();
 		
@@ -104,35 +118,112 @@ $(function () {
     });
 });
 
-
+// NOG NODIG VOOR HET BEREKENEN VAN DE LANGTE ROUTE
 function prepareDummyData(){
-	 // convert dummy data to UTM values
-	for( i = 0; i < tracker_data.length; i++ ){
-		var $element = $('.boat-icon'); // voor deze functie hebben geen specifieke boot nodig
-		target = convertToPixels($element,tracker_data[i].east, tracker_data[i].north);
-		tracker_data[i].left = target.left;
-		tracker_data[i].top = target.top;
+	
+	for( i = 0; i < tracker_data_list.length; i++ ){
 		
-		if(i > 0 ) simulationDataDistance += norm2Dist(tracker_data[i - 1],tracker_data[i]);
-
+	    var tracker_data = tracker_data_list[i];
+	    
+		 // convert dummy data to UTM values
+		for( j = 0; j < tracker_data.length; j++ ){
+			var $element = $('.boat-icon'); // voor deze functie hebben geen specifieke boot nodig
+			target = convertToPixels($element,tracker_data[j].east, tracker_data[j].north);
+			tracker_data[j].left = target.left;
+			tracker_data[j].top = target.top;
+			
+			// bereken de afstand die de boten moeten afleggen
+			if(j > 0 &&  i == 0 ) simulationDataDistance += norm2Dist(tracker_data[j - 1],tracker_data[j]);
+			
+		}
 		
 	}
-    
+	
 }
+
+function generateData(){
+	// for each tracker_data trail of boat
+	$.each(tracker_data_list, function(num_boat){	
+		var boat_data = tracker_data_list[num_boat];
+		// loop through all packets in array	
+		$.each(boat_data, function(i){
+			
+			// get current and next packet 
+			var cur_point = boat_data[i];
+			var target_point = boat_data[i+1];
+			
+			if(target_point == null) return false; // laatste package stop met berekenen.
+			
+			// get boat
+			var boat = boats[num_boat];
+			var speed = boat.speed;
+	    	var $boat = boat.element;
+	        var $boat_icon = $boat.find('.boat-icon');
+			
+			// calc direction
+			var angle = toDegrees( getAngle(cur_point, target_point) );    	
+	    	var general_direction = ( 270 - angle ) % 360 + toDegrees(screenUTMRange.rotation);
+			
+			// calc duration bouys
+			var dist = norm2Dist(cur_point,target_point);
+			var duration = dist / speed; // duration in ms 
+			
+			// voor de for loop definieren zodat deze voor de gehele for loop gelijk is
+			var noise_factor = 2 * ( Math.random() * 2 - 1 ) * ( duration / 20 );
+			
+	    	for( time = 0; time < duration; time += 0.5 ){
+	    		
+	    		// De noise wordt kleiner naarmate je dichter bij de boei komt
+	    		var p = time / duration;
+	    		var noise_amount = Math.sin( 2 * Math.PI * p ) * noise_factor; 
+	        	var noise_north = 0.5 * ( Math.random() * 2 - 1 ) + noise_amount;// random = -1 of 1
+	        	var noise_east = 0.5 * ( Math.random() * 2 - 1 ) + noise_amount;
+	
+	        	
+	        	// calc new data point with rendered noise 
+	            var calc_north = cur_point.north + noise_north + ( Math.cos(toRadians(general_direction)) * speed * time );
+	            var calc_east = cur_point.east + noise_east + ( Math.sin(toRadians(general_direction)) * speed * time );
+	    		
+	            // convert to pixels 
+	            var target = convertToPixels($boat_icon, calc_east, calc_north);				      
+	            
+				// create point obj
+	            var new_point = {
+	            		north : calc_north,
+	            		east : calc_east,
+	            		top : target.top,
+	            		left: target.left,
+	            		direction : general_direction
+	            	} 
+	            
+	            // alleen het eerste punt een status, anders krijg je heel veel geronde boeien
+	            if(	time == 0 ){
+	            	new_point.status = cur_point.status
+	            } else{
+	            	new_point.status = null;
+	            }
+
+	            // store calculated datapoint
+	            generated_data[num_boat].push(new_point);
+
+	    	}				
+		});		
+	});
+}
+
 
 function drawStartline(){
 	if(show_startline == false) return false;
-	
-	// TODO select bouys by startline type
-        var j = 0, i = 0;
-        var $bouy_1, $bouy_2;
-        for (i = 0; i < bouys.length; i++) {
-            if (bouys[i].type == 1) {
-                if (!j) $bouy_1 = bouys[i];
-                if (j)  $bouy_2 = bouys[i];
-                j++
-            }
+
+    var j = 0, i = 0;
+    var $bouy_1, $bouy_2;
+    for (i = 0; i < bouys.length; i++) {
+        if (bouys[i].type == 1) {
+            if (!j) $bouy_1 = bouys[i];
+            if (j)  $bouy_2 = bouys[i];
+            j++
         }
+    }
 
 	var $canvas = document.getElementById("canvas-start");
 	var ctx = $canvas.getContext("2d");
@@ -153,8 +244,7 @@ function drawStartline(){
 // Helaas kun je de oude lijn niet van kleur veranderen daarom moet je de canvas wissen en opnieuw tekenen
 function drawClearedStartline(){
 	if(show_startline == false) return false;
-	
-	// TODO select bouys by startline type
+
     var j = 0, i = 0;
     var $bouy_1, $bouy_2;
     for (i = 0; i < bouys.length; i++) {
@@ -443,71 +533,20 @@ function createBoats() {
         boat.boatIcon = boatElement.find('.boat-icon');
         boat.id = crew.id;
         boat.num = i;
-        boat.speed = 3 + ( 2 * Math.random() );
+        boat.speed = 2 + ( boat.num / 16);
         boat.nextBouy = 2;
         boat.numNextBouy = 2;
         boat.start_nr = crew.start_nr
         boat.numPrevBouy = 0;
         boat.bouyStatus = null;
-        boat.drawn.north = boat.north;
-        boat.drawn.east = boat.east;
         boat.raceDuration = simulationDataDistance / boat.speed;
+        boat.firstBoat = (i == 2)? true : false; // custom er ingegooid voor het ronden van de boei
         
-        boat.moveToPoint(); // loop door dummy data
-        boat.syncObjectData(); // runs every 500 ms
-        
-        // create for each boat a canvas to draw the trail
-        //createCanvas(i);
+        generated_data.push([]); // voeg lege array toe
+
     }
 }
-;
 
-// DEZE FUNCTIE WORDT NIET MEER GEBRUIKT
-// create canvas to draw the trail of the boats
-function createCanvas(i) {
-    var x = $('#boat-' + crews[i].id).position();
-
-    //canvas
-    var $canvas = document.querySelector('#canvas-' + crews[i].id);
-    ctx = $canvas.getContext('2d');
-
-    // set height and with of the canvas to cover the whole screen
-    $('#canvas-' + crews[i].id).attr('width', $('html').width());
-    $('#canvas-' + crews[i].id).attr('height', $('html').height());
-
-    ctx.setLineDash([2,15]);
-    ctx.lineWidth = 1;
-    
-    var color;
-    
-    var boat_num = i + 1;
-    
-    switch(boat_num ) {
-	    case 1:
-	    	color = '#fff'; // wit
-	        break;
-	    case 2:
-	        color = '#1b7ebc'; // blauw
-	        break;
-	    case 3:
-	        color = '#383838';  // zwart
-	        break;
-	    case 4:
-	    	color = '#13c54c'; // groen
-	        break;
-	    case 5:
-	        color = '#fec835'; // geel
-	        break;
-	    case 6:
-	        color = '#fe2d2d'; // rood
-	        break;
-	    default:
-	    	color = '#fff';
-	} 
-    
-    ctx.strokeStyle = color;
-
-}
 
 
 // util methods
@@ -562,50 +601,6 @@ function convertSpeedtoKN(speed) {
     return knots;
 }
 
-
-// This function will calculate the status of a boat near a bouy
-// This is used to determine when the boat has rounded the bouy.
-function bouyStatus(boat_id, bouy_id) {
-    // Variables
-    var boat = boats[boat_id];
-    var bouy = bouys[bouy_id];
-
-    // First check if the distance to the bouy is less than 50m
-    if (norm2Dist(boat, bouy) > 50)
-        return 0;
-
-    // Calculate the the angle between this bouy and the two others
-    if (bouy.type == 1) { // Start bouy
-        // This bouy consist of either 2 bouys or a bouy and a ship.
-        // TODO
-    }
-    if (bouy.type == 2) { // Normal bouy
-        // Calculate the angle with the preivous bouy and the next bouy.
-        var prevBouy = bouys[bouy_id - 1];
-        var nextBouy = bouys[bouy_id + 1];
-        var prevAngle = getAngle(bouy, prevBouy) * 180 / Math.PI;
-        var nextAngle = getAngle(bouy, nextBouy) * 180 / Math.PI;
-        var bissect = (prevAngle + nextAngle) / 2;
-
-        // Get the angle between the boat and the bouy
-        var cAngle = getAngle(bouy, boat) - bissect;
-        while (Math.abs(cAngle) > 180)
-            cAngle -= Math.sign(cAngle) * 360;
-        if (cAngle > 0 && cAngle <= 90)
-            return 1;
-        if (cAngle < 0 && cAngle >= -90)
-            return 2;
-        if (cAngle > 90 && cAngle <= 180)
-            return 3;
-        if (cAngle < -90 && cAngle >= -180)
-            return 4;
-    }
-    if (bouy.type == 3) { // Finish bouy
-        // This bouy consist of either 2 bouys or a bouy and a ship.
-        // TODO
-    }
-}
-
 // This function calculates the distance between two objects
 function norm2Dist(obj, obj2) {
     return Math.sqrt(
@@ -637,7 +632,7 @@ function millis(speed_up = 1) {
     if (!speed_up) {
         return time;
     } else {
-        return (time - jsTime) * simulation_speed + jsTime;
+        return (time - jsTime) * options.simulation_speed + jsTime;
     }
 }
 

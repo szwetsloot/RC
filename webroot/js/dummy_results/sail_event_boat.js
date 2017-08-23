@@ -51,6 +51,8 @@ Boat.prototype = {
     	var boat = this;
     	var $boat = this.element;
         var $boat_icon = $boat.find('.boat-icon');
+        var tracker_data = tracker_data_list[boat.num];
+        
     	// if this is the first time the function is ran
     	if( this.currentDummyPacket == null){
     		var data = tracker_data[0];
@@ -95,10 +97,13 @@ Boat.prototype = {
     	// calc distance current bouy to next
     	var dist = norm2Dist( data_cur, data_target );
 
-    	var duration = ( ( dist / this.speed ) * 1000 ) / simulation_speed; 
+    	var duration = ( ( dist / this.speed ) * 1000 ) / options.simulation_speed; 
 
     	// rotate boat icon   	
-    	var dir_icon = 180 - toDegrees(getAngle(data_cur, data_target) ) + toDegrees(screenUTMRange.rotation);    	
+    	
+    	
+    	
+    	var dir_icon = 180 - toDegrees(getAngle(data_cur, data_target) ) + toDegrees(screenUTMRange.rotation) + noise_rot;    	
     	var angle = toDegrees( getAngle(data_cur, data_target) );    	
     	this.direction = ( 270 - angle ) % 360 + toDegrees(screenUTMRange.rotation);    
     		
@@ -123,59 +128,84 @@ Boat.prototype = {
         boat.lastUpdate = millis();
 
     },
-    'syncObjectData' : function(){
-
-    	//if(this.running == false) return false;
+    'move' : function( reset = null ){
     	var boat = this;
-    
-    	setTimeout(function(){ 
-    		if(simulation_running) boat.syncObjectData();
-    	}, 500);
-    	    	
+    	var $boat = this.element;
+        var $boat_icon = $boat.find('.boat-icon');
+        var tracker_data = generated_data[boat.num];
+        
+    	// if this is the first time the function is ran
+    	if( this.currentDummyPacket == null){
+    		var data = tracker_data[0];
+    		$boat.css({'top':data.top, 'left':data.left});
+    		this.currentDummyPacket = 0;
+    		simulation_running = true;
+    	} 
+    	if( reset != null ){
+    		// TODO reset course progress sidebar
+    		console.log('reset to '+reset);
+    		var data = tracker_data[reset];
+    		this.currentDummyPacket = reset;
+    		$('#trail-container').empty();
+    		$boat.css({'top':data.top, 'left':data.left});
+    		simulation_running = true;
+    	}
+    	
+    	// check if there is any data left
+    	if( this.currentDummyPacket == tracker_data.length - 1 ){ 
+    		if( options.run_once == true ){
+    			this.running = false; 
+        		return false;
+    		} else{
+    			// repeat simulation
+        		this.currentDummyPacket = 0;
+    		}
+    	};
+    	 
+    	/* CHECKS FININISHED GET THE DATA */
     	var data_cur = tracker_data[ this.currentDummyPacket ];
-    	var data_target = tracker_data[ this.currentDummyPacket + 1 ];
-
-    
-    	var noise_dist = 2; // meters
+    	var data_target = tracker_data[ this.currentDummyPacket + 1 ];    	
     	
-    	var noise_north = noise_dist * ( Math.random() * 2 - 1 );
-    	var noise_east = noise_dist * ( Math.random() * 2 - 1 );
+    	// boat begint met ronden boei
+    	if( data_cur.status != null ){ 
+    		boat.bouyStatus = data_cur.status;
+    		boat.checkBouys(); 
+    	}
     	
-    	// Calculate where the drawn boat is
-        boat.drawn.north = this.north + noise_north + ( Math.cos(toRadians(boat.direction)) * boat.speed * ((millis() - boat.lastUpdate) / 1000) );
-        boat.drawn.east = this.east + noise_east + ( Math.sin(toRadians(boat.direction)) * boat.speed * ((millis() - boat.lastUpdate) / 1000) );
-        
-        $element = $('#check');
-        
-        var target = convertToPixels($element,boat.drawn.east, boat.drawn.north);
-        boat.left = target.left; 
-        boat.top = target.top
-       
-        var log = {
-        		north : boat.drawn.north,
-        		east : boat.drawn.east,
-        		top : boat.top,
-        		left: boat.left,
-        		status : boat.bouyStatus
-        	}       
-        boat.log.push(log);
-        
-        // rood vierkantje om te debuggen
-        if( boat.id == 7 && debug == true ) $element.css({'left':target.left,'top':target.top});
-       
-        // get next bouy        
-        $.each(bouys,function(i){
-        	if(bouys[i].order == boat.nextBouy){
-        		 boat.distance_bouy = Math.round( norm2Dist( boat.drawn, bouys[i] ) );
-        		 return false;
-        	}
+    	boat.direction = data_cur.direction;   
+    	
+    	// het een random aantal graden aan de general direction toevoegen gaf een chiller resultaat 
+    	// dan van punt naar punt de angle berekenen
+    	var noise_rot = options.noise_rotation * ( Math.random() * 2 - 1 ); // random = -1 of 1    		
+    	var dir_icon  = boat.direction - 90 + noise_rot;
+    	
+    	$boat_icon.css('transform', 'rotate(' + dir_icon + 'deg)');
+    	$boat.css({
+            left: data_target.left,
+            top: data_target.top
         });
-   
-        boat.calcPositionBoat();    
-        boat.updateData();
-        boat.drawTrail();
-        Dashboard.sortBoats();
-        //Progress.moveBoats();    
+    	
+    	boat.north = data_cur.north;
+    	boat.east = data_cur.east;    
+    	boat.distance_bouy = Math.round( norm2Dist( boat, bouys[boat.numNextBouy] ) );
+    	
+    	if( simulation_running && boat.running ){
+    		boat.calcPositionBoat();    
+            boat.updateData();
+            boat.drawTrail();
+    	}  	
+    	
+    	setTimeout(function(){
+        	boat.currentDummyPacket += 1;
+        	boat.north = data_target.north;
+        	boat.east = data_target.east;
+        	boat.top =  data_target.top;
+            boat.left =  data_target.left;
+            // continue
+    		boat.move();    		
+    	},500 / options.simulation_speed);
+    	
+    	
     	
     },
     // THIS SHOULD BE THE ONLY FUNCTION THAT UPDATES ALL THE TEXT IN THE DOM ELEMENTS!!
@@ -191,7 +221,7 @@ Boat.prototype = {
         $info.html(knots + 'kN / ' + Math.round(this.direction) + '&deg; / ' + distance_bouy + 'm');
     },
     /* 
-     * By : Boat.moveToPoint();
+     * By : Boat.move();
      */
     'checkBouys': function () {  
     		if(this.running == false) return false;      
@@ -225,8 +255,8 @@ Boat.prototype = {
     }
 };
 
-// berekent normaal positie van de boat 
-// by: syncObjectData
+// berekent normaal positie van de boat op de lijn tussen de boeien
+// by: boat.Move
 Boat.prototype.calcPositionBoat = function () {
 	var boat = this;
 	
@@ -235,8 +265,8 @@ Boat.prototype.calcPositionBoat = function () {
     
     var bouys_dx = prev_bouy.east - next_bouy.east;
     var bouys_dy = prev_bouy.north - next_bouy.north;
-    var boat_dx = this.drawn.east - next_bouy.east;
-    var boat_dy = this.drawn.north - next_bouy.north;
+    var boat_dx = boat.east - next_bouy.east;
+    var boat_dy = boat.north - next_bouy.north;
 
     // projectie positie op normaal lijn
     var ab = (bouys_dx * boat_dx) + (bouys_dy * boat_dy);
@@ -245,7 +275,7 @@ Boat.prototype.calcPositionBoat = function () {
     
     // als je in de bouys zit
     if( boat.bouyStatus == 1 ){
-    	afstand_tot_boei = 0.001; // anders denkt de  Progress.moveBoats dat deze value 0 is
+    	afstand_tot_boei = -0.001; // anders denkt de  Progress.moveBoats dat deze value 0 is
     }
     
     var rounded_bouys = this.bouyHistory.length;
@@ -255,11 +285,26 @@ Boat.prototype.calcPositionBoat = function () {
 };
 
 Boat.prototype.drawTrail = function() {
+	var boat = this;
 	
-	var x = ( this.left / $('#trail-container').width() ) * 100 + '%';
-	var y = ( this.top / $('#trail-container').height() ) * 100 + '%';
-	
+	if(this.running == false) return false;
 	if( this.num_boat != 0 && options.show_all_trails == false ) return false;
+	
+	if( boat.lastBreadcrumb != null ){
+		// check distance to last point 
+		if( norm2Dist(boat, boat.lastBreadcrumb ) < 10 ) return false;
+	}
+	
+	var x = ( boat.left / $('#trail-container').width() ) * 100 + '%';
+	var y = ( boat.top / $('#trail-container').height() ) * 100 + '%';
+	
+	
+	boat.lastBreadcrumb = {
+			north : boat.north,
+			east : boat. east,
+		}
+
+	var fadeOutDuration = ( ( options.lengthTrail / boat.speed ) / options.simulation_speed ) * 1000;
 	
 	// drop breadcrumbs
 	var breadcrumb = document.createElement('div');
@@ -269,10 +314,10 @@ Boat.prototype.drawTrail = function() {
 				.appendTo('#trail-container');
 	setTimeout(function(){
 		$(breadcrumb).fadeOut(3000);		
-	},22000);
+	}, fadeOutDuration );
 	setTimeout(function(){
 		$(breadcrumb).remove();		
-	},25000);
+	}, fadeOutDuration + 3000 );
 
 }
 
