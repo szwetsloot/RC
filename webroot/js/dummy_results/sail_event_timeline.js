@@ -1,3 +1,21 @@
+var Timeline =  {
+		
+}
+
+Timeline.init = function(){
+	var race_duration = boats[0].raceDuration
+	
+	for( i = 0; i < boats.length ; i++){
+		if(boats[i].raceDuration < race_duration){
+			race_duration = boats[i].raceDuration;
+		}
+	}
+	
+	console.log('shortest race'+race_duration);
+	
+	
+}
+
 $( function() {
 	 $( "#draggable .current" ).draggable({
 		 axis:'x', 
@@ -22,20 +40,4 @@ $( function() {
  });
 
 
-var Timeline =  {
-		
-}
 
-Timeline.draw = function(){
-	var race_duration = boats[0].raceDuration
-	
-	for( i = 0; i < boats.length ; i++){
-		if(boats[i].raceDuration < race_duration){
-			race_duration = boats[i].raceDuration;
-		}
-	}
-	
-	console.log('shortest race'+race_duration);
-	
-	
-}

@@ -1,134 +1,127 @@
-var browser_location = $(location).attr('href').replace('simulations/dummy-results/','');
-var image_base_url = browser_location+'/img/sail_event_v2/teams/';
+/* DASHBOARD  :  handles all the info panels which are triggered by boats entering and rounding bouys
+ *
+ * init();
+ * startRace();
+ * bouyRounded();
+ * toggleBouyInfo();
+ * showBouyInfoPanels();
+ * hideBouyInfoPanels();
+ * startBouyTimer();
+ * addBoatToBouy();
+ * sortBoatOverviewList(); 
+ * showPenalty();
+ * showCrewResults();
+ * showStartPanel();
+ * showCrewResults();
+ * hideStartPanel();
+ * showFinishResults();
+ */
 
-// define the global variables
-var bouy_stopwatch; // stopwatch that runs when boat rounds a bouy
-var race_stopwatch; // stopwatch which starts when screen is finished loading
 
 var Dashboard = {
-	crew : null,
-	showBoats : [],
-	athlete : 0,
-	boatinfoTimeout: null,
-	athleteTimeout : null,
-	animatingAthletes : false,
-	showBouy : null,
-	numPassedBouys : 0,
+	curBouy 			: null, // name of bouy that currently is being rounded
+	numPassedBouys 		: 0,
 }
 
-Dashboard.synchDashboard = function(){
-	setTimeout(function(){ 
-		if( simulation_running ) Dashboard.synchDashboard();
-	}, 500);    
+Dashboard.init = function(){    
+	// cache DOM elements
+	this.$bouyTimer = $('#bouy-counter');
+	this.$bouyInfoPanel = $('#bouy-data');
+	this.$boatOverviewPanel = $('#boat-overview');
+	this.$boatListBouyPanel = $('#bouy-info');
+	this.$penaltyPanel = $('#penalty');
 
-    Dashboard.sortBoats();
-    Progress.moveBoats();       
-}
-
-Dashboard.startSimulation = function(){	
 	$('#loading-screen').delay(1000).fadeOut();
 	setTimeout(Dashboard.hideStartPanel,6000);
-	Dashboard.synchDashboard();
-	// TODO fire this function when the actual race starts
-	setTimeout(Dashboard.startRace,1000);
+	Dashboard.sortBoatOverviewList();
 }
 
+// triggerd by : boat.checkBouy when first boat crosses the startline
 Dashboard.startRace = function(){						
 	race_stopwatch = new Stopwatch('#race-time','race tijd'); // param = jquery element, tekst label
-	drawClearedStartline(); // clear the start
-	// show the fake/static results after 2 minutes
-	$('#bouy-container #bouy-3').addClass('active');
-	if( show_finish ) setTimeout(Dashboard.showFinishResults,2*60*1000);
-}
-
-Dashboard.hideStartPanel = function(){
-	$('#start-panel').fadeOut();
-	$('#overlay').fadeOut();	
-}
-
-Dashboard.showFinishResults = function(){
-	$('#overlay').fadeIn().delay(15000).fadeOut();
-	$('#finish-panel').show().delay(15000).fadeOut();	
+	Simulator.drawClearedStartline(); // clear the start
+	$('#bouy-container #bouy-3').addClass('active'); // activate next bouy	
 }
 
 // called by bouy rounded event
 // This function shows the right dashboard panels when a boat rounds a bouy
 Dashboard.bouyRounded = function(boat, bouy){	
-	// check of alle boten om dezelfde boei gaan
+	var ref = this;
 	// bouyHistory checkt of de boten om evenveel boeien gaan
-	// voor als boten een boei achterlopen
-	if( this.showBouy == bouy.name && boat.bouyHistory.length == this.numPassedBouys ){		
-		Dashboard.addBoatToBouy(boat);	
+	if( boat.bouyHistory.length == this.numPassedBouys ){		
+		if( boat.firstBoat ) Dashboard.startBouyTimer(bouy.name); // start the counter for this bouy		 
+
+		Dashboard.addBoatToBouy(boat); // requires BouyTimer
+
 		// last boat rounding this bouy deactivate the bouy after 4s
 		if( boat.position === boats.length - 1 && boat.firstBoat != true ){
 			bouy_stopwatch.stop();
-			setTimeout(Dashboard.deactivateBouy, 2000);
+			Simulator.resetZoom(); // zoom out
+    		bouy.targetNextBouy(); // set alleen de css class + dashed yellow border
+			setTimeout(function(){Dashboard.hideBouyInfoPanels(ref)}, 5000); // hide all the info panels for this bouy 
 		}
 	}
 }
 
 // Show bouy info panel with dept, windspeed and flow
 // called by click event
-Dashboard.toggleBouyData = function(){
+Dashboard.toggleBouyInfo = function(){
 	var bouy_nr = $(this).clone().children().remove().end().text().trim();
-	var name = 'boei '+bouy_nr;
-	var $data_panel = $('#bouy-data');
-	$data_panel.find('.label').text(name);
-	$data_panel.switchClass('fadeOutUp','fadeInDown').toggle();
-	$data_panel.find('.li').show();
+	this.$bouyInfoPanel.find('.label').text('boei '+bouy_nr);
+	this.$bouyInfoPanel.switchClass('fadeOutUp','fadeInDown').toggle();
+	this.$bouyInfoPanel.find('.li').show();
 }
 
-// called by bouy entered event
-Dashboard.activateBouy = function(boat, bouy){	
+// Triggered when first boat enters bouy
+Dashboard.showBouyInfoPanels = function(boat, bouy){	
 	var bouy_element = bouy.element;
 	var name = 'boei ' + bouy.name;
 	var boat_id = boat.id;
 	var bouy_name = bouy.name;
 	var bouy_element = bouy.element;
 	
-	$('#bouy-counter').hide();
-	this.showBouy = bouy_name;
+	this.$bouyTimer.hide();
+	this.curBouy = bouy_name;
 	this.numPassedBouys = boat.bouyHistory.length + 1; // + 1 want history wordt pas geupdate met bouy rounded event		
 
 	// define dom elements
-	var $data_panel = $('#bouy-data');
-	var $bouy_info = $('#bouy-info');
-	var $boat_overview = $('#boat-overview');
-	var $list = $bouy_info.find('ul');
-	var $veld = $bouy_info.find('.label');
-	var $name = $bouy_info.find('.counter');
+	var $list = this.$boatListBouyPanel.find('ul');
+	var $veld = this.$boatListBouyPanel.find('.label');
+	var $name = this.$boatListBouyPanel.find('.counter');
 	
 	$list.empty();	
-	$bouy_info.switchClass('fadeOutUp','fadeInDown').show();
-	$boat_overview.switchClass('fadeInLeft','fadeOutLeft').hide();
-	$data_panel.switchClass('fadeOutUp','fadeInDown').show();
-	$data_panel.find('.li').show();
+	this.$boatListBouyPanel.switchClass('fadeOutUp','fadeInDown').show();
+	this.$boatOverviewPanel.switchClass('fadeInLeft','fadeOutLeft').hide();
+	this.$bouyInfoPanel.switchClass('fadeOutUp','fadeInDown').show();
+	this.$bouyInfoPanel.find('.li').show();
 		
 	// update dom information
 	$name.text(name);
-	$veld.text(race_veld); // global variable from main js file
-	$data_panel.find('.label').text(name);
+	$veld.text(options.race_veld); // global variable from main js file
+	this.$bouyInfoPanel.find('.label').text(name);
 }
 
 
-// 
-Dashboard.deactivateBouy = function(){
-	$('#bouy-data').switchClass('fadeInDown','fadeOutUp');
-	$('#bouy-data').find('.li').hide();
-	$('#boat-overview').switchClass('fadeOutLeft','fadeInLeft').show();
-	$('#bouy-info').switchClass('fadeInDown','fadeOutUp');
-	$('#bouy-counter').hide();
+// Triggered by Last boat in dashboard.bouyRounded
+// in timeout so this doesn't
+Dashboard.hideBouyInfoPanels = function(ref){
+	ref.$bouyInfoPanel.switchClass('fadeInDown','fadeOutUp');
+	ref.$bouyInfoPanel.find('.li').hide();
+	ref.$boatListBouyPanel.switchClass('fadeInDown','fadeOutUp');
+	ref.$boatOverviewPanel.switchClass('fadeOutLeft','fadeInLeft').show();
+	ref.$bouyTimer.hide();
 }
 
 // counter( rechts onder ) -> begint te tellen als de eerste boot de boei rond
-Dashboard.startBouyCounter = function(bouy_name){
+Dashboard.startBouyTimer = function(bouy_name){
 	// if object already exists reset old stopwatch 
 	if(bouy_stopwatch != null) bouy_stopwatch.stop();	
 	// start nieuwe counter
 	bouy_stopwatch = new Stopwatch('#bouy-counter', 'boei '+bouy_name);	
 	// tellertje rechts onder
-	$('#bouy-counter').show();	
+	this.$bouyTimer.show();	
 }
+
 
 // add the html of boat to the existing list
 Dashboard.addBoatToBouy = function(boat){
@@ -152,11 +145,17 @@ Dashboard.addBoatToBouy = function(boat){
 	li += '<div class="counter">'+ counter +'</div>';		
 	li += '</li>';	
 	
-	$('#bouy-info ul').append(li);
+	this.$boatListBouyPanel.find('ul').append(li);
 }
 
-Dashboard.sortBoats = function(){	
-	var $overview = $('#boat-overview');	
+// TODO exclude boats which are finished
+Dashboard.sortBoatOverviewList = function(){
+
+	setTimeout(function(){ 
+		if( Simulator.running ) Dashboard.sortBoatOverviewList();
+	}, 1000);    
+
+	var $overview = this.$boatOverviewPanel;	
 	var positions = [];
 		
 	$.each(boats,function(i){
@@ -168,10 +167,8 @@ Dashboard.sortBoats = function(){
 		positions.push(obj);
 	});
 	// sort boats according to their position
-	positions.sort(function(a,b){return a.location - b.location});
-		
-	// boats with higest location in front
-	positions.reverse();
+	positions.sort(function(a,b){return a.location - b.location});	
+	positions.reverse(); // boats with higest location in front
 	
 	// sort dom elements
 	$.each(positions,function(i){
@@ -186,32 +183,9 @@ Dashboard.sortBoats = function(){
 	});
 }
 
-// zoom towards the bouy - units in pixels
-Dashboard.zoomBouy = function(bouy_element){	
-	$bouy = bouy_element;
-    var screenWidth = $('#simulator').width();
-    var screenHeight = $('#simulator').height(); 
-    var bouy_pos = $bouy.position();   
-    var d_x = ( screenWidth / 2 ) - bouy_pos.left + 100;
-    var d_y = ( screenHeight / 2 ) - bouy_pos.top;    
-    var scale = 1.5; // TODO define dynamic
-    
-    // translation should be multiplied with the scale factor
-    d_x *= scale;
-    d_y *= scale;
-    
-    // The elements have the css class ease-transform which forces them to animate css transformation
-    $('#simulator').css('transform', 'translate('+d_x+'px,'+d_y+'px) scale('+scale+')');
-}
-
-Dashboard.resetZoom = function(){		
-	$('#simulator').css('transform', 'translate(0px,0px) scale(1)');
-}
-
 Dashboard.showPenalty = function(name){
-	$penalty = $('#penalty');
-	$penalty.find('.counter').text(name);
-	$penalty.show().delay(5000).fadeOut();
+	this.$penaltyPanel.find('.counter').text(name);
+	this.$penaltyPanel.show().delay(5000).fadeOut();
 }
 
 Dashboard.showCrewResults = function(){
@@ -225,63 +199,14 @@ Dashboard.showCrewResults = function(){
 	}
 }
 
-// Stopwatch
-function Stopwatch(obj, name){
-		this.obj = obj;
-		this.name = name;
-		this.count = 0;
-		this.clearTime = null;
-		this.clearState = null;
-		this.seconds = 0;
-		this.minutes = 0;
-		this.hours = 0;
-		this.secs = null;
-		this.mins = null; 
-		this.gethours = null;
-		this.time = null;		
-		this.start();
+
+Dashboard.hideStartPanel = function(){
+	$('#start-panel').fadeOut();
+	$('#overlay').fadeOut();	
 }
 
-// Stopwatch
-Stopwatch.prototype.start = function(){
-	
-	$(this.obj).show();
-
-    //check if seconds is equal to 60 and add a +1 to minutes, and set seconds to 0 	
-    if (this.seconds === 60) {
-    	this.seconds = 0;
-    	this.minutes += 1;
-    }
-    
-    // you use the javascript tenary operator to format how the minutes should look and add
-    // 0 to minutes if less than 10 
-    this.mins = (this.minutes < 10) ? ('0' + this.minutes + ':') : (this.minutes + ':');
-
-    // check if minutes is equal to 60 and add  a +1 to hours set minutes to 0 
-    if (this.minutes === 60) {
-    	this.minutes = 0;
-    	this.hours = this.hours + 1;
-    }
-
-    /* you use the javascript tenary operator to format how the hours should look and add 0 to hours if less than 10 */
-    this.gethours = (this.hours < 10) ? ('0' + this.hours + ':') : (this.hours + ':');
-    //secs = ( seconds < 10 ) ? ( '0' + seconds ) : ( seconds ); 
-    this.secs = this.seconds;
-
-    this.time = this.mins + this.secs;
-    
-    // display the stopwatch 
-    $(this.obj).find('.counter').text(this.time);
-    $(this.obj).find('.label').text(this.name);
-        
-    // call the seconds counter after displaying the stop watch and increment seconds by +1 to keep it counting
-    this.seconds++;
-    var self = this;
-    
-    // call the setTimeout( ) to keep the stop watch alive! 
-    this.clearTime = setTimeout(function(){self.start();}, 1000);
+Dashboard.showFinishResults = function(){
+	$('#overlay').fadeIn().delay(15000).fadeOut();
+	$('#finish-panel').show().delay(15000).fadeOut();	
 }
 
-Stopwatch.prototype.stop = function(){
-	clearTimeout(this.clearTime);
-}

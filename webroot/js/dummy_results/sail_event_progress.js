@@ -1,10 +1,8 @@
 var Progress = {
 }
 
-/*
- * 
- */
-Progress.drawCourse = function(){
+Progress.init = function(){
+	// DRAW THE COURSE
 	var ref = this;
 	$track = $('#course-track');
 	$timeline = $('#timeline .track');
@@ -43,14 +41,19 @@ Progress.drawCourse = function(){
 			$timeline.find('#bouy-'+bouy.id).css('right', perc_course+'%');
 		}
 	});
-	
+
+	Progress.moveBoats();	
 }
 
 /*
- *  called by: boat.syncObjectData
+ *  by: Progress.init(); 
  */
 Progress.moveBoats = function(){
 	
+	setTimeout(function(){ 
+		if( Simulator.running ) Progress.moveBoats();
+	}, 500);    
+
 	var ref = this;
 	var course_length = this.course_length;
 	

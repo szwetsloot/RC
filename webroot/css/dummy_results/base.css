@@ -38,7 +38,6 @@ html, body {
 }
 
 #loading-screen img{
-	opacity:0.5;
 	position: relative;
 	width: auto;
 	height: 100px;

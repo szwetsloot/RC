@@ -9,48 +9,32 @@
 <script type='text/javascript'>
     // Initialize the crews
     var crews = <?= json_encode($crews) ?>;
-    var bouys = <?= json_encode($bouys) ?>;
-    var packets = <?= json_encode($units) ?>;
-    var startTime = <?= json_encode($startTime) ?>;
+    var bouys = <?= json_encode($bouys) ?>;    
 
-    // Initialize the wind and wave direction
-    var wave_direction = 45; // The +90 is to correct for the image
-    var wind_direction = 227 - 90; // The + 180 is to correct for the different 0-direciton
-    var wind_direction = 100;
-    
-    // Set the units for the boat
-    var boat_packets = [];
-    boat_packets[7] = 2;
-    boat_packets[8] = 3;
-    boat_packets[9] = 4;
-    boat_packets[12] = 7;
-    
-    for (var i = 0; i < crews.length; i++) {
-        crews[i].tracker = packets[boat_packets[crews[i].id]][0];
-        crews[i].packetCount = 1;
-    }
-    
 </script>
 
 
+<?php // $this->Html->script('dummy_results/sail_event_crew_data') ?>
 <?= $this->Html->css('animate') ?>
 <?= $this->Html->css('dummy_results/sail_event') ?>
 
 <?= $this->Html->script('http://code.jquery.com/jquery.min.js') ?>
 <?= $this->Html->script('https://code.jquery.com/ui/1.12.1/jquery-ui.min.js') ?>
-
+    
 <?= $this->Html->script('node_modules/proj4/dist/proj4') ?>
-
 <?= $this->Html->script('dummy_results/sail_event_data') ?>
+<?= $this->Html->script('dummy_results/sail_event_simulator') ?>
 <?= $this->Html->script('dummy_results/sail_event') ?>
 <?= $this->Html->script('dummy_results/sail_event_dashboard') ?>
 <?= $this->Html->script('dummy_results/sail_event_boat') ?>
 <?= $this->Html->script('dummy_results/sail_event_bouy') ?>
 <?= $this->Html->script('dummy_results/sail_event_progress') ?>
 <?= $this->Html->script('dummy_results/sail_event_timeline') ?>
+<?= $this->Html->script('dummy_results/stopwatch') ?>
+
 
 <div id="loading-screen">
-	<?= $this->Html->image('sail_event_v2/otis-blauw.png',['class' => 'animated slideInDown']) ?>
+	<?= $this->Html->image('sail_event_v2/otis-licht-blauw.png',['class' => 'animated fadeInDown']) ?>
 </div>
 
 <div id="simulator" class="ease-transform">
@@ -439,5 +423,6 @@
 	<?= $this->Html->image('sail_event_v2/otis.png',['class' => 'otis-logo']) ?>
 	
 	<div id="overlay"></div>
+	
 	
 	
