@@ -59,7 +59,7 @@ Boat.prototype = {
     		Simulator.running = true;
     	} 
     	if( reset != null ){
-            console.log('reset to '+reset);
+            //console.log('reset to '+reset);
             this.currentDummyPacket = reset;    
             this.calcBouyHistory(reset);
     		$boat.removeClass('ease-transform-fast');
@@ -128,8 +128,6 @@ Boat.prototype = {
     		boat.move();    		
     	},500 / options.simulation_speed);
     	
-    	
-    	
     },
     // THIS SHOULD BE THE ONLY FUNCTION THAT UPDATES ALL THE TEXT IN THE DOM ELEMENTS!!
     'updateData': function () {
@@ -146,7 +144,7 @@ Boat.prototype = {
         } else if( this.finished == false ){
         	$info.html(knots + 'kN / ' + Math.round(this.direction) + '&deg; / ' + distance_bouy + 'm');
         } else{
-        	$info.html('finished');
+        	$info.html('<strong>finished</strong>  '+race_stopwatch.time);
         }
         
         

@@ -58,6 +58,8 @@ Stopwatch.prototype.stop = function(){
 	clearTimeout(this.clearTime);
 }
 
-Stopwatch.prototype.set = function(ms){
-
+Stopwatch.prototype.set = function(time_seconds){
+    this.seconds = time_seconds % 60;
+    this.minutes = Math.floor(time_seconds/60);
+    this.hours = Math.floor(time_seconds/3600);
 }

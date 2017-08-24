@@ -35,9 +35,19 @@ Simulator.init = function(){
     this.drawStartline();
     this.createBoats();
     this.calculateRaceDuration(); // requires boats
-
+    this.arrangeBoats();
     $('canvas').attr('width', this.$simulator .width());
     $('canvas').attr('height', this.$simulator .height());
+}
+
+Simulator.arrangeBoats = function(){
+    setTimeout(Simulator.arrangeBoats,500)
+    // get boats and sort them according to their top
+    var sorted = boats.slice().sort(function(a, b){ return a.top - b.top; });
+    $.each(sorted,function(i){
+        var zIndex = i; // werl helaas niet met decimals
+        sorted[i].element.css('z-index',zIndex);
+    });
 }
 
 Simulator.createBouys = function(){
@@ -256,6 +266,7 @@ Simulator.drawHeightLines = function(){
         }
         z++;
     }
+    console.log('che');
 }
 
 //This function will calculate the min and max x and y of the screen

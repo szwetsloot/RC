@@ -19,7 +19,7 @@ var debug = false;
 
 var options = {
         race_veld           : 'Zeilregatta Scheveningen',
-        simulation_speed    : 3,            // 1 - 5
+        simulation_speed    : 5,            // 1 - 5
         lengthTrail         : 250,          // length of trail in meters
         boat_speed          : 6,
         run_once            : true,         // restart simulation at the end of the data?
