@@ -34,7 +34,8 @@
 
 
 <div id="loading-screen">
-	<?= $this->Html->image('sail_event_v2/otis-licht-blauw.png',['class' => 'animated fadeInDown']) ?>
+	<?= $this->Html->image('sail_event_v2/otis-licht-blauw.png',['class' => 'logo animated fadeInDown']) ?>
+    <?= $this->Html->image('sail_event_v2/fancybox_loading.gif',['class'=>'loading']) ?>
 </div>
 
 <div id="simulator" class="ease-transform">
@@ -100,9 +101,9 @@
             <div class="arrow-text">Noord</div>
         </div>
         <div id="wind-arrow" class="arrow">
-            6
+            3
 			<?= $this->Html->image('sail_event_v2/arrow.png',['class'=>'arrow-img']) ?>
-            <div class="arrow-text">Windkracht<br>19Kn, NW</div>
+            <div class="arrow-text">Windkracht<br>8Kn, W</div>
         </div>
 
     </div>

@@ -20,11 +20,13 @@
 var Simulator = {
 	running : false,
 	courseLength : 0,
+    race_duration : 0,
 };
 
 Simulator.init = function(){
     // cache DOM elements	
     this.$simulator = $('#simulator');
+
 	this.createBouys();
 	this.calculateCourseLength(); // required to calculate the longest route
     this.drawHeightLines();
@@ -32,7 +34,8 @@ Simulator.init = function(){
     this.setArrows(); // require waves
     this.drawStartline();
     this.createBoats();
-    
+    this.calculateRaceDuration(); // requires boats
+
     $('canvas').attr('width', this.$simulator .width());
     $('canvas').attr('height', this.$simulator .height());
 }
@@ -357,8 +360,18 @@ Simulator.calculateCourseLength = function(){
     var tracker_data = tracker_data_list[0];
 	for( j = 0; j < tracker_data.length; j++ ){
 		if(j > 0 ) Simulator.courseLength += norm2Dist(tracker_data[j - 1],tracker_data[j]);			
-	}		
+	}		    
 }	
+
+Simulator.calculateRaceDuration = function(){
+    this.race_duration = boats[0].raceDuration;
+    
+    for( i = 1; i < boats.length ; i++){
+        if(boats[i].raceDuration < this.race_duration){
+            Simulator.race_duration = boats[i].raceDuration;
+        }
+    }
+}
 
 Simulator.generateData = function(){
 	// for each tracker_data trail of boat

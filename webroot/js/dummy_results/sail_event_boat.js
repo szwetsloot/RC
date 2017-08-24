@@ -6,6 +6,8 @@
  * updatePosition();
  * setTeam();
  * checkBouys();
+ * targetNextBouy();
+ * calcBouyHistory();
  * averageRotation();
  * calcDistanceBouy();
  * calcPositionBoat();
@@ -28,13 +30,13 @@ function Boat(num) {
     this.left = this.element.position().left;
     this.direction = 170;
     this.speed = 2 + ( num / 16);    
-    this.raceDuration = Simulator.courseLength / this.speed;
+    this.raceDuration = Simulator.courseLength / this.speed; // TODO dit eigenlijk vanaf start tot finish-lijn berekenen
     this.bouyHistory = [];
     this.running = true;
     this.started = false;
     this.finished = false;     
-    this.nextBouy = 2;
-    this.numNextBouy = 2;
+    this.nextBouy = 2; // refers to the order of the bouys in the database
+    this.numNextBouy = 2; // number of target bouy in array
     this.numPrevBouy = 0;
     this.bouyStatus = null;
     this.currentDummyPacket = null; // these variables are used to navigate the dummy data  
@@ -57,20 +59,18 @@ Boat.prototype = {
     		Simulator.running = true;
     	} 
     	if( reset != null ){
-    		// TODO reset course progress sidebar
+            console.log('reset to '+reset);
+            this.currentDummyPacket = reset;    
+            this.calcBouyHistory(reset);
     		$boat.removeClass('ease-transform-fast');
     		$boat.stop(); // stop running animations
-    		console.log('reset to '+reset);
     		var data = tracker_data[reset];
-    		this.currentDummyPacket = reset;
-    		$('#trail-container').empty();
     		$boat.css({'top':data.top, 'left':data.left});
     		Simulator.running = true;
-    		boat.finished = false; // just in case
     	}
     	
     	// check if there is any data left
-    	if( this.currentDummyPacket == tracker_data.length - 1 ){ 
+    	if( this.currentDummyPacket >= tracker_data.length - 1 ){ 
     		if( options.run_once == true ){
     			this.running = false; 
         		return false;
@@ -159,8 +159,6 @@ Boat.prototype = {
     		var boat = this;
     		var i = boat.numNextBouy; // bouy that is being rounded
     		
-           // if( norm2Dist(boat,bouys[i]) > options.bouy_radius ) return false;
-            	
             // status 1 entered
             if( boat.bouyStatus == 1){ 
             	bouys[i].boatEntered(this); 
@@ -178,14 +176,7 @@ Boat.prototype = {
             // status 2 rounded
             if( boat.bouyStatus == 2 ){             
             	// look for next bouy
-            	for (var j = 0; j < bouys.length; j++) {
-                	if (bouys[j].prev == bouys[i].id) { 
-                        	boat.nextBouy = bouys[j].order;
-                        	boat.numNextBouy = j; // store the array index in the boat object
-                        	boat.numPrevBouy = i;
-                            break;
-                	}
-            	}
+            	this.targetNextBouy(i);
 
                 boat.bouyHistory.push(bouys[i].name);
             	// Done rounding, send a message to the bouy
@@ -195,9 +186,55 @@ Boat.prototype = {
     }
 };
 
-// function that recalculates the bouy history when the user navigates to a new point at the timeline
-Boat.prototype.calcBouyHistory(){
+Boat.prototype.targetNextBouy = function(numNextBouy){
+    boat = this;
+    for (var j = 0; j < bouys.length; j++) {
+        if (bouys[j].prev == bouys[numNextBouy].id) { 
+                boat.nextBouy = bouys[j].order;
+                boat.numNextBouy = j; // store the array index in the boat object
+                boat.numPrevBouy = numNextBouy;
+                break;
+        }
+    }
+}
 
+// function that recalculates the bouy history when the user navigates to a new point at the timeline
+Boat.prototype.calcBouyHistory = function(point){
+    boat = this;
+    boat.finished = false;
+    boat.started = false;
+    boat.bouyHistory = [];
+    // set next and prev bouys
+    boat.nextBouy = 2; // order
+    boat.numNextBouy = 2;
+    boat.numPrevBouy = 0;
+    // get datapoint
+    var data = generated_data[this.num];
+    var fadeOutDuration = ( ( options.lengthTrail / boat.speed ) / options.simulation_speed ) * 1000;
+
+    // loop through data up till data point
+    for( i = 0; i < point; i++){
+
+        boat.north = data[i].north;
+        boat.east = data[i].east;
+        boat.left = data[i].left;
+        boat.top = data[i].top;
+
+        var time_to_point = ( ( point - i ) * 500 ) / options.simulation_speed; // want elk punt is 0.5s
+    
+        if( fadeOutDuration > time_to_point ) boat.drawTrail( time_to_point );    
+
+        if(data[i].status != null ){
+            if( data[i].status == 'started') boat.started = true;
+            if( data[i].status == 'finished') boat.finished = true;
+            if( data[i].status == 2){        
+
+                boat.bouyHistory.push(bouys[boat.numNextBouy].name); // TODO can we get the bouy name?
+                boat.targetNextBouy(boat.numNextBouy);
+            }
+        }
+
+    }
 }
 
 // berekent normaal positie van de boat op de lijn tussen de boeien
@@ -230,15 +267,14 @@ Boat.prototype.calcPositionBoat = function () {
     this.location = rounded_bouys + ( 1 - afstand_tot_boei );   
 };
 
-Boat.prototype.drawTrail = function() {
+Boat.prototype.drawTrail = function( time_to_point = null ) {
 	var boat = this;
 
 	if(this.running == false) return false;
 	if( this.num_boat != 0 && options.show_all_trails == false ) return false;
 	
 	if( boat.lastBreadcrumb != null ){
-		// check distance to last point 
-		if( norm2Dist(boat, boat.lastBreadcrumb ) < 10 ) return false;
+		if( norm2Dist(boat, boat.lastBreadcrumb ) < 10 ) return false; // check distance to last point 
 	}
 	
 	var x = ( boat.left / $('#trail-container').width() ) * 100 + '%';
@@ -252,6 +288,8 @@ Boat.prototype.drawTrail = function() {
 
 	var fadeOutDuration = ( ( options.lengthTrail / boat.speed ) / options.simulation_speed ) * 1000;
 	
+    if(  time_to_point != null ) fadeOutDuration -= time_to_point; 
+
 	// drop breadcrumbs
 	var breadcrumb = document.createElement('div');
 	$(breadcrumb).addClass('start-'+this.start_nr)

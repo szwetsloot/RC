@@ -19,9 +19,8 @@ var debug = false;
 
 var options = {
         race_veld           : 'Zeilregatta Scheveningen',
-        simulation_speed    : 5,            // 1 - 5
+        simulation_speed    : 3,            // 1 - 5
         lengthTrail         : 250,          // length of trail in meters
-        bouy_radius         : 50,           // distance to enter bouy (meters) 
         boat_speed          : 6,
         run_once            : true,         // restart simulation at the end of the data?
         show_all_trails     : true,         // Als dit false staat wordt alleen het spoor van boot 1 weergegeven

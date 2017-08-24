@@ -38,7 +38,7 @@ Bouy.prototype = {
     		Dashboard.showBouyInfoPanels(boat,ref); 
     	}	
     },
-    'rounded': function(boat) { // This method is called when a boat left this bouy.
+    'rounded': function(boat) { // This method is called when a boat leaves this bouy.
     	Dashboard.bouyRounded(boat,this);  // Talk to dashboard    
     }, 
     'targetNextBouy' : function(){

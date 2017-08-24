@@ -57,3 +57,7 @@ Stopwatch.prototype.start = function(){
 Stopwatch.prototype.stop = function(){
 	clearTimeout(this.clearTime);
 }
+
+Stopwatch.prototype.set = function(ms){
+
+}

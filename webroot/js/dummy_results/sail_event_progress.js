@@ -24,10 +24,8 @@ Progress.init = function(){
 		
 		if(bouy.id == 1){ // start
 			$track.find('#bouy-'+bouy.id).css('top','100%');
-			$timeline.find('#bouy-'+bouy.id).css('left','0%');
 		} else if( bouy.id == 7 ){ // finish
 			$track.find('#bouy-'+bouy.id).css('top','0%');
-			$timeline.find('#bouy-'+bouy.id).css('left','100%');
 		} else{	
 			var distance_bouy = 0;
 			
@@ -38,7 +36,7 @@ Progress.init = function(){
 			var perc_course = (( ref.course_length - distance_bouy ) / ref.course_length ) * 100; 
 
 			$track.find('#bouy-'+bouy.id).css('top','calc( '+perc_course+'% - 10px )');			
-			$timeline.find('#bouy-'+bouy.id).css('right', perc_course+'%');
+
 		}
 	});
 
