@@ -41,6 +41,7 @@ Dashboard.startRace = function(){
 	race_stopwatch = new Stopwatch('#race-time','race tijd'); // param = jquery element, tekst label
 	Simulator.drawClearedStartline(); // clear the start
 	$('#bouy-container #bouy-3').addClass('active'); // activate next bouy	
+	Simulator.started = true;
 }
 
 // called by bouy rounded event
@@ -55,7 +56,6 @@ Dashboard.bouyRounded = function(boat, bouy){
 
 		// last boat rounding this bouy deactivate the bouy after 4s
 		if( bouy.boatsRounded.length === boats.length ){
-			console.log('last boat');
 			bouy_stopwatch.stop();
 			Simulator.resetZoom(); // zoom out
     		bouy.targetNextBouy(); // set alleen de css class + dashed yellow border

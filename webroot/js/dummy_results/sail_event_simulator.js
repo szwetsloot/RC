@@ -21,12 +21,15 @@ var Simulator = {
 	running : false,
 	courseLength : 0,
     race_duration : 0,
+    started : false,
+    finished : false,
 };
 
 Simulator.init = function(){
     // cache DOM elements	
     this.$simulator = $('#simulator');
-
+    $('canvas').attr('width', this.$simulator .width());
+    $('canvas').attr('height', this.$simulator .height());
 	this.createBouys();
 	this.calculateCourseLength(); // required to calculate the longest route
     this.drawHeightLines();
@@ -37,8 +40,7 @@ Simulator.init = function(){
     this.calculateRaceDuration(); // requires boats
     this.arrangeBoats();
 
-    $('canvas').attr('width', this.$simulator .width());
-    $('canvas').attr('height', this.$simulator .height());
+    
 }
 
 Simulator.arrangeBoats = function(){
@@ -46,7 +48,7 @@ Simulator.arrangeBoats = function(){
     // get boats and sort them according to their top
     var sorted = boats.slice().sort(function(a, b){ return a.top - b.top; });
     $.each(sorted,function(i){
-        var zIndex = i; // werl helaas niet met decimals
+        var zIndex = i + 3; // werl helaas niet met decimals
         sorted[i].element.css('z-index',zIndex);
     });
 }
@@ -138,7 +140,7 @@ Simulator.zoomBouy = function(bouy_element){
     var screenWidth = this.$simulator.width();
     var screenHeight = this.$simulator.height(); 
     var bouy_pos = $bouy.position();   
-    var d_x = ( screenWidth / 2 ) - bouy_pos.left + 100;
+    var d_x = ( screenWidth / 2 ) - bouy_pos.left;
     var d_y = ( screenHeight / 2 ) - bouy_pos.top;    
     var scale = 1.5; // TODO define dynamic
     
