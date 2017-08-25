@@ -39,6 +39,7 @@ function Boat(num) {
     this.numNextBouy = 2; // number of target bouy in array
     this.numPrevBouy = 0;
     this.bouyStatus = null;
+    this.activeBouyNum = null;
     this.currentDummyPacket = null; // these variables are used to navigate the dummy data  
     generated_data.push([]); // voeg lege array toe
 }
@@ -103,7 +104,7 @@ Boat.prototype = {
             top: data_target.top
         });
     	
-    	
+    	// update data to draw trail
     	boat.left = data_cur.left;
         boat.top = data_cur.top;
     	boat.north = data_cur.north;
@@ -262,7 +263,7 @@ Boat.prototype.calcPositionBoat = function () {
     var rounded_bouys = this.bouyHistory.length;
     
     // tel elke geronde boei meer als 1
-    this.location = rounded_bouys + ( 1 - afstand_tot_boei );   
+    this.location = 2 * rounded_bouys + ( 1 - afstand_tot_boei );   
 };
 
 Boat.prototype.drawTrail = function( time_to_point = null ) {

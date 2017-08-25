@@ -220,7 +220,7 @@
     		<div id="bouy-4" class="bouy">3</div>    		
     		<div id="bouy-6" class="bouy">2</div> 	
     		<div id="bouy-7" class="bouy lijn">F</div>  
-    		<div class="current"></div>
+    		<div class="current ease-transform-fast"></div>
     	</div>
 </div>
     

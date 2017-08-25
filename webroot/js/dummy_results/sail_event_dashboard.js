@@ -54,7 +54,8 @@ Dashboard.bouyRounded = function(boat, bouy){
 		Dashboard.addBoatToBouy(boat); // requires BouyTimer
 
 		// last boat rounding this bouy deactivate the bouy after 4s
-		if( boat.position === boats.length - 1 && boat.firstBoat != true ){
+		if( bouy.boatsRounded.length === boats.length ){
+			console.log('last boat');
 			bouy_stopwatch.stop();
 			Simulator.resetZoom(); // zoom out
     		bouy.targetNextBouy(); // set alleen de css class + dashed yellow border

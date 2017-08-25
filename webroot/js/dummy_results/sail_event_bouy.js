@@ -21,6 +21,8 @@ function Bouy(i) {
     this.type = bouys[i].type;
     this.prev = bouys[i].prev;
     this.element = $('#bouy-' + this.id);
+    this.boatsEntered =[];
+    this.boatsRounded =[];
 }
 
 Bouy.prototype = {
@@ -37,8 +39,11 @@ Bouy.prototype = {
     		Simulator.zoomBouy(ref.element);  
     		Dashboard.showBouyInfoPanels(boat,ref); 
     	}	
+        boat.activeBouyNum = this.num;
+        this.boatsEntered.push(boat.id);
     },
     'rounded': function(boat) { // This method is called when a boat leaves this bouy.
+        this.boatsRounded.push(boat.id);
     	Dashboard.bouyRounded(boat,this);  // Talk to dashboard    
     }, 
     'targetNextBouy' : function(){

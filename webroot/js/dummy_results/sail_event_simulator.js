@@ -36,6 +36,7 @@ Simulator.init = function(){
     this.createBoats();
     this.calculateRaceDuration(); // requires boats
     this.arrangeBoats();
+
     $('canvas').attr('width', this.$simulator .width());
     $('canvas').attr('height', this.$simulator .height());
 }
@@ -229,9 +230,9 @@ Simulator.drawHeightLines = function(){
     // Clear the container
     $('#height-line-container').empty();
 
-    var direction = (wind_direction + screenUTMRange.rotation * 180 / Math.PI);
-    var screenWidth = $('html').width();
-    var screenHeight = $('html').height();
+    var direction = (options.wind_direction + screenUTMRange.rotation * 180 / Math.PI);
+    var screenWidth = this.$simulator.width();
+    var screenHeight = this.$simulator.height();
 
     var dir_c = (0 + direction) / 180 * Math.PI;
 
@@ -266,7 +267,6 @@ Simulator.drawHeightLines = function(){
         }
         z++;
     }
-    console.log('che');
 }
 
 //This function will calculate the min and max x and y of the screen
