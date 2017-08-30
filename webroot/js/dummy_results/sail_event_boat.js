@@ -203,6 +203,7 @@ Boat.prototype.targetNextBouy = function(numNextBouy){
 Boat.prototype.calcBouyHistory = function(point){
     boat = this;
     boat.finished = false;
+    boat.running = true;
     boat.started = false;
     boat.bouyHistory = [];
     // set next and prev bouys

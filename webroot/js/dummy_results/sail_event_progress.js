@@ -87,7 +87,7 @@ Progress.moveBoats = function(){
 		ref.$track.find('#boat-'+boat.id).css('top',perc_course+'%');
 		
 		// geef de positie van de eerste boot door
-		if( boat.position == 0 ) ref.moveTrack( perc_course );
+		//if( boat.position == 0 ) ref.moveTrack( perc_course );
 		
 	});
 
